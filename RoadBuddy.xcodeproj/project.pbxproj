@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6640A6422BA14E500058A537 /* FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6640A6412BA14E500058A537 /* FontStyle.swift */; };
 		6640A6452BA14EB70058A537 /* Extention+UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6640A6442BA14EB70058A537 /* Extention+UIFont.swift */; };
 		6640A6482BA153EB0058A537 /* FilterTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6640A6472BA153EB0058A537 /* FilterTextField.swift */; };
 		6640A64A2BA15A860058A537 /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6640A6492BA15A860058A537 /* Secret.swift */; };
@@ -23,7 +22,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6640A6412BA14E500058A537 /* FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyle.swift; sourceTree = "<group>"; };
 		6640A6442BA14EB70058A537 /* Extention+UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extention+UIFont.swift"; sourceTree = "<group>"; };
 		6640A6472BA153EB0058A537 /* FilterTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTextField.swift; sourceTree = "<group>"; };
 		6640A6492BA15A860058A537 /* Secret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
@@ -54,7 +52,6 @@
 		6640A6402BA14DF20058A537 /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				6640A6412BA14E500058A537 /* FontStyle.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -190,7 +187,6 @@
 				664994BA2B985F2E005B8F9E /* MainViewController.swift in Sources */,
 				6640A64A2BA15A860058A537 /* Secret.swift in Sources */,
 				664994B62B985F2E005B8F9E /* AppDelegate.swift in Sources */,
-				6640A6422BA14E500058A537 /* FontStyle.swift in Sources */,
 				6640A6452BA14EB70058A537 /* Extention+UIFont.swift in Sources */,
 				664994B82B985F2E005B8F9E /* SceneDelegate.swift in Sources */,
 				6640A6482BA153EB0058A537 /* FilterTextField.swift in Sources */,
