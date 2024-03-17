@@ -7,13 +7,15 @@
 
 import UIKit
 import GoogleMaps
+import GooglePlaces
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        GMSServices.provideAPIKey(Secret.googleMapKey)
+        GMSServices.provideAPIKey(Secret.googleAPIKey)
+        GMSPlacesClient.provideAPIKey(Secret.googleAPIKey)
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
