@@ -9,7 +9,7 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
-class MainViewController: UIViewController {
+final class MainViewController: UIViewController {
     private var searchBarTextField: UITextField = {
         let textField = FilterTextField(content: "장소, 버스, 지하철, 주소 검색", backgroundColor: .white)
         textField.translatesAutoresizingMaskIntoConstraints = false
