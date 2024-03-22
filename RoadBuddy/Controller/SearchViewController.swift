@@ -10,21 +10,44 @@ import UIKit
 
 // TODO: (1) 한 섹션은 연관검색어, (2) 그 아래 섹션은 검색 결과(자세한 주소 정보까지 나오는 셀)
 final class SearchViewController: UIViewController {
+    private lazy var searchStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.addArrangedSubview(backButton)
+        stackView.addArrangedSubview(searchTextField)
+        stackView.spacing = 24
+        
+        return stackView
+    }()
+    
     private var backButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "direction_off")
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(image, for: .normal)
-        button.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        button.setImage(.backButton, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
         
         return button
     }()
     
     private var searchTextField: UITextField = {
-        let textField = FilterTextField(content: "Seach the place", backgroundColor: .white)
+        let textField = UITextField()
+        textField.placeholder = "Search the place"
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.clearButtonMode = .whileEditing
+        
+        textField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
+        
         return textField
+    }()
+    
+    private var stackViewUnderLineView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.lightGray
+        
+        return view
     }()
     
     private lazy var searchHistoryCollectionView: UICollectionView = {
@@ -42,30 +65,48 @@ final class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = .white
-        self.view.addSubview(backButton)
-        self.view.addSubview(searchTextField)
+        self.view.addSubview(searchStackView)
         self.view.addSubview(searchHistoryCollectionView)
-        
+        self.view.addSubview(stackViewUnderLineView)
         configureDataSource()
         setConstraints()
+        
+        searchTextField.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        var snapshot = dataSource.snapshot()
+        // TODO: 원소를 하나씩 추가해야하나? 아니면 array로 새로 갈아 끼우는 건가?
+        let searchHistories = decode()
+        snapshot.appendItems(searchHistories, toSection: 0)
+        dataSource.apply(snapshot)
     }
     
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            backButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
+            searchStackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
+            searchStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
+            searchStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            searchStackView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.08),
             
-            searchTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            searchTextField.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 8),
-            searchTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            backButton.centerYAnchor.constraint(equalTo: searchStackView.centerYAnchor),
+            backButton.leadingAnchor.constraint(equalTo: searchStackView.leadingAnchor, constant: 8),
+            backButton.widthAnchor.constraint(equalToConstant: 12),
             
-            // TODO: 라인 하나 그으던가, 아니면 그림자 표시 하던가
-            searchHistoryCollectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8),
-            searchHistoryCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            searchHistoryCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            searchTextField.centerYAnchor.constraint(equalTo: searchStackView.centerYAnchor),
+            searchTextField.trailingAnchor.constraint(equalTo: searchStackView.trailingAnchor, constant: -8),
+            
+            stackViewUnderLineView.topAnchor.constraint(equalTo: searchStackView.bottomAnchor, constant: 2),
+            stackViewUnderLineView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            stackViewUnderLineView.heightAnchor.constraint(equalToConstant: 1),
+            
+            searchHistoryCollectionView.topAnchor.constraint(equalTo: searchStackView.bottomAnchor, constant: 8),
+            searchHistoryCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            searchHistoryCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             searchHistoryCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
             
         ])
@@ -83,19 +124,58 @@ final class SearchViewController: UIViewController {
         
         var snapshot = dataSource.snapshot()
         snapshot.appendSections([0])
-        snapshot.appendItems([SearchHistory(title: "가산디지털", created: Date())])
-        snapshot.appendItems([SearchHistory(title: "가산디지털2", created: Date())])
         dataSource.apply(snapshot)
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        let config = UICollectionLayoutListConfiguration(appearance: .plain)
         return UICollectionViewCompositionalLayout.list(using: config)
     }
 }
 
-extension SearchViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 70)
+// MARK: - 검색기록 저장
+
+// TODO: 10개만 저장하고 누적되면 알아서 마지막거 지우기(stack) + cell 클릭했을 때도 UserDefault에 저장하도록 로직 (이건 여기서 하는건 아님)
+extension SearchViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        guard let search = textField.text else { return true }
+        let searchObj = SearchHistory(title: search, created: Date())
+        var searchHistories = decode()
+        searchHistories.insert(searchObj, at: 0)
+        // 10개 이상
+        if searchHistories.count >= 10 {
+            searchHistories.removeLast()
+        }
+        encodeAndSave(searchHistories)
+        
+        // TODO: 나중에 section 나눴을 때도 정상적으로 될지는 모르겠다.. (근데 아마 될 듯!)
+        var snapshot = NSDiffableDataSourceSnapshot<Int, SearchHistory>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(searchHistories, toSection: 0)
+        dataSource.apply(snapshot)
+        
+        return true
+    }
+    
+    // TODO: 나중에 클래스화 하던지 ㅇㅇ
+    private func decode() -> [SearchHistory] {
+        let decoder = JSONDecoder()
+        if let savedData = UserDefaults.standard.object(forKey: "searchHistories") as? Data {
+            // TODO: force unwarpping
+            let searchHistories = try! decoder.decode([SearchHistory].self, from: savedData)
+            return searchHistories
+        }
+        return [SearchHistory]()
+    }
+    
+    private func encodeAndSave(_ searchHistories: [SearchHistory]) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(searchHistories) {
+            UserDefaults.standard.setValue(encoded, forKey: "searchHistories")
+            UserDefaults.standard.synchronize()
+        }
     }
 }
+// 해결해야겠단 생각은 버려!

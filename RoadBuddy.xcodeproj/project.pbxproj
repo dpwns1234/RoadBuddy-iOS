@@ -105,6 +105,7 @@
 		664994B42B985F2D005B8F9E /* RoadBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				66DAA45F2BA82F41005299C3 /* Model */,
 				66DAA45A2BA7E061005299C3 /* Controller */,
 				66DAA4582BA7E04D005299C3 /* View */,
 				6640A6462BA14F840058A537 /* Components */,
@@ -132,7 +133,6 @@
 		66DAA4592BA7E052005299C3 /* SearchHistory */ = {
 			isa = PBXGroup;
 			children = (
-				66DAA4522BA70010005299C3 /* SearchHistory.swift */,
 				66DAA4542BA7001E005299C3 /* SearchHistoryCollectionViewCell.swift */,
 				66DAA45B2BA7E08A005299C3 /* SearchHistoryContentView.swift */,
 				66DAA45D2BA7FD33005299C3 /* SearchHistoryConfiguration.swift */,
@@ -147,6 +147,14 @@
 				66DAA44C2BA6F910005299C3 /* SearchViewController.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		66DAA45F2BA82F41005299C3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				66DAA4522BA70010005299C3 /* SearchHistory.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

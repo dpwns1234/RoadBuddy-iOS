@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchHistory: Hashable {
+struct SearchHistory: Hashable, Codable {
     let title: String
     let created: Date
 }

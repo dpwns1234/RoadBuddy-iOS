@@ -66,7 +66,7 @@ final class SearchHistoryContentView: UIView, UIContentView {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -8),
             
@@ -74,7 +74,7 @@ final class SearchHistoryContentView: UIView, UIContentView {
             createdLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             createdLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -8),
             
-            removeButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
+            removeButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             removeButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             removeButton.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -8),
 
