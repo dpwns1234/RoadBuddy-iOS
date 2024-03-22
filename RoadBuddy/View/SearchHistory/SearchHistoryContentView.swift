@@ -26,7 +26,7 @@ final class SearchHistoryContentView: UIView, UIContentView {
         return textView
     }()
     
-    private var removeButton: UIButton = {
+    var removeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.widthAnchor.constraint(equalToConstant: 12).isActive = true
@@ -37,6 +37,8 @@ final class SearchHistoryContentView: UIView, UIContentView {
         
         return button
     }()
+    
+    var removeAction: (() -> Void)?
     
     var configuration: UIContentConfiguration {
         didSet {
@@ -58,6 +60,12 @@ final class SearchHistoryContentView: UIView, UIContentView {
         
         setConstraints()
         apply(configuration: configuration)
+        removeButton.addTarget(self, action: #selector(removeHistory), for: .touchUpInside)
+    }
+    
+    @objc
+    private func removeHistory() {
+        removeAction?()
     }
     
     required init?(coder: NSCoder) {
@@ -83,6 +91,7 @@ final class SearchHistoryContentView: UIView, UIContentView {
     
     func apply(configuration: UIContentConfiguration) {
         guard let configuration = configuration as? SearchHistoryConfiguration else { return }
+        removeAction = configuration.removeAction
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM.dd."
         

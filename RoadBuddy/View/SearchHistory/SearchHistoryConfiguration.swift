@@ -10,6 +10,7 @@ import UIKit
 struct SearchHistoryConfiguration: UIContentConfiguration {
     var title: String?
     var created: Date?
+    var removeAction: (() -> Void)?
     
     func makeContentView() -> UIView & UIContentView {
         return SearchHistoryContentView(configuration: self)

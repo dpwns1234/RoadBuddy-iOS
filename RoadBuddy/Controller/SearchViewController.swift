@@ -60,6 +60,7 @@ final class SearchViewController: UIViewController {
     typealias SearchHistoryDataSource = UICollectionViewDiffableDataSource<Int, SearchHistory> // TODO: Section으로 구분?
     typealias SearchHistoryCellRegistration = UICollectionView.CellRegistration<SearchHistoryCollectionViewCell, SearchHistory>
     
+    private let historyRepository = UserDefaultRepository<[SearchHistory]>()
     private var dataSource: SearchHistoryDataSource!
     private var cellRegistration: SearchHistoryCellRegistration!
     
@@ -79,8 +80,8 @@ final class SearchViewController: UIViewController {
         super.viewWillAppear(true)
         
         var snapshot = dataSource.snapshot()
-        // TODO: 원소를 하나씩 추가해야하나? 아니면 array로 새로 갈아 끼우는 건가?
-        let searchHistories = decode()
+        // TODO: 여기서 업데이트를(apply) 안 해줘도 되지 않나?
+        let searchHistories = snapshot.itemIdentifiers(inSection: 0)
         snapshot.appendItems(searchHistories, toSection: 0)
         dataSource.apply(snapshot)
     }
@@ -118,8 +119,12 @@ final class SearchViewController: UIViewController {
         }
         
         dataSource = SearchHistoryDataSource(collectionView: searchHistoryCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewListCell in
-            collectionView.allowsSelection = false
-            return collectionView.dequeueConfiguredReusableCell(using: self.cellRegistration, for: indexPath, item: identifier)
+            let cell = collectionView.dequeueConfiguredReusableCell(using: self.cellRegistration, for: indexPath, item: identifier)
+            cell.removeAction = {
+                self.update(removedCell: cell)
+            }
+            
+            return cell
         }
         
         var snapshot = dataSource.snapshot()
@@ -131,51 +136,46 @@ final class SearchViewController: UIViewController {
         let config = UICollectionLayoutListConfiguration(appearance: .plain)
         return UICollectionViewCompositionalLayout.list(using: config)
     }
+    
+    private func update(removedCell: SearchHistoryCollectionViewCell) {
+        var snapshot = self.dataSource.snapshot()
+        var searchHistories = snapshot.itemIdentifiers(inSection: 0)
+        
+        // UserDefault 삭제
+        guard let index = snapshot.indexOfItem(removedCell.item) else { return }
+        searchHistories.remove(at: index)
+        self.historyRepository.save(data: searchHistories)
+        
+        // dataSource 삭제
+        snapshot.deleteItems([removedCell.item])
+        self.dataSource.apply(snapshot)
+    }
 }
 
 // MARK: - 검색기록 저장
 
-// TODO: 10개만 저장하고 누적되면 알아서 마지막거 지우기(stack) + cell 클릭했을 때도 UserDefault에 저장하도록 로직 (이건 여기서 하는건 아님)
+// TODO: cell 클릭했을 때도 UserDefault에 저장하도록 로직 (이건 여기서 하는건 아님)
 extension SearchViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         guard let search = textField.text else { return true }
-        let searchObj = SearchHistory(title: search, created: Date())
-        var searchHistories = decode()
-        searchHistories.insert(searchObj, at: 0)
-        // 10개 이상
+        let history = SearchHistory(title: search, created: Date())
+        update(history)
+        return true
+    }
+    
+    private func update(_ history: SearchHistory) {
+        var searchHistories = dataSource.snapshot().itemIdentifiers(inSection: 0)
+        searchHistories.insert(history, at: 0)
         if searchHistories.count >= 10 {
             searchHistories.removeLast()
         }
-        encodeAndSave(searchHistories)
+        historyRepository.save(data: searchHistories)
         
-        // TODO: 나중에 section 나눴을 때도 정상적으로 될지는 모르겠다.. (근데 아마 될 듯!)
         var snapshot = NSDiffableDataSourceSnapshot<Int, SearchHistory>()
         snapshot.appendSections([0])
         snapshot.appendItems(searchHistories, toSection: 0)
         dataSource.apply(snapshot)
-        
-        return true
-    }
-    
-    // TODO: 나중에 클래스화 하던지 ㅇㅇ
-    private func decode() -> [SearchHistory] {
-        let decoder = JSONDecoder()
-        if let savedData = UserDefaults.standard.object(forKey: "searchHistories") as? Data {
-            // TODO: force unwarpping
-            let searchHistories = try! decoder.decode([SearchHistory].self, from: savedData)
-            return searchHistories
-        }
-        return [SearchHistory]()
-    }
-    
-    private func encodeAndSave(_ searchHistories: [SearchHistory]) {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(searchHistories) {
-            UserDefaults.standard.setValue(encoded, forKey: "searchHistories")
-            UserDefaults.standard.synchronize()
-        }
     }
 }
-// 해결해야겠단 생각은 버려!

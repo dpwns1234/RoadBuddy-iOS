@@ -19,6 +19,9 @@
 		664994CD2B9860FA005B8F9E /* GoogleMapsBase in Frameworks */ = {isa = PBXBuildFile; productRef = 664994CC2B9860FA005B8F9E /* GoogleMapsBase */; };
 		664994CF2B9860FA005B8F9E /* GoogleMapsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 664994CE2B9860FA005B8F9E /* GoogleMapsCore */; };
 		664994D12B9860FA005B8F9E /* GoogleMapsM4B in Frameworks */ = {isa = PBXBuildFile; productRef = 664994D02B9860FA005B8F9E /* GoogleMapsM4B */; };
+		664E56DA2BAD397600AD7997 /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56D92BAD397600AD7997 /* Decoder.swift */; };
+		664E56DC2BAD398100AD7997 /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56DB2BAD398100AD7997 /* Encoder.swift */; };
+		664E56DE2BAD4CF400AD7997 /* UserDefaultRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56DD2BAD4CF400AD7997 /* UserDefaultRepository.swift */; };
 		6696A8582BA5369700ECE641 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 6696A8572BA5369700ECE641 /* GooglePlaces */; };
 		66DAA44D2BA6F910005299C3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DAA44C2BA6F910005299C3 /* SearchViewController.swift */; };
 		66DAA4532BA70010005299C3 /* SearchHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DAA4522BA70010005299C3 /* SearchHistory.swift */; };
@@ -39,6 +42,9 @@
 		664994BE2B985F2F005B8F9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		664994C12B985F2F005B8F9E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		664994C32B985F2F005B8F9E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		664E56D92BAD397600AD7997 /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
+		664E56DB2BAD398100AD7997 /* Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoder.swift; sourceTree = "<group>"; };
+		664E56DD2BAD4CF400AD7997 /* UserDefaultRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultRepository.swift; sourceTree = "<group>"; };
 		66DAA44C2BA6F910005299C3 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		66DAA4522BA70010005299C3 /* SearchHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistory.swift; sourceTree = "<group>"; };
 		66DAA4542BA7001E005299C3 /* SearchHistoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistoryCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -66,6 +72,9 @@
 		6640A6402BA14DF20058A537 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				664E56D92BAD397600AD7997 /* Decoder.swift */,
+				664E56DB2BAD398100AD7997 /* Encoder.swift */,
+				664E56DD2BAD4CF400AD7997 /* UserDefaultRepository.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -240,6 +249,8 @@
 			files = (
 				664994BA2B985F2E005B8F9E /* MainViewController.swift in Sources */,
 				66DAA45C2BA7E08A005299C3 /* SearchHistoryContentView.swift in Sources */,
+				664E56DC2BAD398100AD7997 /* Encoder.swift in Sources */,
+				664E56DE2BAD4CF400AD7997 /* UserDefaultRepository.swift in Sources */,
 				66DAA4572BA7DD55005299C3 /* AddressDetailCell.swift in Sources */,
 				66DAA44D2BA6F910005299C3 /* SearchViewController.swift in Sources */,
 				6640A64A2BA15A860058A537 /* Secret.swift in Sources */,
@@ -250,6 +261,7 @@
 				66DAA45E2BA7FD33005299C3 /* SearchHistoryConfiguration.swift in Sources */,
 				6640A6482BA153EB0058A537 /* FilterTextField.swift in Sources */,
 				66DAA4552BA7001E005299C3 /* SearchHistoryCollectionViewCell.swift in Sources */,
+				664E56DA2BAD397600AD7997 /* Decoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
