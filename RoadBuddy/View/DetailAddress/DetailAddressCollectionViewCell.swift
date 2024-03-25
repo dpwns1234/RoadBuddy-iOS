@@ -8,7 +8,7 @@
 import UIKit
 
 final class DetailAddressCollectionViewCell: UICollectionViewListCell {
-    var item: DetailAddress!
+    var item: SearchDataModel!
     
     override func updateConfiguration(using state: UICellConfigurationState) {
         var config = DetailAddressConfiguration()

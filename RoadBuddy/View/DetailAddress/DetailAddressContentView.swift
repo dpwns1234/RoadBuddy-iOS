@@ -105,6 +105,6 @@ final class DetailAddressContentView: UIView, UIContentView {
         self.titleLabel.text = configuration.title
         self.addressLabel.text = configuration.address
         self.categoryLabel.text = configuration.category
-        self.distanceLabel.text = "\(String(describing: configuration.distance))km"
+        self.distanceLabel.text = "\(configuration.distance!)km"
     }
 }

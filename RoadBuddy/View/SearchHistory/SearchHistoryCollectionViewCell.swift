@@ -8,7 +8,7 @@
 import UIKit
 
 final class SearchHistoryCollectionViewCell: UICollectionViewListCell {
-    var item: SearchHistory!
+    var item: SearchDataModel!
     var removeAction: (() -> Void)?
     
     override func updateConfiguration(using state: UICellConfigurationState) {
