@@ -89,13 +89,13 @@ final class SearchHistoryContentView: UIView, UIContentView {
         ])
     }
     
-    func apply(configuration: UIContentConfiguration) {
+    private func apply(configuration: UIContentConfiguration) {
         guard let configuration = configuration as? SearchHistoryConfiguration else { return }
-        removeAction = configuration.removeAction
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM.dd."
         
         self.titleLabel.text = configuration.title
         self.createdLabel.text = dateFormatter.string(from: configuration.created!)
+        self.removeAction = configuration.removeAction
     }
 }

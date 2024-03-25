@@ -50,40 +50,62 @@ final class SearchViewController: UIViewController {
         return view
     }()
     
-    private lazy var searchHistoryCollectionView: UICollectionView = {
+    private lazy var searchCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
     
+    // MARK: - SearchHistory
+    
     typealias SearchHistoryDataSource = UICollectionViewDiffableDataSource<Int, SearchHistory> // TODO: Section으로 구분?
     typealias SearchHistoryCellRegistration = UICollectionView.CellRegistration<SearchHistoryCollectionViewCell, SearchHistory>
     
     private let historyRepository = UserDefaultRepository<[SearchHistory]>()
-    private var dataSource: SearchHistoryDataSource!
-    private var cellRegistration: SearchHistoryCellRegistration!
+    private var historyDataSource: SearchHistoryDataSource!
+    private var searchCellRegistration: SearchHistoryCellRegistration!
+    
+    // MARK: - DetailAddress
+    
+    typealias DetailAddressDataSource = UICollectionViewDiffableDataSource<Int, DetailAddress>
+    typealias DetailAddressRegistration = UICollectionView.CellRegistration<DetailAddressCollectionViewCell, DetailAddress>
+    
+    private var addressDataSource: DetailAddressDataSource!
+    private var addressCellRegistration: DetailAddressRegistration!
+    
+    // TODO: 지금 나갔다 들어오면 제대로 저장을 못하는 상황임. 어쩔땐 저장되고 어쩔 땐 변경내역이 반영이 안됨.
+    
+    // TODO: willAppear 경우: 네비게이션으로 이동 후 다시 백버튼 눌렀을 때(검색기록 누르면 텍스트필드에 그게 들어가게 하고, 디테일주소로 이동) = addrssDataSource를 받아야 하는게 맞음.
+    // TODO: 텍스트필드 입력시 셀이 변하는 거니까 뷰컨이 두 개 되면 안 됨. 정안되면 한 화면에 컬렉션뷰가 두 개가 되어야 함.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+
+        var addressSnapshot = addressDataSource.snapshot()
+        var snapshot = historyDataSource.snapshot()
+        let searchHistories = historyRepository.fetch() ?? [SearchHistory]()
+        snapshot.appendItems([], toSection: 1)
+//        addressSnapshot.deleteAllItems()
+//        addressDataSource.apply(addressSnapshot)
+//        addressDataSource.apply(snapshot)
+        historyDataSource.apply(snapshot)
+    }
+    // 섹션으론 구분이 되는가?
+    // 데이터 모델을 하나로 합치는건? -> cellRegistration이 다르지. contentView랑.
+    //
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.view.backgroundColor = .white
         self.view.addSubview(searchStackView)
-        self.view.addSubview(searchHistoryCollectionView)
+        self.view.addSubview(searchCollectionView)
         self.view.addSubview(stackViewUnderLineView)
-        configureDataSource()
+        configureHistoryDataSource()
+        configureAddressDataSource()
         setConstraints()
         
         searchTextField.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        
-        var snapshot = dataSource.snapshot()
-        // TODO: 여기서 업데이트를(apply) 안 해줘도 되지 않나?
-        let searchHistories = snapshot.itemIdentifiers(inSection: 0)
-        snapshot.appendItems(searchHistories, toSection: 0)
-        dataSource.apply(snapshot)
     }
     
     private func setConstraints() {
@@ -105,31 +127,52 @@ final class SearchViewController: UIViewController {
             stackViewUnderLineView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
             stackViewUnderLineView.heightAnchor.constraint(equalToConstant: 1),
             
-            searchHistoryCollectionView.topAnchor.constraint(equalTo: searchStackView.bottomAnchor, constant: 8),
-            searchHistoryCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            searchHistoryCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            searchHistoryCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
+            searchCollectionView.topAnchor.constraint(equalTo: searchStackView.bottomAnchor, constant: 8),
+            searchCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            searchCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            searchCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
             
         ])
     }
     
-    private func configureDataSource() {
-        cellRegistration = SearchHistoryCellRegistration { (cell, indexPath, item) in
+    private func configureHistoryDataSource() {
+        searchCellRegistration = SearchHistoryCellRegistration { (cell, indexPath, item) in
             cell.item = item
         }
         
-        dataSource = SearchHistoryDataSource(collectionView: searchHistoryCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewListCell in
-            let cell = collectionView.dequeueConfiguredReusableCell(using: self.cellRegistration, for: indexPath, item: identifier)
+        historyDataSource = SearchHistoryDataSource(collectionView: searchCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewListCell in
+            let cell = collectionView.dequeueConfiguredReusableCell(using: self.searchCellRegistration, for: indexPath, item: identifier)
             cell.removeAction = {
                 self.update(removedCell: cell)
             }
             
             return cell
         }
+
+        var snapshot = historyDataSource.snapshot()
+        snapshot.appendSections([1])
+        historyDataSource.apply(snapshot)
+    }
+    
+    private func configureAddressDataSource() {
+        addressCellRegistration = DetailAddressRegistration { (cell, indexPath, item) in
+            cell.item = item
+        }
         
-        var snapshot = dataSource.snapshot()
+        addressDataSource = DetailAddressDataSource(collectionView: searchCollectionView, cellProvider: { collectionView, indexPath, identifier in
+            let cell = collectionView.dequeueConfiguredReusableCell(using: self.addressCellRegistration, for: indexPath, item: identifier)
+
+            return cell
+        })
+        
+        var snapshot = addressDataSource.snapshot()
         snapshot.appendSections([0])
-        dataSource.apply(snapshot)
+        // MARK: Test
+        let detailAddress1 = DetailAddress(title: "한성대학교", address: "삼선교 어딘가", category: "대학교", distance: 12)
+        let detailAddress2 = DetailAddress(title: "한성대학교1", address: "삼선교 어딘가1", category: "대학교1", distance: 123)
+        let detailAddress3 = DetailAddress(title: "한성대학교2", address: "삼선교 어딘가2", category: "대학교2", distance: 124)
+        snapshot.appendItems([detailAddress1, detailAddress2, detailAddress3])
+        addressDataSource.apply(snapshot)
     }
     
     private func createLayout() -> UICollectionViewLayout {
@@ -138,7 +181,7 @@ final class SearchViewController: UIViewController {
     }
     
     private func update(removedCell: SearchHistoryCollectionViewCell) {
-        var snapshot = self.dataSource.snapshot()
+        var snapshot = self.historyDataSource.snapshot()
         var searchHistories = snapshot.itemIdentifiers(inSection: 0)
         
         // UserDefault 삭제
@@ -148,7 +191,7 @@ final class SearchViewController: UIViewController {
         
         // dataSource 삭제
         snapshot.deleteItems([removedCell.item])
-        self.dataSource.apply(snapshot)
+        self.historyDataSource.apply(snapshot)
     }
 }
 
@@ -161,12 +204,12 @@ extension SearchViewController: UITextFieldDelegate {
         
         guard let search = textField.text else { return true }
         let history = SearchHistory(title: search, created: Date())
-        update(history)
+        save(history)
         return true
     }
     
-    private func update(_ history: SearchHistory) {
-        var searchHistories = dataSource.snapshot().itemIdentifiers(inSection: 0)
+    private func save(_ history: SearchHistory) {
+        var searchHistories = historyDataSource.snapshot().itemIdentifiers(inSection: 0)
         searchHistories.insert(history, at: 0)
         if searchHistories.count >= 10 {
             searchHistories.removeLast()
@@ -174,8 +217,8 @@ extension SearchViewController: UITextFieldDelegate {
         historyRepository.save(data: searchHistories)
         
         var snapshot = NSDiffableDataSourceSnapshot<Int, SearchHistory>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(searchHistories, toSection: 0)
-        dataSource.apply(snapshot)
+        snapshot.appendSections([1])
+        snapshot.appendItems(searchHistories, toSection: 1)
+        historyDataSource.apply(snapshot)
     }
 }
