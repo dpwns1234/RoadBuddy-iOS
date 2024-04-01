@@ -24,7 +24,6 @@ final class MainViewController: UIViewController {
         button.widthAnchor.constraint(equalToConstant: 60).isActive = true
         button.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        
         // 그림자 효과
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
@@ -32,7 +31,6 @@ final class MainViewController: UIViewController {
         button.layer.shadowRadius = 2.0
         
         let image = UIImage(named: "direction")
-        
         button.setImage(image, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         return button
@@ -50,6 +48,13 @@ final class MainViewController: UIViewController {
         
         initializeLocationManager()
         configureUI()
+        searchBarTextField.addTarget(self, action: #selector(moveSearchViewController), for: .touchDown)
+    }
+    
+    @objc
+    private func moveSearchViewController() {
+        let searchViewController = SearchViewController()
+        navigationController?.pushViewController(searchViewController, animated: true)
     }
     
     private func initializeLocationManager() {
@@ -63,48 +68,14 @@ final class MainViewController: UIViewController {
         
         placesClient = GMSPlacesClient.shared()
     }
-    
-    private func configureUI() {
-        configureMapView()
-        self.view.addSubview(searchBarTextField)
-        self.view.addSubview(findingWayButton)
-        
-        setConstraints()
-    }
-    
-    private func configureMapView() {
-        let defaultLocation = CLLocation(latitude: 37.588458, longitude: 127.006221)
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
-        let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
-                                              longitude: defaultLocation.coordinate.longitude,
-                                              zoom: zoomLevel)
-        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-        mapView.settings.myLocationButton = true
-        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.isMyLocationEnabled = true
-        mapView.delegate = self
-        view.addSubview(mapView)
-    }
-    
-    private func setConstraints() {
-        let safeArea = self.view.safeAreaLayoutGuide
-        NSLayoutConstraint.activate([
-            searchBarTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            searchBarTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            searchBarTextField.trailingAnchor.constraint(equalTo: findingWayButton.leadingAnchor, constant: -8),
-            
-            findingWayButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            findingWayButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
-            
-        ])
-    }
 }
 
 extension MainViewController: GMSMapViewDelegate {
-    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-        showRequestLocationServiceAlert()
-        return true
-    }
+//    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+//        // TODO: 권한 분기처리
+////        showRequestLocationServiceAlert()
+//        return true
+//    }
 }
 
 extension MainViewController: CLLocationManagerDelegate {
@@ -115,9 +86,7 @@ extension MainViewController: CLLocationManagerDelegate {
         print("Location: \(location)")
         
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
-        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude,
-                                              longitude: location.coordinate.longitude,
-                                              zoom: zoomLevel)
+        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
     }
     
     // Handle authorization for the location manager.
@@ -171,5 +140,45 @@ extension MainViewController {
         
         let ok = UIAlertAction(title: "확인", style: .default)
         locationRestrictedAlert.addAction(ok)
+    }
+}
+
+// MARK: - Configure Layout
+
+extension MainViewController {
+    
+    private func configureUI() {
+        configureMapView()
+        
+        self.view.addSubview(searchBarTextField)
+        self.view.addSubview(findingWayButton)
+        setConstraints()
+    }
+    
+    private func configureMapView() {
+        let defaultLocation = CLLocation(latitude: 37.588458, longitude: 127.006221)
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
+                                              longitude: defaultLocation.coordinate.longitude,
+                                              zoom: zoomLevel)
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        mapView.settings.myLocationButton = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.isMyLocationEnabled = true
+        mapView.delegate = self
+        view.addSubview(mapView)
+    }
+    
+    private func setConstraints() {
+        let safeArea = self.view.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            searchBarTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
+            searchBarTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
+            searchBarTextField.trailingAnchor.constraint(equalTo: findingWayButton.leadingAnchor, constant: -8),
+            
+            findingWayButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
+            findingWayButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            
+        ])
     }
 }
