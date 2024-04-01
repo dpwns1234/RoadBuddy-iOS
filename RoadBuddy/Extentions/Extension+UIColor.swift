@@ -1,8 +1,8 @@
 //
-//  Extention+UIFont.swift
+//  Extension+UIColor.swift
 //  RoadBuddy
 //
-//  Created by 김예준 on 3/13/24.
+//  Created by 김예준 on 3/28/24.
 //
 
 import UIKit
@@ -17,3 +17,4 @@ extension UIColor {
         )
     }
 }
+
