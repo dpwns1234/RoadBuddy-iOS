@@ -15,7 +15,6 @@ final class UserDefaultRepository<T: Codable> {
         do {
             let encoded = try encoder.encode(data)
             UserDefaults.standard.setValue(encoded, forKey: "searchHistories")
-            UserDefaults.standard.synchronize()
         } catch {
             print("Failed encode: \(error)")
         }

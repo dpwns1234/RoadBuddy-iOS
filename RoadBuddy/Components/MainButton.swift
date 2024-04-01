@@ -15,7 +15,6 @@ final class MainButton: UIButton {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.setTitle(titleText, for: .normal)
-//        self.widthAnchor.constraint(equalToConstant: 200).isActive = true
         self.heightAnchor.constraint(equalToConstant: 40).isActive = true
         setUI()
     }
