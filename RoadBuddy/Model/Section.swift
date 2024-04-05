@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Section: Int {
+enum Section: Int, Hashable {
     case history
     case address
 }
