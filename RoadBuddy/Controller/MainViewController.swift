@@ -143,6 +143,13 @@ extension MainViewController {
     }
 }
 
+extension MainViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        moveSearchViewController()
+        return true
+    }
+}
+
 // MARK: - Configure Layout
 
 extension MainViewController {
@@ -151,7 +158,7 @@ extension MainViewController {
         configureMapView()
         
         self.view.addSubview(searchBarTextField)
-        self.view.addSubview(findingWayButton)
+//        self.view.addSubview(findingWayButton)
         setConstraints()
     }
     
@@ -174,11 +181,12 @@ extension MainViewController {
         NSLayoutConstraint.activate([
             searchBarTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
             searchBarTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            searchBarTextField.trailingAnchor.constraint(equalTo: findingWayButton.leadingAnchor, constant: -8),
+//            searchBarTextField.trailingAnchor.constraint(equalTo: findingWayButton.leadingAnchor, constant: -8),
+            searchBarTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             
-            findingWayButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            findingWayButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
-            
+//            findingWayButton.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
+//            findingWayButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+
         ])
     }
 }

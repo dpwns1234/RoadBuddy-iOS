@@ -10,6 +10,7 @@ import UIKit
 final class SearchViewController: UIViewController {
     
     // MARK: - UI Properties
+    
     private lazy var searchStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +33,7 @@ final class SearchViewController: UIViewController {
     
     private var searchTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Search the place"
+        textField.placeholder = "장소, 버스, 지하철, 주소 검색"
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.clearButtonMode = .whileEditing
         textField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -73,12 +74,6 @@ final class SearchViewController: UIViewController {
     
     // MARK: - LifeCycle
     
-    // TODO: willAppear 경우: 네비게이션으로 이동 후 다시 백버튼 눌렀을 때(검색기록 누르면 텍스트필드에 그게 들어가게 하고, 디테일주소로 이동) = addrssDataSource를 받아야 하는게 맞음.
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -88,19 +83,9 @@ final class SearchViewController: UIViewController {
         self.view.addSubview(stackViewUnderLineView)
         configureSearchDataSource()
         setConstraints()
-        backButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
         searchTextField.delegate = self 
         searchCollectionView.delegate = self
-        configureNavigationItem()
-    }
-    
-    private func configureNavigationItem() {
-        let searchController = UISearchController()
-        searchController.searchBar.barStyle = .black
-//        self.navigationItem.searchController = searchController
-//        self.navigationItem.hidesSearchBarWhenScrolling = true
-//        self.navigationItem.hidesBackButton = true
-        self.navigationItem.hidesBackButton = true
+        backButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
     }
     
     @objc
@@ -162,7 +147,7 @@ extension SearchViewController {
 
 // MARK: - UITextFieldDelegate (엔터, 자동완성)
 
-// TODO: 자동완성 -> 입력 다 지웠을 떄 검색기록 나오게 하기. / 입력할 떄 자동완성 api call 하기 / (검색기록 그리고 주소정보 클릭했을 떄 화면 전환 로직
+// TODO: 자동완성 -> / 입력할 떄 자동완성 api call 하기 / (검색기록 그리고 주소정보 클릭했을 떄 화면 전환 로직)
 extension SearchViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -203,9 +188,9 @@ extension SearchViewController: UITextFieldDelegate {
         var snapshot = searchDataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.history, .address])
-        let model1 = SearchDataModel(title: "한성대학교1", address: "삼선교 어딘1", category: "대학교2", distance: 124)
-        let model2 = SearchDataModel(title: "한성대학교2", address: "삼선교 어딘2", category: "대학교2", distance: 124)
-        let model3 = SearchDataModel(title: "한성대학교4", address: "삼선교 어딘3", category: "대학교2", distance: 124)
+        let model1 = SearchDataModel(title: "한성대학교", address: "서울 성북구 삼선교로16길 116 한성대학교", category: "대학교", distance: 24)
+        let model2 = SearchDataModel(title: "서울대공원", address: "경기 과천시 광명로 181", category: "공원", distance: 58)
+        let model3 = SearchDataModel(title: "에버랜드", address: "경기 용인시 처인구 포곡읍 에버랜드로 199", category: "놀이공원", distance: 36)
         snapshot.appendItems([model1, model2, model3], toSection: .address)
         searchDataSource.apply(snapshot)
     }
@@ -254,7 +239,6 @@ extension SearchViewController {
 extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: 이거 할 차례
         // 검색기록을 클릭했을 경우와 주소 셀을 클릭했을 경우.
         // 검색기록을 클릭할 경우 -> textField에 그 텍스트 값 넣어주고 주소정보 cell list를 띄워주기까지 (이게 맞는 듯 한데)
         guard let section = Section(rawValue: indexPath.section) else { return }
@@ -265,21 +249,11 @@ extension SearchViewController: UICollectionViewDelegate {
             updateHistory(dataIndex: indexPath.row)
             loadAddress()
         case .address:
-            // 지도앱 띄어주기 = 이전 화면으로 이동? -> 그러면 x누르거나 네비게이션으로 다시 뒤로 타면 어떻게 돼?
             let selectedItem = collectionViewItems[indexPath.row]
-            displayBottomSheet()
+            // TODO: cell의 정보 넘겨주고, cell의 title 검색기록에 추가하기
+            let resultVC = SearchResultViewController(searchData: selectedItem)
+            navigationController?.pushViewController(resultVC, animated: true)
         }
-    }
-    
-    private func displayBottomSheet() {
-        let bottomVC = BottomSheetViewController()
-        if let sheet = bottomVC.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-        }
-        
-        present(bottomVC, animated: true)
-        dismiss(animated: false)
     }
 }
 
@@ -308,7 +282,8 @@ extension SearchViewController {
             searchTextField.trailingAnchor.constraint(equalTo: searchStackView.trailingAnchor, constant: -8),
             
             stackViewUnderLineView.topAnchor.constraint(equalTo: searchStackView.bottomAnchor, constant: 2),
-            stackViewUnderLineView.widthAnchor.constraint(equalToConstant: self.view.frame.width),
+            stackViewUnderLineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            stackViewUnderLineView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             stackViewUnderLineView.heightAnchor.constraint(equalToConstant: 1),
             
             searchCollectionView.topAnchor.constraint(equalTo: stackViewUnderLineView.bottomAnchor),
