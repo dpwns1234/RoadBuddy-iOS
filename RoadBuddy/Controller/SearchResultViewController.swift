@@ -45,7 +45,6 @@ final class SearchResultViewController: UIViewController {
     
     private var searchTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "장소, 버스, 지하철, 주소 검색"
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.clearButtonMode = .whileEditing
         textField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -70,10 +69,10 @@ final class SearchResultViewController: UIViewController {
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
     
-    private let searchData: SearchDataModel?
+    private let addressData: Address?
     
-    init(searchData: SearchDataModel) {
-        self.searchData = searchData
+    init(addressData: Address) {
+        self.addressData = addressData
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -89,6 +88,7 @@ final class SearchResultViewController: UIViewController {
         searchTextField.addTarget(self, action: #selector(moveSearchViewController), for: .touchDown)
         backButton.addTarget(self, action: #selector(moveSearchViewController), for: .touchUpInside)
         xButton.addTarget(self, action: #selector(moveMainViewController), for: .touchUpInside)
+        searchTextField.text = addressData!.name
         displayBottomSheet()
     }
     
@@ -118,13 +118,14 @@ final class SearchResultViewController: UIViewController {
     }
     
     private func displayBottomSheet() {
-        let bottomVC = BottomSheetViewController(searchData: searchData!)
+        let bottomVC = BottomSheetViewController(addressData: addressData!)
         if let sheet = bottomVC.sheetPresentationController {
-            sheet.detents = [.custom { context in
+            let small = UISheetPresentationController.Detent.custom { context in
                 let screenSize = UIScreen.main.bounds.size
                 return screenSize.height * 0.2
-            }, .medium()]
-            sheet.largestUndimmedDetentIdentifier = .medium
+            }
+            sheet.detents = [small]
+            sheet.largestUndimmedDetentIdentifier = .some(small.identifier)
             sheet.prefersGrabberVisible = true
         }
         
@@ -219,7 +220,10 @@ extension SearchResultViewController {
     }
     
     private func configureMapView() {
-        let defaultLocation = CLLocation(latitude: 37.588458, longitude: 127.006221)
+        // TODO: 출발, 도착 버튼 액션
+        // TODO: 이제 진짜 본 로직인 길찾기 지도에 선 긋기 및 길찾기 셀 만들기
+        let location = addressData?.geometry.location ?? Location(lat: 37.588458, lng: 127.006221)
+        let defaultLocation = CLLocation(latitude: location.lat, longitude: location.lng)
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
                                               longitude: defaultLocation.coordinate.longitude,
@@ -231,7 +235,18 @@ extension SearchResultViewController {
         mapView.settings.myLocationButton = true
         mapView.isMyLocationEnabled = true
         mapView.delegate = self
+        
+        setMarker(location)
         view.addSubview(mapView)
+    }
+    
+    private func setMarker(_ location: Location) {
+        let marker = GMSMarker()
+        marker.position = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
+        marker.title = addressData!.name
+        marker.snippet = "cafe(category)"
+        marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
+        marker.map = mapView
     }
     
     private func setConstraints() {

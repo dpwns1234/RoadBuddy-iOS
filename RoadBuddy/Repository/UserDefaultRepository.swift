@@ -21,7 +21,7 @@ final class UserDefaultRepository<T: Codable> {
     }
     
     func fetch() -> T? {
-        let data = UserDefaults.standard.object(forKey: "searchHistories") as! Data
+        guard let data = UserDefaults.standard.object(forKey: "searchHistories") as? Data else { return nil }
         do {
             return try decoder.decode(T.self, from: data)
         } catch {

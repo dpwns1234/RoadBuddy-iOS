@@ -8,5 +8,5 @@
 import Foundation
 
 protocol SearchDataServiceDelegate: AnyObject {
-    func searchDataService(_ service: SearchDataService, didDownload data: SearchDataModel)
+    func searchDataService(_ service: SearchDataService, didDownload data: [Address])
 }

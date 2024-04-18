@@ -9,7 +9,7 @@ import Foundation
 
 struct SearchDataModel: Hashable, Codable {
     let title: String
-    var created: Date? = nil
+    var created: Date = Date()
     var address: String? = nil
     var category: String? = nil
     var distance: Int? = nil

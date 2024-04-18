@@ -12,6 +12,7 @@ enum Hansung: UInt {
     case blue = 0x0A4DA1
     case darkBlue = 0x032E6E
     case grey = 0x626466
+    case lightGrey = 0xECECEC
     
     var color: UIColor {
         return UIColor(hex: self.rawValue)
