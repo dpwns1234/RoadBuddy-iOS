@@ -32,7 +32,7 @@ final class BottomSheetView: UIView {
     
     private var distanceLabel: UILabel = {
         let label = UILabel()
-        let font = UIFont.preferredFont(forTextStyle: .caption2)
+        let font = UIFont.preferredFont(forTextStyle: .caption1)
         let boldFont = UIFont.boldSystemFont(ofSize: font.pointSize)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = boldFont
@@ -45,7 +45,7 @@ final class BottomSheetView: UIView {
     private var addressLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .preferredFont(forTextStyle: .caption2)
+        label.font = .preferredFont(forTextStyle: .caption1)
         label.numberOfLines = 0
         
         return label
@@ -65,20 +65,20 @@ final class BottomSheetView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.spacing = 8
-        stackView.addArrangedSubview(startingButton)
-        stackView.addArrangedSubview(destinationButton)
+        stackView.addArrangedSubview(departureButton)
+        stackView.addArrangedSubview(arrivalButton)
         
         return stackView
     }()
     
-    private let startingButton: UIButton = {
+    let departureButton: UIButton = {
         let button = MainButton(status: .off, titleText: "출발")
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
     
-    private let destinationButton: UIButton = {
+    let arrivalButton: UIButton = {
         let button = MainButton(status: .on, titleText: "도착")
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -89,14 +89,15 @@ final class BottomSheetView: UIView {
         super.init(frame: .zero)
     }
     
-    init(model: SearchDataModel) {
+    init(model: Address) {
         super.init(frame: .zero)
         
         self.backgroundColor = .white
-        titleLabel.text = model.title
-        categoryLabel.text = model.category
-        distanceLabel.text = "\(model.distance!)"
-        addressLabel.text = model.address
+        titleLabel.text = model.name
+        // TODO: 거리는 해결해야함.
+        categoryLabel.text = ""
+        distanceLabel.text = "0"
+        addressLabel.text = model.detailAddress
         
         self.addSubview(titleLabel)
         self.addSubview(categoryLabel)
@@ -124,7 +125,6 @@ final class BottomSheetView: UIView {
 //            titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 16),
             
             titleLabel.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor, constant: -32),
-            
             titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             
             categoryLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor),

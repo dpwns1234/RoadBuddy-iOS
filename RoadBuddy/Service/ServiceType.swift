@@ -9,15 +9,15 @@ import Foundation
 
 enum ServiceType {
     case geocoding(address: String)
-    case detail(input: String)
+    case address(search: String)
     case icon(code: String)
     
     var urlPath: String {
         switch self {
         case .geocoding:
             return "maps/geocoding/"
-        case .detail:
-            return "maps/locations/"
+        case .address:
+            return "https://maps.googleapis.com/maps/api/place/textsearch/json"
         case .icon:
             return "img/wn/"
         }
@@ -27,23 +27,24 @@ enum ServiceType {
         switch self {
         case .geocoding:
             return URLComponents(string: "\(baseURL)\(self.urlPath)")
-        case .detail:
-            return URLComponents(string: "\(baseURL)\(self.urlPath)")
+        case .address:
+            return URLComponents(string: "\(self.urlPath)")
         case .icon(code: let code):
             return URLComponents(string: "https://openweathermap.org/\(self.urlPath)\(code)@2x.png")
         }
     }
     
     var queryItems: [URLQueryItem] {
-        let apiKey = "9025fdb78bf735a4b7287e0dcc03e4fd"
+        let APIKey = "AIzaSyDRBo-RB8kqyG00vSBSDzIh_OZOoNuO5QI"
         switch self {
-        case .geocoding(let address):
-            let queryItem = URLQueryItem(name: "address", value: String(address))
+        case .geocoding(let location):
+            let queryItem = URLQueryItem(name: "address", value: String(location))
             return [queryItem]
-        case .detail(let input):
-            let queryItem = URLQueryItem(name: "input", value: String(input))
-            return [queryItem]
-//            return [latQueryItem, lonQueryItem, apiKeyQueryItem]
+        case .address(let search):
+            let queryItem = URLQueryItem(name: "query", value: search)
+            let languageItem = URLQueryItem(name: "language", value: "ko")
+            let keyItem = URLQueryItem(name: "key", value: APIKey)
+            return [queryItem, languageItem, keyItem]
         default:
             return []
         }
