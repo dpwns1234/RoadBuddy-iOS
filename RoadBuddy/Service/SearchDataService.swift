@@ -15,7 +15,8 @@ final class SearchDataService: DataServiceable {
         networkManager.loadData(url: url) { result in
             switch result {
             case .success(let data):
-                do {                    let decodeData = try self.decoder.decode(AddressModel.self, from: data)
+                do {                    
+                    let decodeData = try self.decoder.decode(AddressModel.self, from: data)
                     self.delegate?.searchDataService(self, didDownload: decodeData.results)
                 } catch {
                     print(error)
