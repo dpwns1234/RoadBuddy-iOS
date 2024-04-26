@@ -1,5 +1,5 @@
 //
-//  SearchPathViewController.swift
+//  RouteViewController.swift
 //  RoadBuddy
 //
 //  Created by 김예준 on 4/8/24.
@@ -7,12 +7,9 @@
 
 import UIKit
 
-enum Direct {
-    case departure
-    case arrival
-}
+// TODO: 컬렉션 뷰 완성 (이번엔 configuration 사용하지 않고 만들어보자..)
 
-final class SearchPathViewController: UIViewController {
+final class RouteViewController: UIViewController {
     
     // MARK: - UI Properties
     
@@ -77,14 +74,12 @@ final class SearchPathViewController: UIViewController {
         return view
     }()
     
-    private lazy var searchCollectionView: UICollectionView = {
+    private lazy var routeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
-    
-    private let historyRepository = UserDefaultRepository<[SearchDataModel]>()
     
     // MARK: - SearchDataSource
     
@@ -94,130 +89,78 @@ final class SearchPathViewController: UIViewController {
     private var historyCellRegistration: HistoryCellRegistration!
     private var searchDataSource: SearchDataSource!
     
-    init(placeText: String, direct: Direct) {
-        switch direct {
-        case .departure:
-            departureTextField.text = placeText
-        case .arrival:
-            arrivalTextField.text = placeText
-        }
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        attachView()
+        configureSearchDataSource()
+        setConstraints()
+        setAction()
+        
+        let departure = UserDefaults.standard.string(forKey: "departure")
+        let arrival = UserDefaults.standard.string(forKey: "arrival")
+        departureTextField.text = departure
+        arrivalTextField.text = arrival
+        
+        
+        routeCollectionView.delegate = self
+
+    }
+    
+    private func attachView() {
         self.view.backgroundColor = .white
         self.view.addSubview(tradeButton)
         self.view.addSubview(textFieldStackView)
         self.view.addSubview(xButton)
-        self.view.addSubview(searchCollectionView)
+        self.view.addSubview(routeCollectionView)
         self.view.addSubview(stackViewUnderLineView)
-        configureSearchDataSource()
-        setConstraints()
-        searchCollectionView.delegate = self
-        
-//        tradeButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
+    }
+    
+    private func setAction() {
+        // tradeButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
         xButton.addTarget(self, action: #selector(touchedXButton), for: .touchUpInside)
+        departureTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
+        arrivalTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
+    }
+    
+    @objc
+    private func touchedDirectionTextField() {
+        let searchViewController = SearchViewController()
+        self.navigationController?.pushViewController(searchViewController, animated: true)
     }
     
     @objc
     private func touchedXButton() {
-        // 처음 화면으로 ..
-        dismiss(animated: true)
+        self.navigationController?.popToRootViewController(animated: false)
     }
 }
 
 // MARK: - Configure DataSource
 
-extension SearchPathViewController {
+extension RouteViewController {
     
     private func configureSearchDataSource() {
-        configureRegistration()
         
-        searchDataSource = SearchDataSource(collectionView: searchCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewListCell in
+        searchDataSource = SearchDataSource(collectionView: routeCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewCell in
+        
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "routeCell", for: indexPath)
             
-            guard let section = Section(rawValue: indexPath.section) else {
-                return UICollectionViewListCell()
-            }
-            let cell = collectionView.dequeueConfiguredReusableCell(
-                using: self.historyCellRegistration,
-                for: indexPath,
-                item: identifier)
-            cell.removeAction = { self.removed(cell) }
             return cell
         }
-        
-        loadSearchHistory()
-    }
-    
-    private func configureRegistration() {
-        historyCellRegistration = HistoryCellRegistration { (cell, indexPath, item) in
-            cell.item = item
-        }
-    }
-    
-    private func loadSearchHistory() {
-        let searchHistories = historyRepository.fetch() ?? []
-        var snapshot = searchDataSource.snapshot()
-        snapshot.deleteAllItems()
-        snapshot.appendSections([.history, .address])
-        snapshot.appendItems(searchHistories, toSection: .history)
-        searchDataSource.apply(snapshot)
-    }
-}
-
-// MARK: - 검색기록 저장, 삭제, 업데이트
-
-extension SearchPathViewController {
-    
-    private func record(_ history: SearchDataModel) {
-        var searchHistories = historyRepository.fetch() ?? []
-        searchHistories.insert(history, at: 0)
-        if searchHistories.count >= 10 {
-            searchHistories.removeLast()
-        }
-        historyRepository.save(data: searchHistories)
-    }
-    
-    private func removed(_ cell: SearchHistoryCollectionViewCell) {
-        var snapshot = self.searchDataSource.snapshot()
-        var searchHistories = snapshot.itemIdentifiers(inSection: Section.history)
-        
-        // UserDefault 삭제
-        guard let index = snapshot.indexOfItem(cell.item) else { return }
-        searchHistories.remove(at: index)
-        self.historyRepository.save(data: searchHistories)
-        
-        // dataSource 삭제
-        snapshot.deleteItems([cell.item])
-        self.searchDataSource.apply(snapshot)
-    }
-    
-    private func updateHistory(dataIndex: Int) {
-        guard var searchHistories = historyRepository.fetch() else { return }
-        let selectedItem = searchHistories.remove(at: dataIndex)
-        searchHistories.insert(selectedItem, at: 0)
-        historyRepository.save(data: searchHistories)
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
-extension SearchPathViewController: UICollectionViewDelegate {
+extension RouteViewController: UICollectionViewDelegate {
     
     // 검색기록 선택했을 때 빈 곳에 자동으로 채워주기?
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let snapshot = searchDataSource.snapshot()
         let histories = snapshot.itemIdentifiers
-        updateHistory(dataIndex: indexPath.row)
+//        updateHistory(dataIndex: indexPath.row)
         // 1. 셀 title을 빈 textField에 채우기
         if departureTextField.text!.isEmpty {
             departureTextField.text = histories[indexPath.row].title
@@ -230,12 +173,7 @@ extension SearchPathViewController: UICollectionViewDelegate {
 
 // MARK: - Layout (Constraints etc..)
 
-extension SearchPathViewController {
-    
-    private func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .plain)
-        return UICollectionViewCompositionalLayout.list(using: config)
-    }
+extension RouteViewController {
     
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
@@ -260,10 +198,10 @@ extension SearchPathViewController {
             stackViewUnderLineView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             stackViewUnderLineView.heightAnchor.constraint(equalToConstant: 1),
             
-            searchCollectionView.topAnchor.constraint(equalTo: stackViewUnderLineView.bottomAnchor),
-            searchCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            searchCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            searchCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
+            routeCollectionView.topAnchor.constraint(equalTo: stackViewUnderLineView.bottomAnchor),
+            routeCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            routeCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            routeCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
             
         ])
     }

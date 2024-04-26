@@ -8,6 +8,7 @@
 import UIKit
 
 final class BottomSheetViewController: UIViewController {
+    weak var delegate: SearchResultDelegate?
     private let modalView: BottomSheetView?
     private var place: String
     
@@ -20,18 +21,16 @@ final class BottomSheetViewController: UIViewController {
         modalView?.arrivalButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
     }
     
-    // TODO: navigationController 없구나! 아이폰에서 어케 되는지 확인해보고 네비게이션이라면 closure나 delegate 사용해서 넘겨주기 -> 네비게이션 아님.
+    // TODO: 이제 route에서 둘 다 채워졌을 경우 체크해서 길찾기 셀 채윅
     @objc
     private func tappedDirectButton(_ sender: UIButton) {
+        dismiss(animated: false)
         if sender == modalView?.departureButton {
-            let searchPathViewController = SearchPathViewController(placeText: place, direct: .departure)
-            searchPathViewController.modalPresentationStyle = .fullScreen
-            present(searchPathViewController, animated: true)
-            
+            UserDefaults.standard.setValue(place, forKey: "departure")
+            delegate?.moveRouteVC()
         } else {
-            let searchPathViewController = SearchPathViewController(placeText: place, direct: .arrival)
-            searchPathViewController.modalPresentationStyle = .fullScreen
-            present(searchPathViewController, animated: true)
+            UserDefaults.standard.setValue(place, forKey: "arrival")
+            delegate?.moveRouteVC()
         }
     }
     

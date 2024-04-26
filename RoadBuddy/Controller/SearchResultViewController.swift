@@ -9,6 +9,10 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
+protocol SearchResultDelegate: AnyObject {
+    func moveRouteVC()
+}
+
 final class SearchResultViewController: UIViewController {
     
     // MARK: - UI Properties
@@ -129,9 +133,21 @@ final class SearchResultViewController: UIViewController {
             sheet.prefersGrabberVisible = true
         }
         
+        bottomVC.delegate = self
         present(bottomVC, animated: true)
     }
+}
 
+// MARK: - SearchResultDelegate
+
+extension SearchResultViewController: SearchResultDelegate {
+    func moveRouteVC() {
+        guard var controllers = navigationController?.viewControllers else { return }
+        let routeVC = RouteViewController()
+        controllers.removeSubrange(1...)
+        controllers.append(routeVC)
+        self.navigationController?.setViewControllers(controllers, animated: true)
+    }
 }
 
 extension SearchResultViewController: GMSMapViewDelegate {
@@ -247,6 +263,20 @@ extension SearchResultViewController {
         marker.snippet = "cafe(category)"
         marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
         marker.map = mapView
+        
+        
+        // TODO: 그려지긴 하는데, 선이 이상하게 그려짐.. ㅠ 이유 모름 ㅋㅋ
+        let encodedPolyline = "avjdFmtffW??Q@u@@?????b@????c@@CB????l@A????@p@?bA?x@?V? f@?FANADGVM`@CDGNOPONAJBF????]h@?F????YR_@\\????WQg@]aBrA????Ui@????G^?D???? OI????QVg@?u@@GHG@]A_@?????NhCCLBp@B^?lA@p@GRMBiAD??"
+        
+        // Decode polyline
+        let path = GMSMutablePath(fromEncodedPath: encodedPolyline)
+        
+        // Create the polyline
+        let polyline = GMSPolyline(path: path)
+        polyline.strokeColor = UIColor.blue
+        polyline.strokeWidth = 2.0
+        polyline.map = mapView
+        
     }
     
     private func setConstraints() {
