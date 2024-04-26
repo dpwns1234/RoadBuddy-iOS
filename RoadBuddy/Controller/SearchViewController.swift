@@ -59,7 +59,7 @@ final class SearchViewController: UIViewController {
     private let historyRepository = UserDefaultRepository<[SearchDataModel]>()
     private let addressDataManager = AddressDataManager()
     
-    // MARK: - SearchDataSource
+    // MARK: - RouteDataSource
     
     typealias SearchDataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias HistoryCellRegistration = UICollectionView.CellRegistration<SearchHistoryCollectionViewCell, SearchDataModel>

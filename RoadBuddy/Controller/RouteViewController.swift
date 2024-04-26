@@ -77,17 +77,16 @@ final class RouteViewController: UIViewController {
     private lazy var routeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delegate = self
+        collectionView.register(RouteCollectionViewCell.self, forCellWithReuseIdentifier: RouteCollectionViewCell.identifier)
         
         return collectionView
     }()
     
     // MARK: - SearchDataSource
     
-    typealias SearchDataSource = UICollectionViewDiffableDataSource<Section, SearchDataModel>
-    typealias HistoryCellRegistration = UICollectionView.CellRegistration<SearchHistoryCollectionViewCell, SearchDataModel>
-    
-    private var historyCellRegistration: HistoryCellRegistration!
-    private var searchDataSource: SearchDataSource!
+    typealias RouteDataSource = UICollectionViewDiffableDataSource<Int, Route>
+    private var routeDataSource: RouteDataSource!
     
     // MARK: - LifeCycle
     
@@ -103,9 +102,6 @@ final class RouteViewController: UIViewController {
         let arrival = UserDefaults.standard.string(forKey: "arrival")
         departureTextField.text = departure
         arrivalTextField.text = arrival
-        
-        
-        routeCollectionView.delegate = self
 
     }
     
@@ -142,13 +138,18 @@ final class RouteViewController: UIViewController {
 extension RouteViewController {
     
     private func configureSearchDataSource() {
-        
-        searchDataSource = SearchDataSource(collectionView: routeCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewCell in
-        
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "routeCell", for: indexPath)
+        routeDataSource = RouteDataSource(collectionView: routeCollectionView) { (collectionView, indexPath, identifier) -> UICollectionViewCell in
             
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RouteCollectionViewCell.identifier, for: indexPath) as? RouteCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.configure(identifier)
             return cell
         }
+        
+        var snapshot = routeDataSource.snapshot()
+        snapshot.appendSections([0])
+        routeDataSource.apply(snapshot)
     }
 }
 
@@ -156,24 +157,27 @@ extension RouteViewController {
 
 extension RouteViewController: UICollectionViewDelegate {
     
-    // 검색기록 선택했을 때 빈 곳에 자동으로 채워주기?
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let snapshot = searchDataSource.snapshot()
-        let histories = snapshot.itemIdentifiers
-//        updateHistory(dataIndex: indexPath.row)
-        // 1. 셀 title을 빈 textField에 채우기
-        if departureTextField.text!.isEmpty {
-            departureTextField.text = histories[indexPath.row].title
-        } else {
-            arrivalTextField.text = histories[indexPath.row].title
-        }
-        // 2. 다 채워졌을 경우 collectionView의 셀을 길찾기 cell로 변경
+        // TODO: 다 채워졌을 경우 collectionView의 셀을 길찾기 cell 반영
     }
 }
 
 // MARK: - Layout (Constraints etc..)
 
 extension RouteViewController {
+    
+    private func createLayout() -> UICollectionViewCompositionalLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.2))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        
+        return layout
+    }
     
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
