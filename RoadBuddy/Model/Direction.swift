@@ -7,17 +7,21 @@
 
 import Foundation
 
-struct Direction {
+struct Direction: Decodable {
+    let data: ChangeTest
+}
+
+struct ChangeTest: Decodable {
     let routes: Array<Route>
 }
 
-struct Route: Hashable {
+struct Route: Hashable, Decodable {
     let bounds: Bound?
     let legs: Array<Leg>?
 }
 
 // MARK: 중요데이터
-struct Leg: Hashable {
+struct Leg: Hashable, Decodable {
     let arrival_time: TextValue
     let departure_time: TextValue
     let distance: TextValue
@@ -26,22 +30,22 @@ struct Leg: Hashable {
     let end_location: Location
     let start_address: String
     let start_location: Location
-    let steps: Array<Step>
+    let steps: Array<Step>?
 }
 
 // MARK: 중요 데이터
-struct Step: Hashable {
+struct Step: Hashable, Decodable {
     let distance: TextValue
     let duration: TextValue
     let end_location: Location
     let start_location: Location
     let polyline: Polyline
-    let transit_details: Transit
+    let transit_details: Transit?
     let travel_mode: String // "TRANSIT" 필요한가?
-    let step: Array<Step> // 필요한가? nessesory?
+    let step: Array<Step>? // 필요한가? nessesory?
 }
 
-struct Transit: Hashable {
+struct Transit: Hashable, Decodable {
     let arrival_stop: LocationName
     let arrival_time: TextValue
     let departure_stop: LocationName
@@ -51,7 +55,7 @@ struct Transit: Hashable {
 }
 
 // MARK: 중요 데이터
-struct Line: Hashable {
+struct Line: Hashable, Decodable {
     let color: String       // #9a4f11
     let name: String        // 서울 지하철
     let short_name: String  // 6호선
@@ -59,28 +63,28 @@ struct Line: Hashable {
     let vehicle: Vehicle
 }
 
-struct Vehicle: Hashable {
+struct Vehicle: Hashable, Decodable {
     let icon: String // "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png" 지하철 이모티콘
     // 앞에 http:// 붙여줘야 함.
     let type: String // type
 }
 
-struct LocationName: Hashable {
+struct LocationName: Hashable, Decodable {
     let location: Location
     let name: String
 }
 
-struct Polyline: Hashable {
+struct Polyline: Hashable, Decodable {
     let points: String
 }
 
 
-struct Bound: Hashable {
+struct Bound: Hashable, Decodable {
     let northeast: Location
     let southwest: Location
 }
 
-struct TextValue: Hashable {
+struct TextValue: Hashable, Decodable {
     let text: String        // "25분" or "6.5 km" or "7:41 PM"
     let value: Int          // 6534   or   1713091260
     let time_zone: String?  // "Asia/Seoul"

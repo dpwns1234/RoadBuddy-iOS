@@ -8,8 +8,17 @@
 import Foundation
 
 struct NetworkManager {
+    private let username = "user"
+    private let password = "4fd3fcbb-4825-4fd0-a28b-f31b1d4ed718"
+    
     func loadData(url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
-        let request = URLRequest(url: url)
+        let loginString = String(format: "%@:%@", username, password)
+        let loginData = loginString.data(using: String.Encoding.utf8)!
+        let base64LoginString = loginData.base64EncodedString()
+        
+        var request = URLRequest(url: url)
+        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if error != nil {
                 completionHandler(.failure(NetworkError.failedTask))

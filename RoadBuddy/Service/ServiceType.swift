@@ -10,6 +10,7 @@ import Foundation
 enum ServiceType {
     case geocoding(address: String)
     case address(search: String)
+    case direction(departureLat: Double, departureLon: Double, arrivalLat: Double, arrivalLon: Double)
     case icon(code: String)
     
     var urlPath: String {
@@ -18,6 +19,8 @@ enum ServiceType {
             return "maps/geocoding/"
         case .address:
             return "https://maps.googleapis.com/maps/api/place/textsearch/json"
+        case .direction:
+            return "http://3.25.65.146:8080/maps/directions"
         case .icon:
             return "img/wn/"
         }
@@ -28,9 +31,11 @@ enum ServiceType {
         case .geocoding:
             return URLComponents(string: "\(baseURL)\(self.urlPath)")
         case .address:
-            return URLComponents(string: "\(self.urlPath)")
+            return URLComponents(string: self.urlPath)
         case .icon(code: let code):
             return URLComponents(string: "https://openweathermap.org/\(self.urlPath)\(code)@2x.png")
+        case .direction:
+            return URLComponents(string: self.urlPath)
         }
     }
     
@@ -45,6 +50,12 @@ enum ServiceType {
             let languageItem = URLQueryItem(name: "language", value: "ko")
             let keyItem = URLQueryItem(name: "key", value: APIKey)
             return [queryItem, languageItem, keyItem]
+        case .direction(let departureLat, let departureLon, let arrivalLat, let arrivalLon):
+            let departureLatItem = URLQueryItem(name: "origin.latitude", value: String(departureLat))
+            let departureLonItem = URLQueryItem(name: "origin.longitude", value: String(departureLon))
+            let arrivalLatItem = URLQueryItem(name: "destination.latitude", value: String(arrivalLat))
+            let darrivalLonItem = URLQueryItem(name: "destination.longitude", value: String(arrivalLon))
+            return [departureLatItem, departureLonItem, arrivalLatItem, darrivalLonItem]
         default:
             return []
         }
