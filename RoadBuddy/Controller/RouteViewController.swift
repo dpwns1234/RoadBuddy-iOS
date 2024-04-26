@@ -7,8 +7,6 @@
 
 import UIKit
 
-// TODO: 컬렉션 뷰 완성 (이번엔 configuration 사용하지 않고 만들어보자..)
-
 final class RouteViewController: UIViewController {
     
     // MARK: - UI Properties
@@ -88,6 +86,9 @@ final class RouteViewController: UIViewController {
     typealias RouteDataSource = UICollectionViewDiffableDataSource<Int, Route>
     private var routeDataSource: RouteDataSource!
     
+    private let dataService = DirectionDataService()
+    private var direcionData: Direction? = nil
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
@@ -97,12 +98,20 @@ final class RouteViewController: UIViewController {
         configureSearchDataSource()
         setConstraints()
         setAction()
-        
+        dataService.delegate = self
+        // TODO: String이 아니라 object로 이름, lat, lon 저장해보까?
         let departure = UserDefaults.standard.string(forKey: "departure")
         let arrival = UserDefaults.standard.string(forKey: "arrival")
         departureTextField.text = departure
         arrivalTextField.text = arrival
-
+        if (departure != nil) && (arrival?.isEmpty != nil) {
+            findRoute()
+        }
+    }
+    
+    private func findRoute() {
+        // API call
+        dataService.convertData(type: .direction(departureLat: 37.51891897875439, departureLon: 126.895693752969, arrivalLat: 37.5548376, arrivalLon: 126.9717326))
     }
     
     private func attachView() {
@@ -129,6 +138,8 @@ final class RouteViewController: UIViewController {
     
     @objc
     private func touchedXButton() {
+        UserDefaults.standard.removeObject(forKey: "departure")
+        UserDefaults.standard.removeObject(forKey: "arrival")
         self.navigationController?.popToRootViewController(animated: false)
     }
 }
@@ -159,6 +170,18 @@ extension RouteViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: 다 채워졌을 경우 collectionView의 셀을 길찾기 cell 반영
+    }
+}
+
+// MARK: - DirectionDataServiceDelegate
+
+extension RouteViewController: DirectionDataServiceDelegate {
+    func directionDataService(_ service: DirectionDataService, didDownlad: Direction) {
+        self.direcionData = didDownlad
+        
+        var snapshot = routeDataSource.snapshot()
+        snapshot.appendItems(didDownlad.data.routes)
+        routeDataSource.apply(snapshot)
     }
 }
 

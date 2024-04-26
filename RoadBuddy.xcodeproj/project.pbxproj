@@ -22,6 +22,10 @@
 		6627ED682BB6D94F00E49E14 /* SearchDataServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */; };
 		6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6627ED692BB6D9CC00E49E14 /* DetailAddress.swift */; };
 		663425902BDA2EFF00F8626F /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6634258F2BDA2EFF00F8626F /* Direction.swift */; };
+		663425922BDB3F6C00F8626F /* RouteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425912BDB3F6C00F8626F /* RouteCollectionViewCell.swift */; };
+		663425942BDB7CDB00F8626F /* UIPaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */; };
+		663425962BDB869E00F8626F /* DirectionDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425952BDB869E00F8626F /* DirectionDataService.swift */; };
+		6634259A2BDB89EE00F8626F /* DirectionDataServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425992BDB89EE00F8626F /* DirectionDataServiceDelegate.swift */; };
 		663AABCF2BC3881600F0D079 /* AddressDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABCE2BC3881600F0D079 /* AddressDataManager.swift */; };
 		663AABD12BC3930900F0D079 /* RouteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABD02BC3930900F0D079 /* RouteViewController.swift */; };
 		663AABD32BC3C4E000F0D079 /* AddressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABD22BC3C4E000F0D079 /* AddressModel.swift */; };
@@ -69,6 +73,10 @@
 		6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDataServiceDelegate.swift; sourceTree = "<group>"; };
 		6627ED692BB6D9CC00E49E14 /* DetailAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAddress.swift; sourceTree = "<group>"; };
 		6634258F2BDA2EFF00F8626F /* Direction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		663425912BDB3F6C00F8626F /* RouteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteCollectionViewCell.swift; sourceTree = "<group>"; };
+		663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPaddingLabel.swift; sourceTree = "<group>"; };
+		663425952BDB869E00F8626F /* DirectionDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataService.swift; sourceTree = "<group>"; };
+		663425992BDB89EE00F8626F /* DirectionDataServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataServiceDelegate.swift; sourceTree = "<group>"; };
 		663AABCE2BC3881600F0D079 /* AddressDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDataManager.swift; sourceTree = "<group>"; };
 		663AABD02BC3930900F0D079 /* RouteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewController.swift; sourceTree = "<group>"; };
 		663AABD22BC3C4E000F0D079 /* AddressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressModel.swift; sourceTree = "<group>"; };
@@ -126,11 +134,29 @@
 			isa = PBXGroup;
 			children = (
 				6627ED612BB6D5B000E49E14 /* ServiceType.swift */,
-				6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */,
-				6627ED632BB6D5D000E49E14 /* SearchDataService.swift */,
 				6627ED652BB6D63400E49E14 /* DataServiceable.swift */,
+				663425982BDB89CC00F8626F /* DirectoinData */,
+				663425972BDB89B200F8626F /* SearchData */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		663425972BDB89B200F8626F /* SearchData */ = {
+			isa = PBXGroup;
+			children = (
+				6627ED632BB6D5D000E49E14 /* SearchDataService.swift */,
+				6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */,
+			);
+			path = SearchData;
+			sourceTree = "<group>";
+		};
+		663425982BDB89CC00F8626F /* DirectoinData */ = {
+			isa = PBXGroup;
+			children = (
+				663425952BDB869E00F8626F /* DirectionDataService.swift */,
+				663425992BDB89EE00F8626F /* DirectionDataServiceDelegate.swift */,
+			);
+			path = DirectoinData;
 			sourceTree = "<group>";
 		};
 		6640A6402BA14DF20058A537 /* Util */ = {
@@ -159,6 +185,7 @@
 				661386972BB53A4A00AE04F5 /* BottomSheetView.swift */,
 				6613869B2BB53D9A00AE04F5 /* MainButton.swift */,
 				6613869D2BB53E2E00AE04F5 /* HansungColor.swift */,
+				663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -183,8 +210,8 @@
 			isa = PBXGroup;
 			children = (
 				66DAA45A2BA7E061005299C3 /* Controller */,
-				6627ED602BB6D5A700E49E14 /* Service */,
 				6627ED5B2BB6B61800E49E14 /* Network */,
+				6627ED602BB6D5A700E49E14 /* Service */,
 				664E56E12BAD753900AD7997 /* Repository */,
 				66DAA45F2BA82F41005299C3 /* Model */,
 				66DAA4582BA7E04D005299C3 /* View */,
@@ -225,6 +252,7 @@
 			children = (
 				664E56E22BAD757D00AD7997 /* DetailAddress */,
 				66DAA4592BA7E052005299C3 /* SearchHistory */,
+				663425912BDB3F6C00F8626F /* RouteCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -355,6 +383,7 @@
 				664E56DC2BAD398100AD7997 /* Encoder.swift in Sources */,
 				664E56E02BAD749900AD7997 /* SearchDataModel.swift in Sources */,
 				6687D8D62BC8D42F00EBF663 /* Extension_UITextField.swift in Sources */,
+				663425942BDB7CDB00F8626F /* UIPaddingLabel.swift in Sources */,
 				6613869A2BB53A7700AE04F5 /* BottomSheetViewController.swift in Sources */,
 				66D401EA2BB156BE008F9055 /* UserDefaultRepository.swift in Sources */,
 				663AABD12BC3930900F0D079 /* RouteViewController.swift in Sources */,
@@ -379,9 +408,12 @@
 				6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */,
 				6627ED5F2BB6D49D00E49E14 /* NetworkError.swift in Sources */,
 				660462212BB3C50C000CF53D /* MySearchFieldView.swift in Sources */,
+				663425922BDB3F6C00F8626F /* RouteCollectionViewCell.swift in Sources */,
+				663425962BDB869E00F8626F /* DirectionDataService.swift in Sources */,
 				663425902BDA2EFF00F8626F /* Direction.swift in Sources */,
 				6627ED682BB6D94F00E49E14 /* SearchDataServiceDelegate.swift in Sources */,
 				664E56DA2BAD397600AD7997 /* Decoder.swift in Sources */,
+				6634259A2BDB89EE00F8626F /* DirectionDataServiceDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

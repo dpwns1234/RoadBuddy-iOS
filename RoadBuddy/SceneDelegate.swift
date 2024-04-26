@@ -17,9 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         GMSServices.provideAPIKey(Secret.googleAPIKey)
         GMSPlacesClient.provideAPIKey(Secret.googleAPIKey)
         
+        UserDefaults.standard.removeObject(forKey: "departure")
+        UserDefaults.standard.removeObject(forKey: "arrival")
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        // TODO: navigationController 설정
         let mainViewController = MainViewController()
         let navigationController = UINavigationController(rootViewController: mainViewController)
         navigationController.isNavigationBarHidden = true

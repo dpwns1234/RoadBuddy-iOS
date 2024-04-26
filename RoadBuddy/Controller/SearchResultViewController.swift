@@ -104,6 +104,8 @@ final class SearchResultViewController: UIViewController {
     
     @objc
     private func moveMainViewController() {
+        UserDefaults.standard.removeObject(forKey: "departure")
+        UserDefaults.standard.removeObject(forKey: "arrival")
         guard let mainViewController = navigationController?.viewControllers[0] else { return }
         dismiss(animated: false)
         navigationController?.popToViewController(mainViewController, animated: false)
