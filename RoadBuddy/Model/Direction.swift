@@ -17,7 +17,7 @@ struct ChangeTest: Decodable {
 
 struct Route: Hashable, Decodable {
     let bounds: Bound?
-    let legs: Array<Leg>?
+    let legs: Array<Leg>
 }
 
 // MARK: 중요데이터
@@ -30,7 +30,7 @@ struct Leg: Hashable, Decodable {
     let end_location: Location
     let start_address: String
     let start_location: Location
-    let steps: Array<Step>?
+    let steps: Array<Step>
 }
 
 // MARK: 중요 데이터
@@ -41,8 +41,8 @@ struct Step: Hashable, Decodable {
     let start_location: Location
     let polyline: Polyline
     let transit_details: Transit?
-    let travel_mode: String // "TRANSIT" 필요한가?
-    let step: Array<Step>? // 필요한가? nessesory?
+    let travel_mode: String // "TRANSIT"
+    let steps: Array<Step>
 }
 
 struct Transit: Hashable, Decodable {

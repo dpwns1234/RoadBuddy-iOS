@@ -7,6 +7,8 @@
 
 import UIKit
 
+//TODO: network 주소검색 수정 및 UserDefault로 검색 주소 위경도로 서치하기(이건 레이아웃 완성하고 하기)
+
 final class RouteViewController: UIViewController {
     
     // MARK: - UI Properties
@@ -193,7 +195,7 @@ extension RouteViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.2))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.15))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)

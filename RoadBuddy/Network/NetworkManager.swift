@@ -9,7 +9,7 @@ import Foundation
 
 struct NetworkManager {
     private let username = "user"
-    private let password = "4fd3fcbb-4825-4fd0-a28b-f31b1d4ed718"
+    private let password = "3ca4b72e-3e98-4d08-94f5-e2a2a05e668e"
     
     func loadData(url: URL, completionHandler: @escaping (Result<Data, Error>) -> Void) {
         let loginString = String(format: "%@:%@", username, password)
