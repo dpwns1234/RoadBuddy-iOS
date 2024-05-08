@@ -12,10 +12,10 @@ final class DetailAddressCollectionViewCell: UICollectionViewListCell {
     
     override func updateConfiguration(using state: UICellConfigurationState) {
         var config = DetailAddressConfiguration()
-        config.title = item.name
-        config.address = item.detailAddress
+        config.title = item.title
+        config.address = item.address
+        config.category = item.category
         // TODO: 거리는 해결해야 함.
-        config.category = ""
         config.distance = 0
         self.contentConfiguration = config
     }

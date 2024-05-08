@@ -7,7 +7,7 @@
 
 import UIKit
 
-//TODO: network 주소검색 수정 및 UserDefault로 검색 주소 위경도로 서치하기(이건 레이아웃 완성하고 하기)
+// TODO: UserDefault로 검색 주소 위경도로 서치하기
 
 final class RouteViewController: UIViewController {
     
@@ -91,6 +91,8 @@ final class RouteViewController: UIViewController {
     private let dataService = DirectionDataService()
     private var direcionData: Direction? = nil
     
+    private let addressRepository = UserDefaultRepository<Address>()
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
@@ -101,12 +103,13 @@ final class RouteViewController: UIViewController {
         setConstraints()
         setAction()
         dataService.delegate = self
-        // TODO: String이 아니라 object로 이름, lat, lon 저장해보까?
-        let departure = UserDefaults.standard.string(forKey: "departure")
-        let arrival = UserDefaults.standard.string(forKey: "arrival")
-        departureTextField.text = departure
-        arrivalTextField.text = arrival
-        if (departure != nil) && (arrival?.isEmpty != nil) {
+        let departure = addressRepository.fetch(type: "departure")
+        let arrival = addressRepository.fetch(type: "arrival")
+//        let departure = UserDefaults.standard.string(forKey: "departure")
+//        let arrival = UserDefaults.standard.string(forKey: "arrival")
+        departureTextField.text = departure?.title
+        arrivalTextField.text = arrival?.title
+        if (departure?.title.isEmpty != nil) && (arrival?.title.isEmpty != nil) {
             findRoute()
         }
     }

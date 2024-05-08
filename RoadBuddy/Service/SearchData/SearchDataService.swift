@@ -17,7 +17,7 @@ final class SearchDataService: DataServiceable {
             case .success(let data):
                 do {                    
                     let decodeData = try self.decoder.decode(AddressModel.self, from: data)
-                    self.delegate?.searchDataService(self, didDownload: decodeData.results)
+                    self.delegate?.searchDataService(self, didDownload: decodeData.data.items)
                 } catch {
                     print(error)
                 }

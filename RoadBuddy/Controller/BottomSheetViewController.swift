@@ -10,26 +10,30 @@ import UIKit
 final class BottomSheetViewController: UIViewController {
     weak var delegate: SearchResultDelegate?
     private let modalView: BottomSheetView?
-    private var place: String
+    private var place: Address
+    private let addressRepository = UserDefaultRepository<Address>()
     
     init(addressData: Address) {
         modalView = BottomSheetView(model: addressData)
-        place = addressData.name
+        place = addressData
         super.init(nibName: nil, bundle: nil)
         
         modalView?.departureButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
         modalView?.arrivalButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
     }
     
-    // TODO: 이제 route에서 둘 다 채워졌을 경우 체크해서 길찾기 셀 채윅
+    
+    // TODO: type enum으로 바꾸기 + UserDefualts enum 수정 및 save, fetch 리팩터
     @objc
     private func tappedDirectButton(_ sender: UIButton) {
         dismiss(animated: false)
         if sender == modalView?.departureButton {
-            UserDefaults.standard.setValue(place, forKey: "departure")
+            place.type = "departure"
+            addressRepository.save(data: place)
             delegate?.moveRouteVC()
         } else {
-            UserDefaults.standard.setValue(place, forKey: "arrival")
+            addressRepository.save(data: place)
+            place.type = "arrival"
             delegate?.moveRouteVC()
         }
     }

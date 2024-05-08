@@ -136,7 +136,7 @@ extension SearchViewController {
     }
     
     private func loadSearchHistory() {
-        let searchHistories = historyRepository.fetch() ?? []
+        let searchHistories = historyRepository.fetch(type: "search") ?? []
         var snapshot = searchDataSource.snapshot()
         snapshot.deleteAllItems()
         snapshot.appendSections([.history, .address])
@@ -188,7 +188,7 @@ extension SearchViewController: UITextFieldDelegate {
 extension SearchViewController {
     
     private func record(_ history: SearchDataModel) {
-        var searchHistories = historyRepository.fetch() ?? []
+        var searchHistories = historyRepository.fetch(type: "search") ?? []
         searchHistories.insert(history, at: 0)
         if searchHistories.count >= 10 {
             searchHistories.removeLast()
@@ -211,7 +211,7 @@ extension SearchViewController {
     }
     
     private func updateHistory(dataIndex: Int) {
-        guard var searchHistories = historyRepository.fetch() else { return }
+        guard var searchHistories = historyRepository.fetch(type: "search") else { return }
         let selectedItem = searchHistories.remove(at: dataIndex)
         searchHistories.insert(selectedItem, at: 0)
         historyRepository.save(data: searchHistories)

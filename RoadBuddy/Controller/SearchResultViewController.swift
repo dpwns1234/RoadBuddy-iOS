@@ -92,7 +92,7 @@ final class SearchResultViewController: UIViewController {
         searchTextField.addTarget(self, action: #selector(moveSearchViewController), for: .touchDown)
         backButton.addTarget(self, action: #selector(moveSearchViewController), for: .touchUpInside)
         xButton.addTarget(self, action: #selector(moveMainViewController), for: .touchUpInside)
-        searchTextField.text = addressData!.name
+        searchTextField.text = addressData!.title
         displayBottomSheet()
     }
     
@@ -238,9 +238,7 @@ extension SearchResultViewController {
     }
     
     private func configureMapView() {
-        // TODO: 출발, 도착 버튼 액션
-        // TODO: 이제 진짜 본 로직인 길찾기 지도에 선 긋기 및 길찾기 셀 만들기
-        let location = addressData?.geometry.location ?? Location(lat: 37.588458, lng: 127.006221)
+        let location = addressData?.location ?? Location(lat: 37.588458, lng: 127.006221)
         let defaultLocation = CLLocation(latitude: location.lat, longitude: location.lng)
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
@@ -261,13 +259,14 @@ extension SearchResultViewController {
     private func setMarker(_ location: Location) {
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
-        marker.title = addressData!.name
-        marker.snippet = "cafe(category)"
+        marker.title = addressData?.title
+        marker.snippet = addressData?.category
         marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
         marker.map = mapView
         
         
         // TODO: 그려지긴 하는데, 선이 이상하게 그려짐.. ㅠ 이유 모름 ㅋㅋ
+        // 아마 ??? 이거 decoding 제대로 안 돼서 그런 듯.
         let encodedPolyline = "avjdFmtffW??Q@u@@?????b@????c@@CB????l@A????@p@?bA?x@?V? f@?FANADGVM`@CDGNOPONAJBF????]h@?F????YR_@\\????WQg@]aBrA????Ui@????G^?D???? OI????QVg@?u@@GHG@]A_@?????NhCCLBp@B^?lA@p@GRMBiAD??"
         
         // Decode polyline

@@ -18,7 +18,7 @@ enum ServiceType {
         case .geocoding:
             return "maps/geocoding/"
         case .address:
-            return "https://maps.googleapis.com/maps/api/place/textsearch/json"
+            return "http://3.25.65.146:8080/maps/locations"
         case .direction:
             return "http://3.25.65.146:8080/maps/directions"
         case .icon:
@@ -40,16 +40,13 @@ enum ServiceType {
     }
     
     var queryItems: [URLQueryItem] {
-        let APIKey = "AIzaSyDRBo-RB8kqyG00vSBSDzIh_OZOoNuO5QI"
         switch self {
         case .geocoding(let location):
             let queryItem = URLQueryItem(name: "address", value: String(location))
             return [queryItem]
         case .address(let search):
             let queryItem = URLQueryItem(name: "query", value: search)
-            let languageItem = URLQueryItem(name: "language", value: "ko")
-            let keyItem = URLQueryItem(name: "key", value: APIKey)
-            return [queryItem, languageItem, keyItem]
+            return [queryItem]
         case .direction(let departureLat, let departureLon, let arrivalLat, let arrivalLon):
             let departureLatItem = URLQueryItem(name: "origin.latitude", value: String(departureLat))
             let departureLonItem = URLQueryItem(name: "origin.longitude", value: String(departureLon))

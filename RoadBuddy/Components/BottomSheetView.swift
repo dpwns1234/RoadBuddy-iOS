@@ -93,11 +93,11 @@ final class BottomSheetView: UIView {
         super.init(frame: .zero)
         
         self.backgroundColor = .white
-        titleLabel.text = model.name
+        titleLabel.text = model.title
         // TODO: 거리는 해결해야함.
-        categoryLabel.text = ""
+        addressLabel.text = model.address
+        categoryLabel.text = model.category
         distanceLabel.text = "0"
-        addressLabel.text = model.detailAddress
         
         self.addSubview(titleLabel)
         self.addSubview(categoryLabel)

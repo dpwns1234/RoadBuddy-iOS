@@ -8,25 +8,39 @@
 import UIKit
 
 final class UserDefaultRepository<T: Codable> {
-    let encoder = JSONEncoder()
-    let decoder = JSONDecoder()
     
     func save(data: T) {
-        do {
-            let encoded = try encoder.encode(data)
+        let encoder = Encoder<T>()
+        let encoded = encoder.encode(data: data)
+        switch data {
+        case is [SearchDataModel]:
             UserDefaults.standard.setValue(encoded, forKey: "searchHistories")
-        } catch {
-            print("Failed encode: \(error)")
+        case is Address:
+            let address = data as? Address
+            if address?.type == "departure" {
+                UserDefaults.standard.setValue(encoded, forKey: "departure")
+            } else {
+                UserDefaults.standard.setValue(encoded, forKey: "arrival")
+            }
+        default:
+            print("default")
         }
     }
     
-    func fetch() -> T? {
-        guard let data = UserDefaults.standard.object(forKey: "searchHistories") as? Data else { return nil }
-        do {
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            print("Failed decode:\(error)")
+    func fetch(type: String) -> T? {
+        let decoder = Decoder<T>()
+        let data: Data?
+        switch type {
+        case "search":
+            data = UserDefaults.standard.object(forKey: "searchHistories") as? Data
+        case "departure":
+            data = UserDefaults.standard.object(forKey: "departure") as? Data
+        case "arrival":
+            data = UserDefaults.standard.object(forKey: "arrival") as? Data
+        default:
+            data = nil
         }
-        return nil
+        guard let data = data else { return nil }
+        return decoder.decode(data: data)
     }
 }
