@@ -78,11 +78,11 @@ final class RouteCollectionViewCell: UICollectionViewCell {
         let steps = route.legs[0].steps
         for i in 0..<steps.count {
             let step = steps[i]
-            if step.travel_mode == "WALKING" {
+            if step.travelMode == "WALKING" {
                 let duration = step.duration.value
                 createWalkingStep(duration, perioty: i)
             } else {
-                guard let transit = step.transit_details else { return }
+                guard let transit = step.transitDetails else { return }
                 bindStepLabel(data: transit, perioty: i)
             }
             
@@ -94,8 +94,8 @@ final class RouteCollectionViewCell: UICollectionViewCell {
         myDateFormatter.dateFormat = "a h:mm" // 2020.08.13 오후 4시 30분
         myDateFormatter.locale = Locale(identifier:"ko_KR") // PM, AM을 언어에 맞게 setting (ex: PM -> 오후)
         
-        let departureTimestamp: TimeInterval = TimeInterval(route.legs[0].departure_time.value)
-        let arrivalTimestamp: TimeInterval = TimeInterval(route.legs[0].arrival_time.value)
+        let departureTimestamp: TimeInterval = TimeInterval(route.legs[0].departureTime.value)
+        let arrivalTimestamp: TimeInterval = TimeInterval(route.legs[0].arrivalTime.value)
         
         let departureDate = Date(timeIntervalSince1970: (departureTimestamp))
         let arrivalDate = Date(timeIntervalSince1970: (arrivalTimestamp))
@@ -167,8 +167,8 @@ final class RouteCollectionViewCell: UICollectionViewCell {
     }
     
     private func bindStepLabel(data transit: Transit, perioty: Int) {
-        let title = transit.line.short_name
-        let textColor = transit.line.text_color
+        let title = transit.line.shortName
+        let textColor = transit.line.textColor
         let backgroundColor = transit.line.color
         let stepLabel = createStepLabel()
         stepLabel.textColor = UIColor(hex: textColor)

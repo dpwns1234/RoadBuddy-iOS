@@ -22,45 +22,86 @@ struct Route: Hashable, Decodable {
 
 // MARK: 중요데이터
 struct Leg: Hashable, Decodable {
-    let arrival_time: TextValue
-    let departure_time: TextValue
+    let arrivalTime: TextValue
+    let departureTime: TextValue
     let distance: TextValue
     let duration: TextValue
-    let end_address: String
-    let end_location: Location
-    let start_address: String
-    let start_location: Location
+    let endAddress: String
+    let endLocation: Location
+    let startAddress: String
+    let startLocation: Location
     let steps: Array<Step>
+    
+    enum CodingKeys: String, CodingKey {
+        case arrivalTime = "arrival_time"
+        case departureTime = "departure_time"
+        case distance
+        case duration
+        case endAddress = "end_address"
+        case endLocation = "end_locatoin"
+        case startAddress = "start_address"
+        case startLocation = "start_location"
+        case steps
+    }
 }
 
 // MARK: 중요 데이터
 struct Step: Hashable, Decodable {
     let distance: TextValue
     let duration: TextValue
-    let end_location: Location
-    let start_location: Location
+    let endLocation: Location
+    let startLocation: Location
     let polyline: Polyline
-    let transit_details: Transit?
-    let travel_mode: String // "TRANSIT"
-    let steps: Array<Step>
+    let transitDetails: Transit?
+    let travelMode: String // "TRANSIT"
+    let steps: Array<Step?>
+    
+    enum CodingKeys: String, CodingKey {
+        case distance
+        case duration
+        case endLocation = "end_location"
+        case startLocation = "start_location"
+        case polyline
+        case transitDetails = "transit_details"
+        case travelMode = "travel_mode"
+        case steps
+    }
 }
 
 struct Transit: Hashable, Decodable {
-    let arrival_stop: LocationName
-    let arrival_time: TextValue
-    let departure_stop: LocationName
-    let departure_time: TextValue
+    let arrivalStop: LocationName
+    let arrivalTime: TextValue
+    let departureStop: LocationName
+    let departureTime: TextValue
     let line: Line
-    let num_stops: Int // 7 (7개 정류장 간다는 뜻인 듯)
+    let numStops: String // 7 (7개 정류장 간다는 뜻인 듯)
+    
+    enum CodingKeys: String, CodingKey {
+        case arrivalStop = "arrival_stop"
+        case arrivalTime = "arrival_time"
+        case departureStop = "departure_stop"
+        case departureTime = "departure_time"
+        case line
+        case numStops = "num_stops"
+    }
 }
 
 // MARK: 중요 데이터
 struct Line: Hashable, Decodable {
-    let color: String       // #9a4f11
+    let color: String       // #9a4f11    ?
     let name: String        // 서울 지하철
-    let short_name: String  // 6호선
-    let text_color: String  // #000000
+    let shortName: String  // 6호선       ?
+    let textColor: String  // #000000    ?
     let vehicle: Vehicle
+    
+    enum CodingKeys: String, CodingKey {
+        case color
+        case name
+        case shortName = "short_name"
+        case textColor = "text_color"
+        case vehicle
+    }
+    
 }
 
 struct Vehicle: Hashable, Decodable {
@@ -87,5 +128,11 @@ struct Bound: Hashable, Decodable {
 struct TextValue: Hashable, Decodable {
     let text: String        // "25분" or "6.5 km" or "7:41 PM"
     let value: Int          // 6534   or   1713091260
-    let time_zone: String?  // "Asia/Seoul"
+    let timeZone: String?  // "Asia/Seoul"
+    
+    enum CodingKeys: String, CodingKey {
+        case text
+        case value
+        case timeZone = "time_zone"
+    }
 }
