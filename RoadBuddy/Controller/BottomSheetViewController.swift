@@ -9,25 +9,51 @@ import UIKit
 
 final class BottomSheetViewController: UIViewController {
     weak var delegate: SearchResultDelegate?
-    private let modalView: BottomSheetView?
-    private var place: Address
+    private let modalView: UIView?
     private let addressRepository = UserDefaultRepository<Address>()
+    private var place: Address?
     
     init(addressData: Address) {
-        modalView = BottomSheetView(model: addressData)
-        place = addressData
+        self.modalView = BottomSheetView(model: addressData)
+        self.place = addressData
+//        self.route = nil
         super.init(nibName: nil, bundle: nil)
         
-        modalView?.departureButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
-        modalView?.arrivalButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
+        guard let modalView = modalView as? BottomSheetView else { return }
+        modalView.departureButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
+        modalView.arrivalButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
     }
     
+    init(route: Route) {
+        self.modalView = BottomSheetRouteView(route: route)
+        self.place = nil
+        super.init(nibName: nil, bundle: nil)
+        
+        guard let modalView = modalView as? BottomSheetRouteView else { return }
+        modalView.route = route
+    }
+    
+    
+    // TODO: Test MockUp 나중에 삭제
+    init() {
+        self.modalView = BottomSheetRouteView(route: nil)
+        self.place = nil
+        super.init(nibName: nil, bundle: nil)
+        
+//        guard let modalView = modalView as? BottomSheetRouteView else { return }
+//        modalView.route = route
+    }
     
     // TODO: type enum으로 바꾸기 + UserDefualts enum 수정 및 save, fetch 리팩터
     @objc
     private func tappedDirectButton(_ sender: UIButton) {
         dismiss(animated: false)
-        if sender == modalView?.departureButton {
+        guard var place = place else {
+            print("Place is nil")
+            return
+        }
+        guard let modalView = modalView as? BottomSheetView else { return }
+        if sender == modalView.departureButton {
             place.type = "departure"
             addressRepository.save(data: place)
             delegate?.moveRouteVC()

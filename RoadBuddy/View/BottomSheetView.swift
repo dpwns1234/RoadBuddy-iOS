@@ -122,8 +122,6 @@ final class BottomSheetView: UIView {
         let safeArea = self.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
-//            titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 16),
-            
             titleLabel.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor, constant: -32),
             titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             
