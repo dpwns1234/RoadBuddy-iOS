@@ -38,7 +38,7 @@ struct Leg: Hashable, Decodable {
         case distance
         case duration
         case endAddress = "end_address"
-        case endLocation = "end_locatoin"
+        case endLocation = "end_location"
         case startAddress = "start_address"
         case startLocation = "start_location"
         case steps
