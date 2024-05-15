@@ -78,7 +78,7 @@ final class RouteCollectionViewCell: UICollectionViewCell {
         let steps = route.legs[0].steps
         for i in 0..<steps.count {
             let step = steps[i]
-            if step.travelMode == "WALKING" {
+            if step.travelMode == TravelType.walking.description {
                 let duration = step.duration.value
                 createWalkingStep(duration, perioty: i)
             } else {
@@ -121,7 +121,7 @@ final class RouteCollectionViewCell: UICollectionViewCell {
     private func createWalkingStep(_ duration: Int, perioty: Int) {
         let walkingImageView = UIImageView()
         walkingImageView.translatesAutoresizingMaskIntoConstraints = false
-        walkingImageView.image = UIImage(named: "walking")
+        walkingImageView.image = UIImage(named: TravelType.walking.description)
         walkingImageView.contentMode = .scaleAspectFit
         walkingImageView.center = center
         walkingImageView.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 450 - Float(perioty)), for: .horizontal)
