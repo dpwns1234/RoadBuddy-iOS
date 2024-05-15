@@ -51,7 +51,7 @@ final class RouteViewController: UIViewController {
     private var tradeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(.backButton, for: .normal)
+        button.setImage(.trade, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         
         return button
@@ -174,9 +174,30 @@ extension RouteViewController {
 extension RouteViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: 다 채워졌을 경우 collectionView의 셀을 길찾기 cell 반영
+        let snapshot = routeDataSource.snapshot()
+        let routes = snapshot.itemIdentifiers
+        let selectRoute = routes[indexPath.row]
+        displayBottomSheet(data: selectRoute)
+    }
+    
+    private func displayBottomSheet(data selectRoute: Route) {
+        let bottomVC = BottomSheetViewController(route: selectRoute)
+        if let sheet = bottomVC.sheetPresentationController {
+            sheet.detents = [.large(), .medium()]
+            sheet.largestUndimmedDetentIdentifier = .medium
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(bottomVC, animated: true)
     }
 }
+
+//extension RouteViewController: SearchResultDelegate {
+//    
+//    func moveRouteVC() {
+//        <#code#>
+//    }
+//}
 
 // MARK: - DirectionDataServiceDelegate
 

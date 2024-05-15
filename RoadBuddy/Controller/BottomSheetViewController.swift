@@ -28,20 +28,6 @@ final class BottomSheetViewController: UIViewController {
         self.modalView = BottomSheetRouteView(route: route)
         self.place = nil
         super.init(nibName: nil, bundle: nil)
-        
-        guard let modalView = modalView as? BottomSheetRouteView else { return }
-        modalView.route = route
-    }
-    
-    
-    // TODO: Test MockUp 나중에 삭제
-    init() {
-        self.modalView = BottomSheetRouteView(route: nil)
-        self.place = nil
-        super.init(nibName: nil, bundle: nil)
-        
-//        guard let modalView = modalView as? BottomSheetRouteView else { return }
-//        modalView.route = route
     }
     
     // TODO: type enum으로 바꾸기 + UserDefualts enum 수정 및 save, fetch 리팩터

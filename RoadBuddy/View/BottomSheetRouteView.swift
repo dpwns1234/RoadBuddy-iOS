@@ -8,7 +8,6 @@
 import UIKit
 
 final class BottomSheetRouteView: UIView {
-    var route: Route?
     
     private var durationTimeLabel: UILabel = {
         let label = UILabel()
@@ -46,82 +45,34 @@ final class BottomSheetRouteView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
+        stackView.spacing = 8
         stackView.backgroundColor = .white
         
         return stackView
     }()
     
-    init(route: Route?) {
-        self.route = route
+//    private let scrollView: UIScrollView = {    
+//        let scrollView = UIScrollView()
+//        scrollView.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        return scrollView
+//    }()
+
+    
+    init(route: Route) {
         super.init(frame: .zero)
         
         self.backgroundColor = .white
         self.addSubview(durationTimeLabel)
         self.addSubview(arrivalTimeLabel)
         self.addSubview(routeLineStackView)
-//        self.addSubview(routeDetailStackView)
+        self.addSubview(routeDetailStackView)
         self.layer.cornerRadius = 30
-        configureRouteLineStackView()
-//        configureRouteLineStackView2()
-        setConstraints()
-    }
-    
-    private func configureRouteLineStackView2() {
-        let count = 2
-        for _ in 0..<count {
-            var lineView: UIView
-            lineView = createStepLineView(durationPercent: 0.4, color: .gray, transitType: "subway")
-            routeLineStackView.addArrangedSubview(lineView)
-        }
-    }
-    
-    private func bind() {
-        durationTimeLabel.text = route?.legs[0].duration.text
-        arrivalTimeLabel.text = route?.legs[0].arrivalTime.timeZone
-    }
-
-    private func configureRouteLineStackView() {
-        guard let route = route else {
-            print("route is nil!")
-            return
-        }
-        let steps = route.legs[0].steps
-        let totalDuration = Double(route.legs[0].duration.value)
-        let standardPercent = 0.1
-        var modifyPercent = 0.0
-        for step in steps {
-            let duration = Double(step.duration.value)
-            var percent = duration / totalDuration
-            var lineView: UIView
-            
-            if percent < standardPercent {
-                modifyPercent = standardPercent - percent
-                percent = standardPercent
-            } else if (percent - modifyPercent) > standardPercent {
-                percent = percent - modifyPercent
-                modifyPercent = 0
-            }
-            
-            if step.travelMode == "WALKING" {
-                lineView = createStepLineView(durationPercent: percent, color: .gray, transitType: "subway")
-            } else {
-                let colorCode = step.transitDetails!.line.color
-                let color = UIColor(hex: colorCode)
-                lineView = createStepLineView(durationPercent: percent, color: color!, transitType: "bus")
-            }
-            routeLineStackView.addArrangedSubview(lineView)
-        }
-    }
-    
-    private func createStepLineView(durationPercent: Double, color: UIColor, transitType: String) -> StepLineView {
-        let view = StepLineView(frame: CGRect(x: 0, y: 0, width: routeLineStackView.bounds.width, height: routeLineStackView.bounds.height))
-        view.backgroundColor = .white
-        view.lineColor = color
-        view.image = UIImage(named: transitType)
-        routeLineStackView.addArrangedSubview(view)
-        view.widthAnchor.constraint(equalTo: routeLineStackView.widthAnchor, multiplier: durationPercent).isActive = true
         
-        return view
+        bind(route: route)
+        configureRouteLineStackView(route: route)
+        addRouteDetailView(route.legs[0].steps)
+        setConstraints()
     }
     
     override init(frame: CGRect) {
@@ -132,22 +83,9 @@ final class BottomSheetRouteView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func createWalkingRouteView() -> UIView {
-        let view = UIView()
-        
-        return view
-    }
-    
-    private func createBusRouteView() -> UIView {
-        let view = UIView()
-        
-        return view
-    }
-    
-    private func createSubwayRouteView() -> UIView {
-        let view = UIView()
-        
-        return view
+    private func bind(route: Route) {
+        durationTimeLabel.text = route.legs[0].duration.text
+        arrivalTimeLabel.text = "\(route.legs[0].arrivalTime.text) 도착"
     }
     
     private func setConstraints() {
@@ -165,6 +103,106 @@ final class BottomSheetRouteView: UIView {
             routeLineStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             routeLineStackView.heightAnchor.constraint(equalToConstant: 30),
             
+            routeDetailStackView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 16),
+            routeDetailStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
+            routeDetailStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            
+            
+            
+//            routeDetailStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+//            routeDetailStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+//            routeDetailStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+//            routeDetailStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+//            routeDetailStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor), // 스크롤 방향에 맞게 가로 크기 설정
+//            
+//            scrollView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 8),
+//            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+//            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+//            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         ])
+    }
+}
+
+// MARK: - RouteLine (경로 상단에 요약해놓은 Route line)
+
+extension BottomSheetRouteView {
+    
+    private func configureRouteLineStackView(route: Route) {
+        let steps = route.legs[0].steps
+        let totalDuration = Double(route.legs[0].duration.value)
+        let standardPercent = 0.1
+        var modifyPercent = 0.0
+        for step in steps {
+            let duration = Double(step.duration.value)
+            var percent = duration / totalDuration
+            var lineView: UIView
+            
+            if percent < standardPercent {
+                modifyPercent = standardPercent - percent
+                percent = standardPercent
+            } else if (percent - modifyPercent) > standardPercent {
+                percent = percent - modifyPercent
+                modifyPercent = 0
+            }
+            
+            if step.travelMode == TravelType.walking.description {
+                lineView = createStepLineView(durationPercent: percent, color: .gray, transitType: step.travelMode)
+            } else {
+                let colorCode = step.transitDetails!.line.color
+                let color = UIColor(hex: colorCode)
+                let type = step.transitDetails!.line.vehicle.type
+                lineView = createStepLineView(durationPercent: percent, color: color!, transitType: type)
+            }
+            routeLineStackView.addArrangedSubview(lineView)
+        }
+    }
+    
+    private func createStepLineView(durationPercent: Double, color: UIColor, transitType: String) -> StepLineView {
+        let view = StepLineView(frame: CGRect(x: 0, y: 0, width: routeLineStackView.bounds.width, height: routeLineStackView.bounds.height))
+        view.backgroundColor = .white
+        view.lineColor = color
+        view.image = UIImage(named: transitType)
+        routeLineStackView.addArrangedSubview(view)
+        view.widthAnchor.constraint(equalTo: routeLineStackView.widthAnchor, multiplier: durationPercent).isActive = true
+        
+        return view
+    }
+}
+
+// MARK: - RouteDetail (경로 vertical)
+
+extension BottomSheetRouteView {
+    
+    private func addRouteDetailView(_ steps: Array<Step>) {
+        for step in steps {
+            if step.travelMode == TravelType.walking.description {
+                let walkingRouteView = WalkingRouteView(step: step)
+                routeDetailStackView.addArrangedSubview(walkingRouteView)
+            } else {
+                let transitRouteView = TransitRouteView(step: step)
+                routeDetailStackView.addArrangedSubview(transitRouteView)
+            }
+        }
+    }
+    
+    private func createWalkingRouteView(step: Step) -> UIStackView {
+        let stackView = UIStackView()
+        let distanceLabel = UILabel()
+        let durationLabel = UILabel()
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        
+        let font = UIFont.preferredFont(forTextStyle: .body)
+        distanceLabel.textColor = .gray
+        distanceLabel.font = font
+        durationLabel.font = .boldSystemFont(ofSize: font.pointSize)
+        
+        distanceLabel.text = "도보 \(step.distance.text)"
+        durationLabel.text = step.duration.text
+        
+        stackView.addArrangedSubview(distanceLabel)
+        stackView.addArrangedSubview(durationLabel)
+        
+        return stackView
     }
 }

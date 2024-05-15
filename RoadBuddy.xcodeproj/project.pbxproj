@@ -47,9 +47,14 @@
 		664E56E42BAD759C00AD7997 /* DetailAddressCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56E32BAD759C00AD7997 /* DetailAddressCollectionViewCell.swift */; };
 		664E56E62BAD75F900AD7997 /* DetailAddressConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56E52BAD75F900AD7997 /* DetailAddressConfiguration.swift */; };
 		664E56E82BAD769300AD7997 /* DetailAddressContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E56E72BAD769300AD7997 /* DetailAddressContentView.swift */; };
+		665A83EE2BF4BB2900B47546 /* TravelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A83ED2BF4BB2900B47546 /* TravelType.swift */; };
+		665A83F02BF4E10700B47546 /* WalkingRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A83EF2BF4E10700B47546 /* WalkingRouteView.swift */; };
+		66725BDA2BEB487A0077B539 /* BottomSheetRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66725BD92BEB487A0077B539 /* BottomSheetRouteView.swift */; };
 		6687D8D62BC8D42F00EBF663 /* Extension_UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6687D8D52BC8D42F00EBF663 /* Extension_UITextField.swift */; };
 		6696A8582BA5369700ECE641 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 6696A8572BA5369700ECE641 /* GooglePlaces */; };
 		66A6A4D32BBA77D200621676 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A4D22BBA77D200621676 /* SearchModel.swift */; };
+		66A7F5112BF396B2004D2E0E /* TransitRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A7F5102BF396B2004D2E0E /* TransitRouteView.swift */; };
+		66C2A7482BF1CCF400E49991 /* StepLiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C2A7472BF1CCF400E49991 /* StepLiveView.swift */; };
 		66D401EA2BB156BE008F9055 /* UserDefaultRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D401E92BB156BE008F9055 /* UserDefaultRepository.swift */; };
 		66D401EC2BB1BAA1008F9055 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D401EB2BB1BAA1008F9055 /* Section.swift */; };
 		66DAA44D2BA6F910005299C3 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66DAA44C2BA6F910005299C3 /* SearchViewController.swift */; };
@@ -97,8 +102,13 @@
 		664E56E32BAD759C00AD7997 /* DetailAddressCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAddressCollectionViewCell.swift; sourceTree = "<group>"; };
 		664E56E52BAD75F900AD7997 /* DetailAddressConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAddressConfiguration.swift; sourceTree = "<group>"; };
 		664E56E72BAD769300AD7997 /* DetailAddressContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAddressContentView.swift; sourceTree = "<group>"; };
+		665A83ED2BF4BB2900B47546 /* TravelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelType.swift; sourceTree = "<group>"; };
+		665A83EF2BF4E10700B47546 /* WalkingRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkingRouteView.swift; sourceTree = "<group>"; };
+		66725BD92BEB487A0077B539 /* BottomSheetRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetRouteView.swift; sourceTree = "<group>"; };
 		6687D8D52BC8D42F00EBF663 /* Extension_UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension_UITextField.swift; sourceTree = "<group>"; };
 		66A6A4D22BBA77D200621676 /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
+		66A7F5102BF396B2004D2E0E /* TransitRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitRouteView.swift; sourceTree = "<group>"; };
+		66C2A7472BF1CCF400E49991 /* StepLiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepLiveView.swift; sourceTree = "<group>"; };
 		66D401E92BB156BE008F9055 /* UserDefaultRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultRepository.swift; sourceTree = "<group>"; };
 		66D401EB2BB1BAA1008F9055 /* Section.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
 		66DAA44C2BA6F910005299C3 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -185,10 +195,13 @@
 			children = (
 				6640A6472BA153EB0058A537 /* FilterTextField.swift */,
 				660462202BB3C50C000CF53D /* MySearchFieldView.swift */,
-				661386972BB53A4A00AE04F5 /* BottomSheetView.swift */,
 				6613869B2BB53D9A00AE04F5 /* MainButton.swift */,
 				6613869D2BB53E2E00AE04F5 /* HansungColor.swift */,
 				663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */,
+				66C2A7472BF1CCF400E49991 /* StepLiveView.swift */,
+				66A7F5102BF396B2004D2E0E /* TransitRouteView.swift */,
+				665A83ED2BF4BB2900B47546 /* TravelType.swift */,
+				665A83EF2BF4E10700B47546 /* WalkingRouteView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -256,6 +269,8 @@
 				664E56E22BAD757D00AD7997 /* DetailAddress */,
 				66DAA4592BA7E052005299C3 /* SearchHistory */,
 				663425912BDB3F6C00F8626F /* RouteCollectionViewCell.swift */,
+				661386972BB53A4A00AE04F5 /* BottomSheetView.swift */,
+				66725BD92BEB487A0077B539 /* BottomSheetRouteView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -276,8 +291,8 @@
 				664994B92B985F2E005B8F9E /* MainViewController.swift */,
 				66DAA44C2BA6F910005299C3 /* SearchViewController.swift */,
 				661386952BB5003000AE04F5 /* SearchResultViewController.swift */,
-				661386992BB53A7700AE04F5 /* BottomSheetViewController.swift */,
 				663AABD02BC3930900F0D079 /* RouteViewController.swift */,
+				661386992BB53A7700AE04F5 /* BottomSheetViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -377,6 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6613869E2BB53E2E00AE04F5 /* HansungColor.swift in Sources */,
+				665A83F02BF4E10700B47546 /* WalkingRouteView.swift in Sources */,
 				664E56E42BAD759C00AD7997 /* DetailAddressCollectionViewCell.swift in Sources */,
 				664E56E62BAD75F900AD7997 /* DetailAddressConfiguration.swift in Sources */,
 				661386962BB5003000AE04F5 /* SearchResultViewController.swift in Sources */,
@@ -393,8 +409,11 @@
 				66DAA44D2BA6F910005299C3 /* SearchViewController.swift in Sources */,
 				661386A02BB53E8600AE04F5 /* Extension+UIColor.swift in Sources */,
 				6613869C2BB53D9A00AE04F5 /* MainButton.swift in Sources */,
+				66725BDA2BEB487A0077B539 /* BottomSheetRouteView.swift in Sources */,
+				66A7F5112BF396B2004D2E0E /* TransitRouteView.swift in Sources */,
 				6640A64A2BA15A860058A537 /* Secret.swift in Sources */,
 				66D401EC2BB1BAA1008F9055 /* Section.swift in Sources */,
+				66C2A7482BF1CCF400E49991 /* StepLiveView.swift in Sources */,
 				661386982BB53A4A00AE04F5 /* BottomSheetView.swift in Sources */,
 				664994B62B985F2E005B8F9E /* AppDelegate.swift in Sources */,
 				663AABD32BC3C4E000F0D079 /* AddressModel.swift in Sources */,
@@ -406,6 +425,7 @@
 				6640A6482BA153EB0058A537 /* FilterTextField.swift in Sources */,
 				66DAA4552BA7001E005299C3 /* SearchHistoryCollectionViewCell.swift in Sources */,
 				6627ED642BB6D5D000E49E14 /* SearchDataService.swift in Sources */,
+				665A83EE2BF4BB2900B47546 /* TravelType.swift in Sources */,
 				6627ED5D2BB6D43800E49E14 /* NetworkManager.swift in Sources */,
 				663AABCF2BC3881600F0D079 /* AddressDataManager.swift in Sources */,
 				6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */,
