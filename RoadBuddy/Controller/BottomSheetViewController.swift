@@ -16,7 +16,6 @@ final class BottomSheetViewController: UIViewController {
     init(addressData: Address) {
         self.modalView = BottomSheetView(model: addressData)
         self.place = addressData
-//        self.route = nil
         super.init(nibName: nil, bundle: nil)
         
         guard let modalView = modalView as? BottomSheetView else { return }
@@ -44,8 +43,8 @@ final class BottomSheetViewController: UIViewController {
             addressRepository.save(data: place)
             delegate?.moveRouteVC()
         } else {
-            addressRepository.save(data: place)
             place.type = "arrival"
+            addressRepository.save(data: place)
             delegate?.moveRouteVC()
         }
     }
