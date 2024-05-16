@@ -16,11 +16,14 @@ final class UserDefaultRepository<T: Codable> {
         case is [SearchDataModel]:
             UserDefaults.standard.setValue(encoded, forKey: "searchHistories")
         case is Address:
-            let address = data as? Address
-            if address?.type == "departure" {
-                UserDefaults.standard.setValue(encoded, forKey: "departure")
+            guard let address = data as? Address else {
+                print("address is nil!")
+                return
+            }
+            if address.type == "departure" {
+                UserDefaults.standard.set(encoded, forKey: address.type!)
             } else {
-                UserDefaults.standard.setValue(encoded, forKey: "arrival")
+                UserDefaults.standard.set(encoded, forKey: address.type!)
             }
         default:
             print("default")

@@ -238,7 +238,7 @@ extension SearchResultViewController {
     }
     
     private func configureMapView() {
-        let location = addressData?.location ?? Location(lat: 37.588458, lng: 127.006221)
+        let location = addressData?.geocoding.addresses[0].locatoin ?? Location(lat: 37.588458, lng: 127.006221)
         let defaultLocation = CLLocation(latitude: location.lat, longitude: location.lng)
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,
