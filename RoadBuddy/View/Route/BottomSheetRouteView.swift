@@ -16,7 +16,6 @@ final class BottomSheetRouteView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = boldFont
         label.textColor = .black
-        label.numberOfLines = 0
         
         return label
     }()
@@ -51,14 +50,6 @@ final class BottomSheetRouteView: UIView {
         return stackView
     }()
     
-//    private let scrollView: UIScrollView = {    
-//        let scrollView = UIScrollView()
-//        scrollView.translatesAutoresizingMaskIntoConstraints = false
-//        
-//        return scrollView
-//    }()
-
-    
     init(route: Route) {
         super.init(frame: .zero)
         
@@ -71,7 +62,7 @@ final class BottomSheetRouteView: UIView {
         
         bind(route: route)
         configureRouteLineStackView(route: route)
-        addRouteDetailView(route.legs[0].steps)
+        addRouteDetailView(route.legs[0])
         setConstraints()
     }
     
@@ -107,18 +98,6 @@ final class BottomSheetRouteView: UIView {
             routeDetailStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
             routeDetailStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             
-            
-            
-//            routeDetailStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-//            routeDetailStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-//            routeDetailStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-//            routeDetailStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-//            routeDetailStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor), // 스크롤 방향에 맞게 가로 크기 설정
-//            
-//            scrollView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 8),
-//            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-//            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-//            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         ])
     }
 }
@@ -173,16 +152,52 @@ extension BottomSheetRouteView {
 
 extension BottomSheetRouteView {
     
-    private func addRouteDetailView(_ steps: Array<Step>) {
-        for step in steps {
+    private func addRouteDetailView(_ leg: Leg) {
+        // 출발
+        let departureLabel = createPointLabel(address: leg.startAddress)
+        routeDetailStackView.addArrangedSubview(departureLabel)
+        
+        // TODO: Network에서 body넣은 post 그 데이터로 얻어와야 함. 거기에 제대로 된 transfer_path 있음.
+        for step in leg.steps {
             if step.travelMode == TravelType.walking.description {
-                let walkingRouteView = WalkingRouteView(step: step)
-                routeDetailStackView.addArrangedSubview(walkingRouteView)
-            } else {
+                // 환승
+                if let transferPath = step.transferPath {
+                    let transferRouteView = createTransferRouteView(transferPath[0])
+                    routeDetailStackView.addArrangedSubview(transferRouteView)
+                } else { // 도보
+                    let walkingRouteView = WalkingRouteView(step: step)
+                    routeDetailStackView.addArrangedSubview(walkingRouteView)
+                }
+            } else { // 지하철, 버스
                 let transitRouteView = TransitRouteView(step: step)
                 routeDetailStackView.addArrangedSubview(transitRouteView)
             }
         }
+        
+        // 도착
+        let arrivalLabel = createPointLabel(address: leg.endAddress)
+        routeDetailStackView.addArrangedSubview(arrivalLabel)
+    }
+    
+    private func createTransferRouteView(_ transferPath: Transfer) -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        for path in transferPath.mvContDtl {
+            let pathLabel = UILabel()
+            pathLabel.text = path
+            stackView.addArrangedSubview(pathLabel)
+        }
+        
+        return stackView
+    }
+    
+    private func createPointLabel(address: String) -> UILabel {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title3).pointSize)
+        label.text = address
+        label.numberOfLines = 1
+        
+        return label
     }
     
     private func createWalkingRouteView(step: Step) -> UIStackView {

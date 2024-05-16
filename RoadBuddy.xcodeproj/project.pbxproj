@@ -21,7 +21,6 @@
 		6627ED662BB6D63400E49E14 /* DataServiceable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6627ED652BB6D63400E49E14 /* DataServiceable.swift */; };
 		6627ED682BB6D94F00E49E14 /* SearchDataServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */; };
 		6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6627ED692BB6D9CC00E49E14 /* DetailAddress.swift */; };
-		6629F4002BF59941008D1149 /* Extension+UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629F3FF2BF59941008D1149 /* Extension+UILabel.swift */; };
 		6629F4022BF59F45008D1149 /* GeocodingDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629F4012BF59F45008D1149 /* GeocodingDataManager.swift */; };
 		6629F4072BF5A165008D1149 /* DirectionDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629F4062BF5A165008D1149 /* DirectionDataManager.swift */; };
 		6629F4092BF5C504008D1149 /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6629F4082BF5C504008D1149 /* Extension+String.swift */; };
@@ -84,7 +83,6 @@
 		6627ED652BB6D63400E49E14 /* DataServiceable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataServiceable.swift; sourceTree = "<group>"; };
 		6627ED672BB6D94F00E49E14 /* SearchDataServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDataServiceDelegate.swift; sourceTree = "<group>"; };
 		6627ED692BB6D9CC00E49E14 /* DetailAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailAddress.swift; sourceTree = "<group>"; };
-		6629F3FF2BF59941008D1149 /* Extension+UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UILabel.swift"; sourceTree = "<group>"; };
 		6629F4012BF59F45008D1149 /* GeocodingDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocodingDataManager.swift; sourceTree = "<group>"; };
 		6629F4062BF5A165008D1149 /* DirectionDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataManager.swift; sourceTree = "<group>"; };
 		6629F4082BF5C504008D1149 /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 			children = (
 				6613869F2BB53E8600AE04F5 /* Extension+UIColor.swift */,
 				6687D8D52BC8D42F00EBF663 /* Extension_UITextField.swift */,
-				6629F3FF2BF59941008D1149 /* Extension+UILabel.swift */,
 				6629F4082BF5C504008D1149 /* Extension+String.swift */,
 			);
 			path = Extentions;
@@ -453,7 +450,6 @@
 				663AABD12BC3930900F0D079 /* RouteViewController.swift in Sources */,
 				66DAA44D2BA6F910005299C3 /* SearchViewController.swift in Sources */,
 				661386A02BB53E8600AE04F5 /* Extension+UIColor.swift in Sources */,
-				6629F4002BF59941008D1149 /* Extension+UILabel.swift in Sources */,
 				6613869C2BB53D9A00AE04F5 /* MainButton.swift in Sources */,
 				66725BDA2BEB487A0077B539 /* BottomSheetRouteView.swift in Sources */,
 				66A7F5112BF396B2004D2E0E /* TransitRouteView.swift in Sources */,
