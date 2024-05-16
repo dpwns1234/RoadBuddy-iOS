@@ -50,53 +50,81 @@ final class BottomSheetRouteView: UIView {
         return stackView
     }()
     
-    init(route: Route) {
+    private var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
+        
+        return scrollView
+    }()
+    
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentHuggingPriority(.defaultLow, for: .vertical)
+        view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        
+        return view
+    }()
+    
+    init(leg: Leg) {
         super.init(frame: .zero)
         
         self.backgroundColor = .white
-        self.addSubview(durationTimeLabel)
-        self.addSubview(arrivalTimeLabel)
-        self.addSubview(routeLineStackView)
-        self.addSubview(routeDetailStackView)
+        self.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(durationTimeLabel)
+        contentView.addSubview(arrivalTimeLabel)
+        contentView.addSubview(routeLineStackView)
+        contentView.addSubview(routeDetailStackView)
         self.layer.cornerRadius = 30
-        
-        bind(route: route)
-        configureRouteLineStackView(route: route)
-        addRouteDetailView(route.legs[0])
+        bind(leg: leg)
+        configureRouteLineStackView(leg: leg)
+        addRouteDetailView(leg)
         setConstraints()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bind(route: Route) {
-        durationTimeLabel.text = route.legs[0].duration.text
-        arrivalTimeLabel.text = "\(route.legs[0].arrivalTime.text) 도착"
+    private func bind(leg: Leg) {
+        durationTimeLabel.text = leg.duration.text
+        arrivalTimeLabel.text = "\(leg.arrivalTime.text) 도착"
     }
     
     private func setConstraints() {
         let safeArea = self.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
-            durationTimeLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 24),
-            durationTimeLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
+            scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+//            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor),
+            
+            durationTimeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            durationTimeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             
             arrivalTimeLabel.centerYAnchor.constraint(equalTo: durationTimeLabel.centerYAnchor),
             arrivalTimeLabel.leadingAnchor.constraint(equalTo: durationTimeLabel.trailingAnchor, constant: 12),
             
             routeLineStackView.topAnchor.constraint(equalTo: durationTimeLabel.bottomAnchor, constant: 16),
-            routeLineStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            routeLineStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            routeLineStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            routeLineStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             routeLineStackView.heightAnchor.constraint(equalToConstant: 30),
             
             routeDetailStackView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 16),
-            routeDetailStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            routeDetailStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
+            routeDetailStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            routeDetailStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            routeDetailStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16) // Added bottom constraint
+                    
             
         ])
     }
@@ -106,9 +134,9 @@ final class BottomSheetRouteView: UIView {
 
 extension BottomSheetRouteView {
     
-    private func configureRouteLineStackView(route: Route) {
-        let steps = route.legs[0].steps
-        let totalDuration = Double(route.legs[0].duration.value)
+    private func configureRouteLineStackView(leg: Leg) {
+        let steps = leg.steps
+        let totalDuration = Double(leg.duration.value)
         let standardPercent = 0.1
         var modifyPercent = 0.0
         for step in steps {
@@ -161,7 +189,10 @@ extension BottomSheetRouteView {
         for step in leg.steps {
             if step.travelMode == TravelType.walking.description {
                 // 환승
-                if let transferPath = step.transferPath {
+                if 
+                    let transferPath = step.transferPath,
+                    transferPath.isEmpty == false 
+                {
                     let transferRouteView = createTransferRouteView(transferPath[0])
                     routeDetailStackView.addArrangedSubview(transferRouteView)
                 } else { // 도보
