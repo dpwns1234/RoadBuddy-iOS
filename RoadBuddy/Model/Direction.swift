@@ -8,10 +8,10 @@
 import Foundation
 
 struct Direction: Decodable {
-    let data: ChangeTest
+    let data: DirectionData
 }
 
-struct ChangeTest: Decodable {
+struct DirectionData: Decodable {
     let routes: Array<Route>
 }
 
@@ -20,8 +20,11 @@ struct Route: Hashable, Decodable {
     let legs: Array<Leg>
 }
 
-// MARK: 중요데이터
-struct Leg: Hashable, Decodable {
+struct LegData:Hashable, Codable {
+    let data: Leg
+}
+
+struct Leg: Hashable, Codable {
     let arrivalTime: TextValue
     let departureTime: TextValue
     let distance: TextValue
@@ -45,8 +48,7 @@ struct Leg: Hashable, Decodable {
     }
 }
 
-// MARK: 중요 데이터
-struct Step: Hashable, Decodable {
+struct Step: Hashable, Codable {
     let distance: TextValue
     let duration: TextValue
     let endLocation: Location
@@ -55,6 +57,7 @@ struct Step: Hashable, Decodable {
     let transitDetails: Transit?
     let travelMode: String // "TRANSIT"
     let steps: Array<Step?>
+    let transferPath: Array<Transfer>?
     
     enum CodingKeys: String, CodingKey {
         case distance
@@ -65,10 +68,16 @@ struct Step: Hashable, Decodable {
         case transitDetails = "transit_details"
         case travelMode = "travel_mode"
         case steps
+        case transferPath = "transfer_path"
     }
 }
 
-struct Transit: Hashable, Decodable {
+struct Transfer: Hashable, Codable {
+    let imgPath: String
+    let mvContDtl: Array<String>
+}
+
+struct Transit: Hashable, Codable {
     let arrivalStop: LocationName
     let arrivalTime: TextValue
     let departureStop: LocationName
@@ -86,8 +95,7 @@ struct Transit: Hashable, Decodable {
     }
 }
 
-// MARK: 중요 데이터
-struct Line: Hashable, Decodable {
+struct Line: Hashable, Codable {
     let color: String       // #9a4f11    ?
     let name: String        // 서울 지하철
     let shortName: String  // 6호선       ?
@@ -104,28 +112,27 @@ struct Line: Hashable, Decodable {
     
 }
 
-struct Vehicle: Hashable, Decodable {
+struct Vehicle: Hashable, Codable {
     let icon: String // "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png" 지하철 이모티콘
     // 앞에 http:// 붙여줘야 함.
     let type: String // type
 }
 
-struct LocationName: Hashable, Decodable {
+struct LocationName: Hashable, Codable {
     let location: Location
     let name: String
 }
 
-struct Polyline: Hashable, Decodable {
+struct Polyline: Hashable, Codable {
     let points: String
 }
 
-
-struct Bound: Hashable, Decodable {
+struct Bound: Hashable, Codable {
     let northeast: Location
     let southwest: Location
 }
 
-struct TextValue: Hashable, Decodable {
+struct TextValue: Hashable, Codable {
     let text: String        // "25분" or "6.5 km" or "7:41 PM"
     let value: Int          // 6534   or   1713091260
     let timeZone: String?  // "Asia/Seoul"

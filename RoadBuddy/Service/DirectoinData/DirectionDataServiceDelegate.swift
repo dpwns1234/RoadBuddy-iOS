@@ -8,5 +8,5 @@
 import Foundation
 
 protocol DirectionDataServiceDelegate: AnyObject {
-    func directionDataService(_ service: DirectionDataService, didDownlad: Direction)
+    func directionDataService(_ service: DirectionDataService, didDownlad direction: Direction)
 }

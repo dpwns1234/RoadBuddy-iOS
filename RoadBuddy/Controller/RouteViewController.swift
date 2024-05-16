@@ -10,7 +10,7 @@ import UIKit
 // TODO: UserDefault로 검색 주소 위경도로 서치하기
 
 final class RouteViewController: UIViewController {
-    
+
     // MARK: - UI Properties
     
     private lazy var textFieldStackView: UIStackView = {
@@ -88,9 +88,7 @@ final class RouteViewController: UIViewController {
     typealias RouteDataSource = UICollectionViewDiffableDataSource<Int, Route>
     private var routeDataSource: RouteDataSource!
     
-    private let dataService = DirectionDataService()
-    private var direcionData: Direction? = nil
-    
+    private let directionDataManager = DirectionDataManager()
     private let addressRepository = UserDefaultRepository<Address>()
     
     // MARK: - LifeCycle
@@ -102,21 +100,22 @@ final class RouteViewController: UIViewController {
         configureSearchDataSource()
         setConstraints()
         setAction()
-        dataService.delegate = self
+        directionDataManager.delegate = self
+        
         let departure = addressRepository.fetch(type: "departure")
         let arrival = addressRepository.fetch(type: "arrival")
-//        let departure = UserDefaults.standard.string(forKey: "departure")
-//        let arrival = UserDefaults.standard.string(forKey: "arrival")
         departureTextField.text = departure?.title
         arrivalTextField.text = arrival?.title
-        if (departure?.title.isEmpty != nil) && (arrival?.title.isEmpty != nil) {
-            findRoute()
-        }
+        findRoute(departure: departure!, arrival: arrival!)
     }
     
-    private func findRoute() {
-        // API call
-        dataService.convertData(type: .direction(departureLat: 37.51891897875439, departureLon: 126.895693752969, arrivalLat: 37.5548376, arrivalLon: 126.9717326))
+    private func findRoute(departure: Address, arrival: Address) {
+        if (departure.title.isEmpty == false) && (arrival.title.isEmpty == false) {
+            directionDataManager.fetchDirection(
+                departure: departure.geocoding.addresses[0].locatoin,
+                arrival: arrival.geocoding.addresses[0].locatoin
+            )
+        }
     }
     
     private func attachView() {
@@ -183,30 +182,30 @@ extension RouteViewController: UICollectionViewDelegate {
     private func displayBottomSheet(data selectRoute: Route) {
         let bottomVC = BottomSheetViewController(route: selectRoute)
         if let sheet = bottomVC.sheetPresentationController {
-            sheet.detents = [.large(), .medium()]
-            sheet.largestUndimmedDetentIdentifier = .medium
+            sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
+            sheet.largestUndimmedDetentIdentifier = .medium
         }
         
         present(bottomVC, animated: true)
     }
 }
 
+// TODO: 뒤에 지도 띄워주도록 플로우 생각
+
 //extension RouteViewController: SearchResultDelegate {
-//    
+//
 //    func moveRouteVC() {
 //        <#code#>
 //    }
 //}
 
-// MARK: - DirectionDataServiceDelegate
+// MARK: - DirectionDataManagerDelegate
 
-extension RouteViewController: DirectionDataServiceDelegate {
-    func directionDataService(_ service: DirectionDataService, didDownlad: Direction) {
-        self.direcionData = didDownlad
-        
+extension RouteViewController: DirectionDataManagerDelegate {
+    func directionData(_ dataManager: DirectionDataManager, didLoad direction: Direction) {
         var snapshot = routeDataSource.snapshot()
-        snapshot.appendItems(didDownlad.data.routes)
+        snapshot.appendItems(direction.data.routes)
         routeDataSource.apply(snapshot)
     }
 }
