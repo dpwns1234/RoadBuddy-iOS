@@ -249,10 +249,19 @@ extension SearchViewController: AddressDataManagerDelegate {
     
     func addressData(_ dataManager: AddressDataManager, didLoad addresses: [Address]) {
         var snapshot = searchDataSource.snapshot()
+        var refinedAddress = addresses
+        refinement(addresses: &refinedAddress)
         snapshot.deleteAllItems()
         snapshot.appendSections([.history, .address])
-        snapshot.appendItems(addresses, toSection: .address)
+        snapshot.appendItems(refinedAddress, toSection: .address)
         searchDataSource.apply(snapshot)
+    }
+    
+    private func refinement(addresses: inout [Address]) {
+        for index in addresses.indices {
+            let refinedTitle = addresses[index].title.removingHTMLEntities()!
+            addresses[index].title = refinedTitle
+        }
     }
 }
 

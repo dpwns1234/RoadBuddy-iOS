@@ -12,11 +12,11 @@ struct AddressModel: Codable, Hashable {
 }
 
 struct LocationData: Codable, Hashable {
-    let items: [Address]
+    var items: [Address]
 }
 
 struct Address: Codable, Hashable {
-    let title: String
+    var title: String
     let category: String
     let address: String
     let mapx: String
@@ -33,40 +33,3 @@ struct Location: Codable, Hashable {
     let lat: Double
     let lng: Double
 }
-
-
-//
-//struct AddressModel: Decodable {
-//    let results: [Address]
-//}
-//
-//struct Address: Decodable, Hashable {
-//    let detailAddress: String
-//    let geometry: Geometry
-//    let name: String
-//    
-//    var toSearchDataModel: SearchDataModel {
-//        return SearchDataModel(title: name, address: detailAddress)
-//    }
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case detailAddress = "formatted_address"
-//        case geometry, name
-//    }
-//    
-//    
-//    struct Geometry: Decodable, Hashable {
-//        let location: Location
-//        let viewport: Viewport
-//        
-//        struct Viewport: Decodable, Hashable {
-//            let northeast: Location
-//            let southwest: Location
-//        }
-//    }
-//}
-//
-//struct Location: Decodable, Hashable {
-//    let lat: Double
-//    let lng: Double
-//}
