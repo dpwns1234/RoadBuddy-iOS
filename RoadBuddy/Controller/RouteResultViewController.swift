@@ -57,6 +57,8 @@ final class RouteResultViewController: UIViewController {
         self.view.backgroundColor = .white
         initializeLocationManager()
         configureUI()
+        drawPolyline(steps: leg?.steps)
+        
         backButton.addTarget(self, action: #selector(moveRouteViewController), for: .touchUpInside)
         displayBottomSheet()
     }
@@ -82,9 +84,14 @@ final class RouteResultViewController: UIViewController {
     private func displayBottomSheet() {
         let bottomVC = BottomSheetViewController(leg: leg!)
         if let sheet = bottomVC.sheetPresentationController {
-            sheet.detents = [.medium()]
+            let zero = UISheetPresentationController.Detent.custom { context in
+                let screenSize = UIScreen.main.bounds.size
+                return screenSize.height * 0.01
+            }
+            sheet.detents = [.medium(), zero]
             sheet.prefersGrabberVisible = true
             sheet.largestUndimmedDetentIdentifier = .medium
+            sheet.selectedDetentIdentifier = .medium
         }
         
         present(bottomVC, animated: true)
@@ -175,39 +182,42 @@ extension RouteResultViewController {
         setConstraints()
     }
     
-    // TODO: 경로 전체가 보이도록 하는 카메라 줌 설정 (이건 좀 알아봐야 하니 나중에)
     private func configureMapView() {
-        mapView = GMSMapView()
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.settings.myLocationButton = true
-        mapView.isMyLocationEnabled = true
-        mapView.delegate = self
-        
-        guard 
+        guard
             let startLocation = leg?.startLocation,
             let endLocation = leg?.endLocation
         else {
             print("leg is nil!")
             return
         }
-        
         let departureLocation = CLLocationCoordinate2D(latitude: startLocation.lat, longitude: startLocation.lng)
         let arrivalLocation = CLLocationCoordinate2D(latitude: endLocation.lat, longitude: endLocation.lng)
-
-        // Calculate bounds that include both locations
+        
+        mapView = GMSMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.settings.myLocationButton = true
+        mapView.isMyLocationEnabled = true
+        mapView.delegate = self
+        view.addSubview(mapView)
+        
         let bounds = GMSCoordinateBounds(coordinate: departureLocation, coordinate: arrivalLocation)
-        
-        // Create GMSCameraUpdate to fit the bounds with some padding
-        let update = GMSCameraUpdate.fit(bounds, withPadding: 50.0)
-        
-        // Apply the camera update to the mapView
+        let insets = UIEdgeInsets(top: 0.0, left: 100.0, bottom: 400.0, right: 100.0)
+        let update = GMSCameraUpdate.fit(bounds, with: insets)
         mapView.moveCamera(update)
         
-        drawPolyline(steps: leg?.steps)
-        
 //        setMarker(location)
-        view.addSubview(mapView)
     }
+    
+    func midpointCoordinate(first: CLLocationCoordinate2D, second: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+        let latitude = (first.latitude + second.latitude) / 2.0
+        let longitude = (first.longitude + second.longitude) / 2.0
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    func adjustLatitude(coordinate: CLLocationCoordinate2D, offset: Double) -> CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: coordinate.latitude - offset, longitude: coordinate.longitude)
+    }
+
     
     private func drawPolyline(steps: [Step]?) {
         guard let steps = steps else { return }
@@ -228,6 +238,7 @@ extension RouteResultViewController {
     }
     
     private func drawPolyline(polyline: GMSPolyline) {
+        polyline.strokeWidth = 10.0
         let image = UIImage(named: "sprite5")!
         let stampStyle = GMSSpriteStyle(image: image)
         let transparentStampStroke = GMSStrokeStyle.transparentStroke(withStamp: stampStyle)
