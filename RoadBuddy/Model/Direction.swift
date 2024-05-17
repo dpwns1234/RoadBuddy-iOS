@@ -56,7 +56,7 @@ struct Step: Hashable, Codable {
     let polyline: Polyline
     let transitDetails: Transit?
     let travelMode: String // "TRANSIT"
-    let steps: Array<Step?>
+    let steps: Array<Step>?
     let transferPath: Array<Transfer>?
     
     enum CodingKeys: String, CodingKey {

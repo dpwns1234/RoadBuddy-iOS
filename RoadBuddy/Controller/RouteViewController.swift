@@ -10,7 +10,7 @@ import UIKit
 // TODO: UserDefault로 검색 주소 위경도로 서치하기
 
 final class RouteViewController: UIViewController {
-
+    
     // MARK: - UI Properties
     
     private lazy var textFieldStackView: UIStackView = {
@@ -172,29 +172,11 @@ extension RouteViewController: UICollectionViewDelegate {
         let snapshot = routeDataSource.snapshot()
         let routes = snapshot.itemIdentifiers
         let selectRoute = routes[indexPath.row]
-        displayBottomSheet(data: selectRoute)
-    }
-    
-    private func displayBottomSheet(data selectRoute: Route) {
-        let bottomVC = BottomSheetViewController(route: selectRoute)
-        if let sheet = bottomVC.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-            sheet.largestUndimmedDetentIdentifier = .medium
-        }
         
-        present(bottomVC, animated: true)
+        let routeResultViewController = RouteResultViewController(leg: selectRoute.legs[0])
+        self.navigationController?.pushViewController(routeResultViewController, animated: true)
     }
 }
-
-// TODO: 뒤에 지도 띄워주도록 플로우 생각
-
-//extension RouteViewController: SearchResultDelegate {
-//
-//    func moveRouteVC() {
-//        <#code#>
-//    }
-//}
 
 // MARK: - DirectionDataManagerDelegate
 

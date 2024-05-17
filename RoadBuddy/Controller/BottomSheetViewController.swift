@@ -34,7 +34,7 @@ final class BottomSheetViewController: UIViewController {
         modalView.arrivalButton.addTarget(self, action: #selector(tappedDirectButton), for: .touchUpInside)
     }
     
-    init(route: Route) {
+    init(leg: Leg) {
         self.modalView = UIImageView(image: .wating)
         self.place = nil
         super.init(nibName: nil, bundle: nil)
@@ -46,18 +46,13 @@ final class BottomSheetViewController: UIViewController {
         
         transferDataService.delegate = self
         
+        // TODO: 나중에 합쳐서 test해보기 + loadIfNeed()도 없애보고,
         DispatchQueue.main.async {
             self.loadingIndicator.startAnimating()
         }
-        apiCall(leg: route.legs[0])
-    }
-    
-    // TODO: BottomSheetRouteView에서 처리하던 걸 여기로 가져와서
-    // api ccall 하고 인디케이터 발동하고, 멈추고 여기서 처리하기!
-    private func apiCall(leg: Leg) {
         transferDataService.convertData(type: .transfer, leg: leg)
     }
-    
+
     // TODO: type enum으로 바꾸기 + UserDefualts enum 수정 및 save, fetch 리팩터
     @objc
     private func tappedDirectButton(_ sender: UIButton) {

@@ -30,6 +30,7 @@
 		663425942BDB7CDB00F8626F /* UIPaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */; };
 		663425962BDB869E00F8626F /* DirectionDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425952BDB869E00F8626F /* DirectionDataService.swift */; };
 		6634259A2BDB89EE00F8626F /* DirectionDataServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663425992BDB89EE00F8626F /* DirectionDataServiceDelegate.swift */; };
+		66399D432BF6E975008B5A2F /* RouteResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66399D422BF6E975008B5A2F /* RouteResultViewController.swift */; };
 		663AABCF2BC3881600F0D079 /* AddressDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABCE2BC3881600F0D079 /* AddressDataManager.swift */; };
 		663AABD12BC3930900F0D079 /* RouteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABD02BC3930900F0D079 /* RouteViewController.swift */; };
 		663AABD32BC3C4E000F0D079 /* AddressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AABD22BC3C4E000F0D079 /* AddressModel.swift */; };
@@ -90,6 +91,7 @@
 		663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPaddingLabel.swift; sourceTree = "<group>"; };
 		663425952BDB869E00F8626F /* DirectionDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataService.swift; sourceTree = "<group>"; };
 		663425992BDB89EE00F8626F /* DirectionDataServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionDataServiceDelegate.swift; sourceTree = "<group>"; };
+		66399D422BF6E975008B5A2F /* RouteResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteResultViewController.swift; sourceTree = "<group>"; };
 		663AABCE2BC3881600F0D079 /* AddressDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDataManager.swift; sourceTree = "<group>"; };
 		663AABD02BC3930900F0D079 /* RouteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteViewController.swift; sourceTree = "<group>"; };
 		663AABD22BC3C4E000F0D079 /* AddressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressModel.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				66DAA44C2BA6F910005299C3 /* SearchViewController.swift */,
 				661386952BB5003000AE04F5 /* SearchResultViewController.swift */,
 				663AABD02BC3930900F0D079 /* RouteViewController.swift */,
+				66399D422BF6E975008B5A2F /* RouteResultViewController.swift */,
 				661386992BB53A7700AE04F5 /* BottomSheetViewController.swift */,
 			);
 			path = Controller;
@@ -459,6 +462,7 @@
 				6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */,
 				6627ED5F2BB6D49D00E49E14 /* NetworkError.swift in Sources */,
 				660462212BB3C50C000CF53D /* MySearchFieldView.swift in Sources */,
+				66399D432BF6E975008B5A2F /* RouteResultViewController.swift in Sources */,
 				663425922BDB3F6C00F8626F /* RouteCollectionViewCell.swift in Sources */,
 				663425962BDB869E00F8626F /* DirectionDataService.swift in Sources */,
 				663425902BDA2EFF00F8626F /* Direction.swift in Sources */,
