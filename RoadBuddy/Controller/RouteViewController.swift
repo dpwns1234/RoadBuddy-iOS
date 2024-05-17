@@ -106,14 +106,10 @@ final class RouteViewController: UIViewController {
         let arrival = addressRepository.fetch(type: "arrival")
         departureTextField.text = departure?.title
         arrivalTextField.text = arrival?.title
-        findRoute(departure: departure!, arrival: arrival!)
-    }
-    
-    private func findRoute(departure: Address, arrival: Address) {
-        if (departure.title.isEmpty == false) && (arrival.title.isEmpty == false) {
+        if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
             directionDataManager.fetchDirection(
-                departure: departure.geocoding.addresses[0].locatoin,
-                arrival: arrival.geocoding.addresses[0].locatoin
+                departure: departure!.geocoding.addresses[0].locatoin,
+                arrival: arrival!.geocoding.addresses[0].locatoin
             )
         }
     }
