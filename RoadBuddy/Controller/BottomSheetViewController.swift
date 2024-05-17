@@ -65,11 +65,11 @@ final class BottomSheetViewController: UIViewController {
         if sender == modalView.departureButton {
             place.type = "departure"
             addressRepository.save(data: place)
-            delegate?.moveRouteVC()
+            delegate?.moveRouteViewController()
         } else {
             place.type = "arrival"
             addressRepository.save(data: place)
-            delegate?.moveRouteVC()
+            delegate?.moveRouteViewController()
         }
     }
     

@@ -9,6 +9,24 @@ import UIKit
 
 final class BottomSheetRouteView: UIView {
     
+    private var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.layer.cornerRadius = 30
+        
+        return scrollView
+    }()
+    
+    private let contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentHuggingPriority(.defaultLow, for: .vertical)
+        view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        
+        return view
+    }()
+    
     private var durationTimeLabel: UILabel = {
         let label = UILabel()
         let font = UIFont.preferredFont(forTextStyle: .title2)
@@ -48,23 +66,6 @@ final class BottomSheetRouteView: UIView {
         stackView.backgroundColor = .white
         
         return stackView
-    }()
-    
-    private var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.showsVerticalScrollIndicator = false
-        
-        return scrollView
-    }()
-    
-    private let contentView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.setContentHuggingPriority(.defaultLow, for: .vertical)
-        view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        
-        return view
     }()
     
     init(leg: Leg) {

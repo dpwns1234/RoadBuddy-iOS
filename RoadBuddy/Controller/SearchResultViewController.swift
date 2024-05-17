@@ -10,7 +10,7 @@ import GoogleMaps
 import GooglePlaces
 
 protocol SearchResultDelegate: AnyObject {
-    func moveRouteVC()
+    func moveRouteViewController()
 }
 
 final class SearchResultViewController: UIViewController {
@@ -143,11 +143,12 @@ final class SearchResultViewController: UIViewController {
 // MARK: - SearchResultDelegate
 
 extension SearchResultViewController: SearchResultDelegate {
-    func moveRouteVC() {
+    
+    func moveRouteViewController() {
         guard var controllers = navigationController?.viewControllers else { return }
-        let routeVC = RouteViewController()
+        let routeViewController = RouteViewController()
         controllers.removeSubrange(1...)
-        controllers.append(routeVC)
+        controllers.append(routeViewController)
         self.navigationController?.setViewControllers(controllers, animated: true)
     }
 }
@@ -246,7 +247,6 @@ extension SearchResultViewController {
                                               zoom: zoomLevel)
         mapView = GMSMapView()
         mapView.camera = camera
-        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.settings.myLocationButton = true
         mapView.isMyLocationEnabled = true
@@ -263,21 +263,6 @@ extension SearchResultViewController {
         marker.snippet = addressData?.category
         marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
         marker.map = mapView
-        
-        
-        // TODO: 그려지긴 하는데, 선이 이상하게 그려짐.. ㅠ 이유 모름 ㅋㅋ
-        // 아마 ??? 이거 decoding 제대로 안 돼서 그런 듯.
-        let encodedPolyline = "avjdFmtffW??Q@u@@?????b@????c@@CB????l@A????@p@?bA?x@?V? f@?FANADGVM`@CDGNOPONAJBF????]h@?F????YR_@\\????WQg@]aBrA????Ui@????G^?D???? OI????QVg@?u@@GHG@]A_@?????NhCCLBp@B^?lA@p@GRMBiAD??"
-        
-        // Decode polyline
-        let path = GMSMutablePath(fromEncodedPath: encodedPolyline)
-        
-        // Create the polyline
-        let polyline = GMSPolyline(path: path)
-        polyline.strokeColor = UIColor.blue
-        polyline.strokeWidth = 2.0
-        polyline.map = mapView
-        
     }
     
     private func setConstraints() {
