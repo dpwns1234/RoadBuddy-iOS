@@ -134,32 +134,54 @@ extension BottomSheetRouteView {
     
     private func configureRouteLineStackView(leg: Leg) {
         let steps = leg.steps
-        let totalDuration = Double(leg.duration.value)
-        let standardPercent = 0.1
-        var modifyPercent = 0.0
-        for step in steps {
-            let duration = Double(step.duration.value)
-            var percent = duration / totalDuration
+        let ratioArray = calculateWidthRatio(leg: leg)
+        for i in steps.indices {
+            let step = steps[i]
             var lineView: UIView
             
-            if percent < standardPercent {
-                modifyPercent = standardPercent - percent
-                percent = standardPercent
-            } else if (percent - modifyPercent) > standardPercent {
-                percent = percent - modifyPercent
-                modifyPercent = 0
-            }
-            
             if step.travelMode == TravelType.walking.description {
-                lineView = createStepLineView(durationPercent: percent, color: .gray, transitType: step.travelMode)
+                lineView = createStepLineView(durationPercent: ratioArray[i], color: .gray, transitType: step.travelMode)
             } else {
                 let colorCode = step.transitDetails!.line.color
                 let color = UIColor(hex: colorCode)
                 let type = step.transitDetails!.line.vehicle.type
-                lineView = createStepLineView(durationPercent: percent, color: color!, transitType: type)
+                lineView = createStepLineView(durationPercent: ratioArray[i], color: color!, transitType: type)
             }
             routeLineStackView.addArrangedSubview(lineView)
         }
+    }
+    
+    private func calculateWidthRatio(leg: Leg) -> [Double] {
+        var ratioArray = [Double]()
+        let totalDuration = Double(leg.duration.value)
+        for step in leg.steps {
+            let duration = Double(step.duration.value)
+            let ratio = duration / totalDuration
+            ratioArray.append(ratio)
+        }
+        
+        for i in 0..<ratioArray.count {
+            if ratioArray[i] < 0.1 {
+                ratioArray[i] = 0.1
+            }
+        }
+        let sum = ratioArray.reduce(0, +)
+        if sum != 1 {
+            var difference = sum - 1
+            let numberOfElements = ratioArray.count
+            
+            for i in 0..<numberOfElements {
+                let reduction = min(ratioArray[i] - 0.1, difference/Double(numberOfElements - i))
+                ratioArray[i] -= reduction
+                difference -= reduction
+                
+                if difference <= 0 {
+                    break
+                }
+            }
+        }
+        
+        return ratioArray
     }
     
     private func createStepLineView(durationPercent: Double, color: UIColor, transitType: String) -> StepLineView {
