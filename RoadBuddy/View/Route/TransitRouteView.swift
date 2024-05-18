@@ -59,9 +59,17 @@ final class TransitRouteView: UIView {
         return view
     }()
     
+    private var verticalStepLineView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .gray
+        
+        return view
+    }()
+    
     init(step: Step) {
         super.init(frame: .zero)
-
+        
         backgroundColor = .white
         self.addSubview(shortNameLabel)
         self.addSubview(departureStopLabel)
@@ -69,6 +77,7 @@ final class TransitRouteView: UIView {
         self.addSubview(numStopsLabel)
         self.addSubview(durationLabel)
         self.addSubview(lineView)
+        self.addSubview(verticalStepLineView)
         
         bind(data: step)
         setConstraints()
@@ -87,28 +96,34 @@ final class TransitRouteView: UIView {
         arrivalStopLabel.text = "\(transitDetails.arrivalStop.name) 하차 (\(transitDetails.arrivalTime.text))"
         numStopsLabel.text = "\(transitDetails.numStops)개 이동"
         durationLabel.text = "\(step.duration.text)"
+        verticalStepLineView.backgroundColor = UIColor(hex: color)
     }
     
     private func setConstraints() {
         let safeArea = self.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
+            verticalStepLineView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            verticalStepLineView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            verticalStepLineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            verticalStepLineView.widthAnchor.constraint(equalToConstant: 8),
+            
             shortNameLabel.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
-            shortNameLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-
+            shortNameLabel.leadingAnchor.constraint(equalTo: verticalStepLineView.trailingAnchor, constant: 16),
+            
             departureStopLabel.topAnchor.constraint(equalTo: shortNameLabel.bottomAnchor, constant: 16),
-            departureStopLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-
+            departureStopLabel.leadingAnchor.constraint(equalTo: shortNameLabel.leadingAnchor),
+            
             arrivalStopLabel.topAnchor.constraint(equalTo: departureStopLabel.bottomAnchor, constant: 8),
-            arrivalStopLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-
+            arrivalStopLabel.leadingAnchor.constraint(equalTo: shortNameLabel.leadingAnchor),
+            
             numStopsLabel.topAnchor.constraint(equalTo: arrivalStopLabel.bottomAnchor, constant: 8),
-            numStopsLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-
+            numStopsLabel.leadingAnchor.constraint(equalTo: shortNameLabel.leadingAnchor),
+            
             durationLabel.topAnchor.constraint(equalTo: arrivalStopLabel.bottomAnchor, constant: 8),
             durationLabel.leadingAnchor.constraint(equalTo: numStopsLabel.trailingAnchor, constant: 8),
             
             lineView.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 8),
-            lineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            lineView.leadingAnchor.constraint(equalTo: shortNameLabel.leadingAnchor),
             lineView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             lineView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1),

@@ -62,7 +62,6 @@ final class BottomSheetRouteView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 8
         stackView.backgroundColor = .white
         
         return stackView
@@ -108,7 +107,6 @@ final class BottomSheetRouteView: UIView {
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-//            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor),
             
             durationTimeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
             durationTimeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -124,8 +122,7 @@ final class BottomSheetRouteView: UIView {
             routeDetailStackView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 16),
             routeDetailStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             routeDetailStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            routeDetailStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16) // Added bottom constraint
-                    
+            routeDetailStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
             
         ])
     }
@@ -177,7 +174,7 @@ extension BottomSheetRouteView {
     }
 }
 
-// MARK: - RouteDetail (경로 vertical)
+// MARK: - RouteDetail (vertical 경로)
 
 extension BottomSheetRouteView {
     
@@ -186,21 +183,10 @@ extension BottomSheetRouteView {
         let departureLabel = createPointLabel(address: leg.startAddress)
         routeDetailStackView.addArrangedSubview(departureLabel)
         
-        // TODO: Network에서 body넣은 post 그 데이터로 얻어와야 함. 거기에 제대로 된 transfer_path 있음.
         for step in leg.steps {
             if step.travelMode == TravelType.walking.description {
-                // 환승
-                if 
-                    let transferPath = step.transferPath,
-                    transferPath.isEmpty == false 
-                {
-                    let transferRouteView = createTransferRouteView(transferPath[0])
-                    routeDetailStackView.addArrangedSubview(transferRouteView)
-                } else { // 도보
-                    let walkingRouteView = WalkingRouteView(step: step)
-                    routeDetailStackView.addArrangedSubview(walkingRouteView)
-                }
-            } else { // 지하철, 버스
+                travelModeIsWalking(step: step)
+            } else {    // 지하철, 버스
                 let transitRouteView = TransitRouteView(step: step)
                 routeDetailStackView.addArrangedSubview(transitRouteView)
             }
@@ -209,6 +195,19 @@ extension BottomSheetRouteView {
         // 도착
         let arrivalLabel = createPointLabel(address: leg.endAddress)
         routeDetailStackView.addArrangedSubview(arrivalLabel)
+    }
+    
+    private func travelModeIsWalking(step: Step) {
+        if  // 환승
+            let transferPath = step.transferPath,
+            transferPath.isEmpty == false 
+        {
+            let transferRouteView = createTransferRouteView(transferPath[0])
+            routeDetailStackView.addArrangedSubview(transferRouteView)
+        } else {    // 도보
+            let walkingRouteView = WalkingRouteView(step: step)
+            routeDetailStackView.addArrangedSubview(walkingRouteView)
+        }
     }
     
     private func createTransferRouteView(_ transferPath: Transfer) -> UIStackView {
@@ -227,7 +226,8 @@ extension BottomSheetRouteView {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title3).pointSize)
         label.text = address
-        label.numberOfLines = 1
+        label.numberOfLines = 0 // Allow multiple lines
+        label.lineBreakMode = .byWordWrapping // Wrap text by word
         
         return label
     }

@@ -35,13 +35,21 @@ final class WalkingRouteView: UIView {
         return view
     }()
     
+    private var verticalStepLineView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .gray
+        return view
+    }()
+    
     init(step: Step) {
         super.init(frame: .zero)
-
+        
         backgroundColor = .white
         self.addSubview(distanceLabel)
         self.addSubview(durationLabel)
         self.addSubview(lineView)
+        self.addSubview(verticalStepLineView)
         
         bind(data: step)
         setConstraints()
@@ -59,18 +67,22 @@ final class WalkingRouteView: UIView {
     private func setConstraints() {
         let safeArea = self.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            distanceLabel.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            distanceLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            verticalStepLineView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            verticalStepLineView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            verticalStepLineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            verticalStepLineView.widthAnchor.constraint(equalToConstant: 8),
             
-            durationLabel.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            distanceLabel.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+            distanceLabel.leadingAnchor.constraint(equalTo: verticalStepLineView.trailingAnchor, constant: 16),
+            
+            durationLabel.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
             durationLabel.leadingAnchor.constraint(equalTo: distanceLabel.trailingAnchor, constant: 8),
             
             lineView.topAnchor.constraint(equalTo: durationLabel.bottomAnchor, constant: 8),
-            lineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            lineView.leadingAnchor.constraint(equalTo: distanceLabel.leadingAnchor),
             lineView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             lineView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 1),
-            
         ])
     }
 }

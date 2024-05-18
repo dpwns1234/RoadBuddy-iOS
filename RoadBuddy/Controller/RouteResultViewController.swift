@@ -17,17 +17,22 @@ final class RouteResultViewController: UIViewController {
     private var backButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(.backButton, for: .normal)
-        button.imageView?.contentMode = .center
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 40),
+            button.heightAnchor.constraint(equalToConstant: 40)
+        ])
         
-        button.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
-        
-        // Set the background color to white
         button.backgroundColor = .white
         
         // Make the button circular
-        button.layer.cornerRadius = button.frame.size.width / 2
-        button.clipsToBounds = true
+        button.layer.cornerRadius = 20
+        button.layer.masksToBounds = true
+        
+        button.setImage(.backButton, for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        // Adjust image edge insets to reduce the image size
+        let imageInset: CGFloat = 10 // Adjust as needed to make the image 20x20
+        button.imageEdgeInsets = UIEdgeInsets(top: imageInset, left: imageInset, bottom: imageInset, right: imageInset)
         
         return button
     }()
@@ -207,17 +212,6 @@ extension RouteResultViewController {
         
 //        setMarker(location)
     }
-    
-    func midpointCoordinate(first: CLLocationCoordinate2D, second: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        let latitude = (first.latitude + second.latitude) / 2.0
-        let longitude = (first.longitude + second.longitude) / 2.0
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-    
-    func adjustLatitude(coordinate: CLLocationCoordinate2D, offset: Double) -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: coordinate.latitude - offset, longitude: coordinate.longitude)
-    }
-
     
     private func drawPolyline(steps: [Step]?) {
         guard let steps = steps else { return }
