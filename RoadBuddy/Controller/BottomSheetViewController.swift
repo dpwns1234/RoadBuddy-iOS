@@ -21,7 +21,6 @@ final class BottomSheetViewController: UIViewController {
     
     private let addressRepository = UserDefaultRepository<Address>()
     private let transferDataService = TransferDataService()
-    
     private var place: Address?
     
     init(addressData: Address) {
@@ -46,7 +45,6 @@ final class BottomSheetViewController: UIViewController {
         
         transferDataService.delegate = self
         
-        // TODO: 나중에 합쳐서 test해보기 + loadIfNeed()도 없애보고,
         DispatchQueue.main.async {
             self.loadingIndicator.startAnimating()
         }

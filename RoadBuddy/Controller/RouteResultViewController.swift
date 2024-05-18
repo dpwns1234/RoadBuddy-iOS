@@ -13,7 +13,6 @@ final class RouteResultViewController: UIViewController {
     
     // MARK: - UI Properties
     
-    // TODO: 네비게이션 백버튼만 사용하던가(단독으로 사용할 수 있을진 모르겠음) / 동그라미 만들어서 배치 하던가
     private var backButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -30,8 +29,7 @@ final class RouteResultViewController: UIViewController {
         
         button.setImage(.backButton, for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
-        // Adjust image edge insets to reduce the image size
-        let imageInset: CGFloat = 10 // Adjust as needed to make the image 20x20
+        let imageInset: CGFloat = 10
         button.imageEdgeInsets = UIEdgeInsets(top: imageInset, left: imageInset, bottom: imageInset, right: imageInset)
         
         return button
