@@ -185,7 +185,7 @@ extension BottomSheetRouteView {
     }
     
     private func createStepLineView(durationPercent: Double, color: UIColor, transitType: String) -> StepLineView {
-        let view = StepLineView(frame: CGRect(x: 0, y: 0, width: routeLineStackView.bounds.width, height: routeLineStackView.bounds.height))
+        let view = StepLineView(frame: CGRect(x: 0, y: 0, width: routeLineStackView.bounds.width * durationPercent, height: routeLineStackView.bounds.height))
         view.backgroundColor = .white
         view.lineColor = color
         view.image = UIImage(named: transitType)
@@ -224,24 +224,12 @@ extension BottomSheetRouteView {
             let transferPath = step.transferPath,
             transferPath.isEmpty == false 
         {
-            let transferRouteView = createTransferRouteView(transferPath[0])
+            let transferRouteView = TransferRouteView(transferPath: transferPath[0])
             routeDetailStackView.addArrangedSubview(transferRouteView)
         } else {    // 도보
             let walkingRouteView = WalkingRouteView(step: step)
             routeDetailStackView.addArrangedSubview(walkingRouteView)
         }
-    }
-    
-    private func createTransferRouteView(_ transferPath: Transfer) -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        for path in transferPath.mvContDtl {
-            let pathLabel = UILabel()
-            pathLabel.text = path
-            stackView.addArrangedSubview(pathLabel)
-        }
-        
-        return stackView
     }
     
     private func createPointLabel(address: String) -> UILabel {
