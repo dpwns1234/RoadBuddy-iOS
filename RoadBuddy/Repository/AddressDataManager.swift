@@ -16,6 +16,7 @@ final class AddressDataManager {
     
     // MARK: Private property
     private let searchDataService = SearchDataService()
+    private let locationRepository = UserDefaultRepository<Location>()
     
     // MARK: Data
     private var address: [Address]?
@@ -26,7 +27,8 @@ final class AddressDataManager {
 
     func fetchData(input: String) {
         do {
-            try searchDataService.convertData(type: .address(search: input))
+            guard let location = locationRepository.fetch(type: "currentLocation") else { return }
+            try searchDataService.convertData(type: .address(search: input, currentLocatoin: location))
         } catch {
             print(error)
         }

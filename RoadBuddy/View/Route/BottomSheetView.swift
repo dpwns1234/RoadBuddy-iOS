@@ -94,10 +94,12 @@ final class BottomSheetView: UIView {
         
         self.backgroundColor = .white
         titleLabel.text = model.title
-        // TODO: 거리는 해결해야함.
         addressLabel.text = model.address
         categoryLabel.text = model.category
-        distanceLabel.text = "0"
+        
+        let distance = model.geocoding.addresses[0].distance/1000
+        let formattedDistance = String(format: "%.1f", distance)
+        distanceLabel.text = "\(formattedDistance)km"
         
         self.addSubview(titleLabel)
         self.addSubview(categoryLabel)

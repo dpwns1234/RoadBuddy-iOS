@@ -38,7 +38,6 @@ final class MainViewController: UIViewController {
     
     private var mapView: GMSMapView!
     private var locationManager: CLLocationManager!
-    private var currentLocation: CLLocation?
     private var placesClient: GMSPlacesClient!
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
@@ -60,7 +59,6 @@ final class MainViewController: UIViewController {
     private func initializeLocationManager() {
         locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest // 이거 실제 기기에서 테스트, 느리지 않는지
-        
         locationManager.requestWhenInUseAuthorization()
         locationManager.distanceFilter = 50 // 50m 이동해야지만 업데이트 제공
         locationManager.startUpdatingLocation()
@@ -78,21 +76,26 @@ extension MainViewController: GMSMapViewDelegate {
 //    }
 }
 
+// MARK: - CLLocationManagerDelegate
+
 extension MainViewController: CLLocationManagerDelegate {
     
     // Handle incoming location events.
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location: CLLocation = locations.last!
-        print("Location: \(location)")
+        let repository = UserDefaultRepository<Location>()
+        let location = locations.last!.coordinate
+        let data = Location(lat: location.latitude, lng: location.longitude)
+        repository.save(data: data)
         
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
-        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
+        let camera = GMSCameraPosition.camera(withLatitude: location.latitude, longitude: location.longitude, zoom: zoomLevel)
+        mapView.animate(to: camera)
+        locationManager.stopUpdatingLocation()
     }
     
     // Handle authorization for the location manager.
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         
-        // Handle authorization status
         switch status {
         case .restricted:
             print("Location access was restricted.")
@@ -118,7 +121,8 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
-// MARK: - Alerts
+// MARK: - Location Authorization Alerts
+
 extension MainViewController {
     
     func showRequestLocationServiceAlert() {
@@ -143,6 +147,8 @@ extension MainViewController {
     }
 }
 
+// MARK: - UISearchBarDelegate
+
 extension MainViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         moveSearchViewController()
@@ -158,7 +164,6 @@ extension MainViewController {
         configureMapView()
         
         self.view.addSubview(searchBarTextField)
-//        self.view.addSubview(findingWayButton)
         setConstraints()
     }
     

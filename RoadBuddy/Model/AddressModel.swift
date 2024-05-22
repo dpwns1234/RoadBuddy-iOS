@@ -36,6 +36,7 @@ struct Geocoding: Codable, Hashable {
 struct GeocodingAddress: Codable, Hashable {
     let lat: String // lng
     let lng: String // lat
+    let distance: Double
     var locatoin: Location {
         Location(lat: Double(lat)!, lng: Double(lng)!)
     }
@@ -43,6 +44,7 @@ struct GeocodingAddress: Codable, Hashable {
     enum CodingKeys: String, CodingKey {
         case lat = "y"
         case lng = "x"
+        case distance
     }
 }
 

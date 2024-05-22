@@ -9,7 +9,7 @@ import Foundation
 
 enum ServiceType {
     case geocoding(address: String)
-    case address(search: String)
+    case address(search: String, currentLocatoin: Location)
     case direction(departureLat: Double, departureLon: Double, arrivalLat: Double, arrivalLon: Double)
     case transfer
     case icon(code: String)
@@ -45,12 +45,14 @@ enum ServiceType {
     
     var queryItems: [URLQueryItem] {
         switch self {
-        case .geocoding(let location):
-            let queryItem = URLQueryItem(name: "query", value: String(location))
+        case .geocoding(let address):
+            let queryItem = URLQueryItem(name: "query", value: String(address))
             return [queryItem]
-        case .address(let search):
-            let queryItem = URLQueryItem(name: "query", value: search)
-            return [queryItem]
+        case .address(let search, let location):
+            let searchItem = URLQueryItem(name: "query", value: search)
+            let latitudeItem = URLQueryItem(name: "coordinate.latitude", value: String(location.lat))
+            let longitudeItem = URLQueryItem(name: "coordinate.longitude", value: String(location.lng))
+            return [searchItem, latitudeItem, longitudeItem]
         case .direction(let departureLat, let departureLon, let arrivalLat, let arrivalLon):
             let departureLatItem = URLQueryItem(name: "origin.latitude", value: String(departureLat))
             let departureLonItem = URLQueryItem(name: "origin.longitude", value: String(departureLon))

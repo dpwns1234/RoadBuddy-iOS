@@ -25,6 +25,8 @@ final class UserDefaultRepository<T: Codable> {
             } else {
                 UserDefaults.standard.set(encoded, forKey: address.type!)
             }
+        case is Location:
+            UserDefaults.standard.setValue(encoded, forKey: "currentLocation")
         default:
             print("default")
         }
@@ -40,6 +42,8 @@ final class UserDefaultRepository<T: Codable> {
             data = UserDefaults.standard.object(forKey: "departure") as? Data
         case "arrival":
             data = UserDefaults.standard.object(forKey: "arrival") as? Data
+        case "currentLocation":
+            data = UserDefaults.standard.object(forKey: "currentLocation") as? Data
         default:
             data = nil
         }

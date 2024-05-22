@@ -15,8 +15,7 @@ final class DetailAddressCollectionViewCell: UICollectionViewListCell {
         config.title = item.title
         config.address = item.address
         config.category = item.category
-        // TODO: 거리는 해결해야 함.
-        config.distance = 0
+        config.distance = Double(item.geocoding.addresses[0].distance)
         self.contentConfiguration = config
     }
 }

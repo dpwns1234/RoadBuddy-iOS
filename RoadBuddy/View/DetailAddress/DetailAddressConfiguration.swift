@@ -11,7 +11,7 @@ struct DetailAddressConfiguration: UIContentConfiguration {
     var title: String?
     var address: String?
     var category: String?
-    var distance: Int?
+    var distance: Double?
     
     func makeContentView() -> UIView & UIContentView {
         return DetailAddressContentView(configuration: self)
