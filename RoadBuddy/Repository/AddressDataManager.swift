@@ -27,7 +27,7 @@ final class AddressDataManager {
 
     func fetchData(input: String) {
         do {
-            guard let location = locationRepository.fetch(type: "currentLocation") else { return }
+            let location = locationRepository.fetch(type: "currentLocation")
             try searchDataService.convertData(type: .address(search: input, currentLocatoin: location))
         } catch {
             print(error)
