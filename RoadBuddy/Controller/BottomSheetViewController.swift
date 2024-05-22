@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import CoreLocation
+
+protocol BottomSheetViewControllerDelegate: AnyObject {
+    func setSteepSlope(didLoad leg: Leg)
+    func updateCamera(path fromEncodedPath: String)
+}
 
 final class BottomSheetViewController: UIViewController {
     weak var delegate: SearchResultDelegate?
-    weak var routeResultDelegate: RouteResultDelegate?
+    weak var routeResultDelegate: BottomSheetViewControllerDelegate?
     
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -91,12 +97,20 @@ extension BottomSheetViewController: TransferDataServiceDelegate {
         routeResultDelegate?.setSteepSlope(didLoad: leg)
         DispatchQueue.main.async {
             self.loadingIndicator.stopAnimating()
-            self.modalView = BottomSheetRouteView(leg: leg)
+            let bottomSheetRouteView = BottomSheetRouteView(leg: leg)
+            bottomSheetRouteView.delegate = self
+            self.modalView = bottomSheetRouteView
             self.view = self.modalView
             self.loadViewIfNeeded()
-            
-            
         }
     }
+}
+
+// MARK: - BottomSheetRouteDelegate
+
+extension BottomSheetViewController: BottomSheetRouteDelegate {
     
+    func updateCamera(path fromEncodedPath: String) {
+        routeResultDelegate?.updateCamera(path: fromEncodedPath)
+    }
 }

@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol BottomSheetRouteDelegate: AnyObject {
+    func updateCamera(path fromEncodedPath: String)
+}
+
 final class BottomSheetRouteView: UIView {
+    weak var delegate: BottomSheetRouteDelegate?
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -197,12 +202,19 @@ extension BottomSheetRouteView {
         routeDetailStackView.addArrangedSubview(departureLabel)
         
         for step in leg.steps {
+            let stepView: UIView
             if step.travelMode == TravelType.walking.description {
-                travelModeIsWalking(step: step)
+                stepView = travelModeIsWalking(step: step)
             } else {    // 지하철, 버스
-                let transitRouteView = TransitRouteView(step: step)
-                routeDetailStackView.addArrangedSubview(transitRouteView)
+                stepView = TransitRouteView(step: step)
             }
+            
+            let tapGesture = CustomTapGestureRecognizer(target: self, action: #selector(viewTapped))
+            tapGesture.step = step
+            stepView.isUserInteractionEnabled = true
+            stepView.addGestureRecognizer(tapGesture)
+            
+            routeDetailStackView.addArrangedSubview(stepView)
         }
         
         // 도착
@@ -210,16 +222,16 @@ extension BottomSheetRouteView {
         routeDetailStackView.addArrangedSubview(arrivalLabel)
     }
     
-    private func travelModeIsWalking(step: Step) {
+    private func travelModeIsWalking(step: Step) -> UIView {
         if  // 환승
             let transferPath = step.transferPath,
             transferPath.isEmpty == false 
         {
             let transferRouteView = TransferRouteView(transferPath: transferPath[0])
-            routeDetailStackView.addArrangedSubview(transferRouteView)
+            return transferRouteView
         } else {    // 도보
             let walkingRouteView = WalkingRouteView(step: step)
-            routeDetailStackView.addArrangedSubview(walkingRouteView)
+            return walkingRouteView
         }
     }
     
@@ -244,3 +256,27 @@ extension BottomSheetRouteView {
         return stackView
     }
 }
+
+// MARK: - UITapGestureRecognizer
+
+extension BottomSheetRouteView {
+    
+    final class CustomTapGestureRecognizer: UITapGestureRecognizer {
+        var step: Step?
+    }
+    
+    @objc
+    func viewTapped(_ sender: CustomTapGestureRecognizer) {
+        guard let tappedView = sender.view else { return }
+        let originalColor = tappedView.backgroundColor
+        tappedView.backgroundColor = .lightGray
+        UIView.animate(withDuration: 0.7, animations: {
+            tappedView.backgroundColor = originalColor
+        })
+        
+        if let step = sender.step {
+            delegate?.updateCamera(path: step.polyline.points)
+        }
+    }
+}
+
