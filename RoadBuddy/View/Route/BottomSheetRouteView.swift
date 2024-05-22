@@ -154,32 +154,23 @@ extension BottomSheetRouteView {
     private func calculateWidthRatio(leg: Leg) -> [Double] {
         var ratioArray = [Double]()
         let totalDuration = Double(leg.duration.value)
-        for step in leg.steps {
+        var maxRatio = 0.0
+        var maxRatioIndex = 0
+        for (index, step) in leg.steps.enumerated() {
             let duration = Double(step.duration.value)
             let ratio = duration / totalDuration
             ratioArray.append(ratio)
+            
+            if ratio > maxRatio {
+                maxRatio = ratio
+                maxRatioIndex = index
+            }
         }
         
-        for i in 0..<ratioArray.count {
-            if ratioArray[i] < 0.1 {
-                ratioArray[i] = 0.1
-            }
-        }
+        ratioArray = ratioArray.map { max($0, 0.1) }
         let sum = ratioArray.reduce(0, +)
-        if sum != 1 {
-            var difference = sum - 1
-            let numberOfElements = ratioArray.count
-            
-            for i in 0..<numberOfElements {
-                let reduction = min(ratioArray[i] - 0.1, difference/Double(numberOfElements - i))
-                ratioArray[i] -= reduction
-                difference -= reduction
-                
-                if difference <= 0 {
-                    break
-                }
-            }
-        }
+        var difference = sum - 1
+        ratioArray[maxRatioIndex] -= difference
         
         return ratioArray
     }
@@ -202,7 +193,7 @@ extension BottomSheetRouteView {
     
     private func addRouteDetailView(_ leg: Leg) {
         // 출발
-        let departureLabel = createPointLabel(address: leg.startAddress)
+        let departureLabel = RoutePointView(address: leg.startAddress, color: Hansung.blue.color)
         routeDetailStackView.addArrangedSubview(departureLabel)
         
         for step in leg.steps {
@@ -215,7 +206,7 @@ extension BottomSheetRouteView {
         }
         
         // 도착
-        let arrivalLabel = createPointLabel(address: leg.endAddress)
+        let arrivalLabel = RoutePointView(address: leg.endAddress, color: .red)
         routeDetailStackView.addArrangedSubview(arrivalLabel)
     }
     
@@ -230,16 +221,6 @@ extension BottomSheetRouteView {
             let walkingRouteView = WalkingRouteView(step: step)
             routeDetailStackView.addArrangedSubview(walkingRouteView)
         }
-    }
-    
-    private func createPointLabel(address: String) -> UILabel {
-        let label = UILabel()
-        label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title3).pointSize)
-        label.text = address
-        label.numberOfLines = 0 // Allow multiple lines
-        label.lineBreakMode = .byWordWrapping // Wrap text by word
-        
-        return label
     }
     
     private func createWalkingRouteView(step: Step) -> UIStackView {
