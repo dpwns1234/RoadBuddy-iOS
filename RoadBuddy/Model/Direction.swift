@@ -56,8 +56,9 @@ struct Step: Hashable, Codable {
     let polyline: Polyline
     let transitDetails: Transit?
     let travelMode: String // "TRANSIT"
-    let steps: Array<Step>?
+    let steps: [Step]?
     let transferPath: Array<Transfer>?
+    let steepSlopes: [SteepSlope]?
     
     enum CodingKeys: String, CodingKey {
         case distance
@@ -69,7 +70,14 @@ struct Step: Hashable, Codable {
         case travelMode = "travel_mode"
         case steps
         case transferPath = "transfer_path"
+        case steepSlopes = "steep_slope"
     }
+}
+
+struct SteepSlope: Hashable, Codable {
+    let shortAddress: String
+    let latitude: Double
+    let longitude: Double
 }
 
 struct Transfer: Hashable, Codable {
