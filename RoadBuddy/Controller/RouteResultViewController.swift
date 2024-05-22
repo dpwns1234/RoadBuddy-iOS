@@ -213,8 +213,8 @@ extension RouteResultViewController {
         let update = GMSCameraUpdate.fit(bounds, with: insets)
         mapView.moveCamera(update)
         
-        setMarker(departureCoordinate)
-        setMarker(arrivalCoordinate)
+        setMarker(departureCoordinate, color: Hansung.blue.color)
+        setMarker(arrivalCoordinate, color: .red)
     }
     
     private func drawPolyline(steps: [Step]?) {
@@ -245,11 +245,11 @@ extension RouteResultViewController {
         polyline.zIndex = 1
     }
     
-    private func setMarker(_ pointCoordinate: CLLocationCoordinate2D) {
+    private func setMarker(_ pointCoordinate: CLLocationCoordinate2D, color: UIColor) {
         let marker = GMSMarker()
         marker.position = pointCoordinate
         marker.title = "출발"
-        marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
+        marker.icon = GMSMarker.markerImage(with: color)
         marker.map = mapView
     }
     

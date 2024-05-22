@@ -8,6 +8,12 @@
 import UIKit
 
 final class RouteViewController: UIViewController {
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        
+        return indicator
+    }()
     
     private lazy var routeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
@@ -32,6 +38,7 @@ final class RouteViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.addSubview(routeCollectionView)
+        self.view.addSubview(loadingIndicator)
         configureSearchDataSource()
         setConstraints()
         directionDataManager.delegate = self
@@ -39,6 +46,7 @@ final class RouteViewController: UIViewController {
         let departure = addressRepository.fetch(type: "departure")
         let arrival = addressRepository.fetch(type: "arrival")
         if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
+            loadingIndicator.startAnimating()
             directionDataManager.fetchDirection(
                 departure: departure!.geocoding.addresses[0].locatoin,
                 arrival: arrival!.geocoding.addresses[0].locatoin
@@ -88,6 +96,9 @@ extension RouteViewController: DirectionDataManagerDelegate {
         var snapshot = routeDataSource.snapshot()
         snapshot.appendItems(direction.data.routes)
         routeDataSource.apply(snapshot)
+        DispatchQueue.main.async {
+            self.loadingIndicator.stopAnimating()
+        }
     }
 }
 
@@ -115,6 +126,9 @@ extension RouteViewController {
             routeCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             routeCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             routeCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),
+            
+            loadingIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            loadingIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             
         ])
     }
