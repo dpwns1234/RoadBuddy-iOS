@@ -126,7 +126,7 @@ extension RouteResultViewController {
         view.addSubview(mapView)
         
         let bounds = GMSCoordinateBounds(coordinate: departureCoordinate, coordinate: arrivalCoordinate)
-        let insets = UIEdgeInsets(top: 0.0, left: 100.0, bottom: 400.0, right: 100.0)
+        let insets = UIEdgeInsets(top: 50.0, left: 150.0, bottom: 450.0, right: 150.0)
         let update = GMSCameraUpdate.fit(bounds, with: insets)
         mapView.moveCamera(update)
         
@@ -200,7 +200,7 @@ extension RouteResultViewController: BottomSheetViewControllerDelegate {
     func updateCamera(path fromEncodedPath: String) {
         guard let path = GMSPath(fromEncodedPath: fromEncodedPath) else { return }
         let bounds = GMSCoordinateBounds(path: path)
-        let insets = UIEdgeInsets(top: 0.0, left: 100.0, bottom: 400.0, right: 100.0)
+        let insets = UIEdgeInsets(top: 50.0, left: 150.0, bottom: 450.0, right: 150.0)
         let update = GMSCameraUpdate.fit(bounds, with: insets)
         mapView.animate(with: update)
     }
