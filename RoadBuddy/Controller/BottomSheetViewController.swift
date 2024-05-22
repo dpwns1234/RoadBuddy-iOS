@@ -9,6 +9,7 @@ import UIKit
 
 final class BottomSheetViewController: UIViewController {
     weak var delegate: SearchResultDelegate?
+    weak var routeResultDelegate: RouteResultDelegate?
     
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -63,11 +64,11 @@ final class BottomSheetViewController: UIViewController {
         if sender == modalView.departureButton {
             place.type = "departure"
             addressRepository.save(data: place)
-            delegate?.moveRouteViewController()
+            delegate?.moveTabBarViewController()
         } else {
             place.type = "arrival"
             addressRepository.save(data: place)
-            delegate?.moveRouteViewController()
+            delegate?.moveTabBarViewController()
         }
     }
     
@@ -85,11 +86,16 @@ final class BottomSheetViewController: UIViewController {
 extension BottomSheetViewController: TransferDataServiceDelegate {
     
     func legDataService(_ service: TransferDataService, didDownlad leg: Leg) {
+        
+        // 여기서 RouteResultVC에 급경사로 리스트 보내주기가 아닌 Leg 데이터 보내주기
+        routeResultDelegate?.setSteepSlope(didLoad: leg)
         DispatchQueue.main.async {
             self.loadingIndicator.stopAnimating()
             self.modalView = BottomSheetRouteView(leg: leg)
             self.view = self.modalView
             self.loadViewIfNeeded()
+            
+            
         }
     }
     

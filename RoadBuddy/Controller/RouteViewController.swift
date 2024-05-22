@@ -7,72 +7,7 @@
 
 import UIKit
 
-// TODO: UserDefault로 검색 주소 위경도로 서치하기
-
 final class RouteViewController: UIViewController {
-    
-    // MARK: - UI Properties
-    
-    private lazy var textFieldStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.addArrangedSubview(departureTextField)
-        stackView.addArrangedSubview(arrivalTextField)
-        stackView.spacing = 4
-        
-        return stackView
-    }()
-    
-    // TODO: 텍스트 필드일 필요가 없을 수 있겠다.
-    private var departureTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "출발지"
-        textField.clearButtonMode = .whileEditing
-        textField.backgroundColor = Hansung.lightGrey.color
-        textField.addLeftPadding()
-        
-        return textField
-    }()
-    
-    private var arrivalTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "도착지"
-        textField.clearButtonMode = .whileEditing
-        textField.backgroundColor = Hansung.lightGrey.color
-        textField.addLeftPadding()
-        
-        return textField
-    }()
-    
-    private var tradeButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(.trade, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        
-        return button
-    }()
-    
-    private var xButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(.xButton, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        
-        return button
-    }()
-    
-    private var stackViewUnderLineView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.lightGray
-        
-        return view
-    }()
     
     private lazy var routeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
@@ -89,58 +24,26 @@ final class RouteViewController: UIViewController {
     private var routeDataSource: RouteDataSource!
     
     private let directionDataManager = DirectionDataManager()
-    private let addressRepository = UserDefaultRepository<Address>()
     
+    private let addressRepository = UserDefaultRepository<Address>()
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        attachView()
+        self.view.addSubview(routeCollectionView)
         configureSearchDataSource()
         setConstraints()
-        setAction()
         directionDataManager.delegate = self
         
         let departure = addressRepository.fetch(type: "departure")
         let arrival = addressRepository.fetch(type: "arrival")
-        departureTextField.text = departure?.title
-        arrivalTextField.text = arrival?.title
         if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
             directionDataManager.fetchDirection(
                 departure: departure!.geocoding.addresses[0].locatoin,
                 arrival: arrival!.geocoding.addresses[0].locatoin
             )
         }
-    }
-    
-    private func attachView() {
-        self.view.backgroundColor = .white
-        self.view.addSubview(tradeButton)
-        self.view.addSubview(textFieldStackView)
-        self.view.addSubview(xButton)
-        self.view.addSubview(routeCollectionView)
-        self.view.addSubview(stackViewUnderLineView)
-    }
-    
-    private func setAction() {
-        // tradeButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
-        xButton.addTarget(self, action: #selector(touchedXButton), for: .touchUpInside)
-        departureTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
-        arrivalTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
-    }
-    
-    @objc
-    private func touchedDirectionTextField() {
-        let searchViewController = SearchViewController()
-        self.navigationController?.pushViewController(searchViewController, animated: true)
-    }
-    
-    @objc
-    private func touchedXButton() {
-        UserDefaults.standard.removeObject(forKey: "departure")
-        UserDefaults.standard.removeObject(forKey: "arrival")
-        self.navigationController?.popToRootViewController(animated: false)
     }
 }
 
@@ -208,27 +111,7 @@ extension RouteViewController {
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            tradeButton.centerYAnchor.constraint(equalTo: textFieldStackView.centerYAnchor),
-            tradeButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
-            tradeButton.widthAnchor.constraint(equalToConstant: 12),
-            tradeButton.heightAnchor.constraint(equalToConstant: 12),
-            
-            textFieldStackView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            textFieldStackView.leadingAnchor.constraint(equalTo: tradeButton.trailingAnchor, constant: 8),
-            textFieldStackView.trailingAnchor.constraint(equalTo: xButton.leadingAnchor, constant: -8),
-            textFieldStackView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.08),
-            
-            xButton.centerYAnchor.constraint(equalTo: departureTextField.centerYAnchor),
-            xButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
-            xButton.widthAnchor.constraint(equalToConstant: 12),
-            xButton.heightAnchor.constraint(equalToConstant: 12),
-            
-            stackViewUnderLineView.topAnchor.constraint(equalTo: textFieldStackView.bottomAnchor, constant: 8),
-            stackViewUnderLineView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            stackViewUnderLineView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            stackViewUnderLineView.heightAnchor.constraint(equalToConstant: 1),
-            
-            routeCollectionView.topAnchor.constraint(equalTo: stackViewUnderLineView.bottomAnchor),
+            routeCollectionView.topAnchor.constraint(equalTo: safeArea.topAnchor),
             routeCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             routeCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             routeCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -8),

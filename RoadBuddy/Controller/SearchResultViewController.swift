@@ -10,7 +10,7 @@ import GoogleMaps
 import GooglePlaces
 
 protocol SearchResultDelegate: AnyObject {
-    func moveRouteViewController()
+    func moveTabBarViewController()
 }
 
 final class SearchResultViewController: UIViewController {
@@ -144,11 +144,11 @@ final class SearchResultViewController: UIViewController {
 
 extension SearchResultViewController: SearchResultDelegate {
     
-    func moveRouteViewController() {
+    func moveTabBarViewController() {
         guard var controllers = navigationController?.viewControllers else { return }
-        let routeViewController = RouteViewController()
+        let tabBarViewController = TabBarViewController()
         controllers.removeSubrange(1...)
-        controllers.append(routeViewController)
+        controllers.append(tabBarViewController)
         self.navigationController?.setViewControllers(controllers, animated: true)
     }
 }

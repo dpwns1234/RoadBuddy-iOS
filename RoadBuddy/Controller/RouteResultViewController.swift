@@ -9,6 +9,10 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
+protocol RouteResultDelegate: AnyObject {
+    func setSteepSlope(didLoad leg: Leg)
+}
+
 final class RouteResultViewController: UIViewController {
     
     // MARK: - UI Properties
@@ -62,12 +66,12 @@ final class RouteResultViewController: UIViewController {
         configureUI()
         drawPolyline(steps: leg?.steps)
         
-        backButton.addTarget(self, action: #selector(moveRouteViewController), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(moveTabBarViewController), for: .touchUpInside)
         displayBottomSheet()
     }
     
     @objc
-    private func moveRouteViewController() {
+    private func moveTabBarViewController() {
         dismiss(animated: false)
         navigationController?.popViewController(animated: false)
     }
@@ -86,6 +90,7 @@ final class RouteResultViewController: UIViewController {
     
     private func displayBottomSheet() {
         let bottomVC = BottomSheetViewController(leg: leg!)
+        bottomVC.routeResultDelegate = self
         if let sheet = bottomVC.sheetPresentationController {
             let zero = UISheetPresentationController.Detent.custom { context in
                 let screenSize = UIScreen.main.bounds.size
@@ -193,8 +198,8 @@ extension RouteResultViewController {
             print("leg is nil!")
             return
         }
-        let departureLocation = CLLocationCoordinate2D(latitude: startLocation.lat, longitude: startLocation.lng)
-        let arrivalLocation = CLLocationCoordinate2D(latitude: endLocation.lat, longitude: endLocation.lng)
+        let departureCoordinate = CLLocationCoordinate2D(latitude: startLocation.lat, longitude: startLocation.lng)
+        let arrivalCoordinate = CLLocationCoordinate2D(latitude: endLocation.lat, longitude: endLocation.lng)
         
         mapView = GMSMapView()
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -203,12 +208,13 @@ extension RouteResultViewController {
         mapView.delegate = self
         view.addSubview(mapView)
         
-        let bounds = GMSCoordinateBounds(coordinate: departureLocation, coordinate: arrivalLocation)
+        let bounds = GMSCoordinateBounds(coordinate: departureCoordinate, coordinate: arrivalCoordinate)
         let insets = UIEdgeInsets(top: 0.0, left: 100.0, bottom: 400.0, right: 100.0)
         let update = GMSCameraUpdate.fit(bounds, with: insets)
         mapView.moveCamera(update)
         
-//        setMarker(location)
+        setMarker(departureCoordinate)
+        setMarker(arrivalCoordinate)
     }
     
     private func drawPolyline(steps: [Step]?) {
@@ -239,10 +245,9 @@ extension RouteResultViewController {
         polyline.zIndex = 1
     }
     
-    // TODO: 마커도 출발지, 도착지, 급경사지 다 체크
-    private func setMarker(_ location: Location) {
+    private func setMarker(_ pointCoordinate: CLLocationCoordinate2D) {
         let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
+        marker.position = pointCoordinate
         marker.title = "출발"
         marker.icon = GMSMarker.markerImage(with: Hansung.darkBlue.color)
         marker.map = mapView
@@ -262,5 +267,29 @@ extension RouteResultViewController {
             mapView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
             
         ])
+    }
+}
+
+// MARK: - RouteResultDelegate
+
+extension RouteResultViewController: RouteResultDelegate {
+    
+    func setSteepSlope(didLoad leg: Leg) {
+        DispatchQueue.main.async {
+            self.setMarker(steps: leg.steps)
+        }
+    }
+    
+    private func setMarker(steps: [Step]) {
+        for step in steps {
+            guard let steepSlopes = step.steepSlopes else { continue }
+            for steepSlope in steepSlopes {
+                let marker = GMSMarker()
+                marker.position = CLLocationCoordinate2D(latitude: steepSlope.latitude, longitude: steepSlope.longitude)
+                marker.title = steepSlope.shortAddress
+                marker.icon = GMSMarker.markerImage(with: .yellow)
+                marker.map = self.mapView
+            }
+        }
     }
 }
