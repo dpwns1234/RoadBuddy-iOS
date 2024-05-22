@@ -169,7 +169,7 @@ class TabBarViewController: UIViewController {
         case 0:
             selectedViewController = RouteViewController()
         case 1:
-            selectedViewController = SecondViewController()
+            selectedViewController = TaxiViewController()
         default:
             return
         }
@@ -236,31 +236,5 @@ extension TabBarViewController {
             containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
         ])
-    }
-}
-
-
-class FirstViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .red
-    }
-}
-
-
-class SecondViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .green
-    }
-}
-
-class ThirdViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .blue
     }
 }
