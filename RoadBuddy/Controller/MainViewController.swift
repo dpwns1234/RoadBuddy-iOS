@@ -16,26 +16,6 @@ final class MainViewController: UIViewController {
         return textField
     }()
     
-    private var findingWayButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemBlue
-        button.layer.cornerRadius = 10
-        button.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        // 그림자 효과
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-        button.layer.shadowOpacity = 0.2
-        button.layer.shadowRadius = 2.0
-        
-        let image = UIImage(named: "direction")
-        button.setImage(image, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        return button
-    }()
-    
     private var mapView: GMSMapView!
     private var locationManager: CLLocationManager!
     private var placesClient: GMSPlacesClient!

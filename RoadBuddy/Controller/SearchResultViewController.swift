@@ -68,7 +68,6 @@ final class SearchResultViewController: UIViewController {
     
     private var mapView: GMSMapView!
     private var locationManager: CLLocationManager!
-    private var currentLocation: CLLocation?
     private var placesClient: GMSPlacesClient!
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
@@ -118,7 +117,6 @@ final class SearchResultViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.distanceFilter = 50 // 50m 이동해야지만 업데이트 제공
         locationManager.startUpdatingLocation()
-        locationManager.delegate = self
         
         placesClient = GMSPlacesClient.shared()
     }
@@ -153,79 +151,6 @@ extension SearchResultViewController: SearchResultDelegate {
     }
 }
 
-extension SearchResultViewController: GMSMapViewDelegate {
-//    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-//        // TODO: 권한 분기처리
-////        showRequestLocationServiceAlert()
-//        return true
-//    }
-}
-
-extension SearchResultViewController: CLLocationManagerDelegate {
-    
-    // Handle incoming location events.
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location: CLLocation = locations.last!
-        print("Location: \(location)")
-        
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
-        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
-    }
-    
-    // Handle authorization for the location manager.
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        
-        // Handle authorization status
-        switch status {
-        case .restricted:
-            print("Location access was restricted.")
-            showLocationRestrictedAlert()
-        case .denied:
-            print("User denied access to location.")
-            showRequestLocationServiceAlert()
-        case .notDetermined:
-            print("Location status not determined.")
-            manager.requestWhenInUseAuthorization()
-        case .authorizedAlways: fallthrough
-        case .authorizedWhenInUse:
-            print("Location status is OK.")
-        default:
-            fatalError()
-        }
-    }
-    
-    // Handle location manager errors.
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        locationManager.stopUpdatingLocation()
-        print("Error: \(error)")
-    }
-}
-
-// MARK: - Alerts
-extension SearchResultViewController {
-    
-    func showRequestLocationServiceAlert() {
-        let requestLocationServiceAlert = UIAlertController(title: "위치 정보 이용", message: "위치 서비스를 사용할 수 없습니다.\n디바이스의 '설정 > 개인정보 보호'에서 위치 서비스를 켜주세요.", preferredStyle: .alert)
-        let goSetting = UIAlertAction(title: "설정으로 이동", style: .destructive) { _ in
-            if let appSetting = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(appSetting)
-            }
-        }
-        let cancel = UIAlertAction(title: "취소", style: .default)
-        requestLocationServiceAlert.addAction(cancel)
-        requestLocationServiceAlert.addAction(goSetting)
-        
-        present(requestLocationServiceAlert, animated: true)
-    }
-    
-    func showLocationRestrictedAlert() {
-        let locationRestrictedAlert = UIAlertController(title: "위치 제한 구역", message: "위치 서비스를 제한하는 구역에 있습니다.\n다시 시도해주세요.", preferredStyle: .alert)
-        
-        let ok = UIAlertAction(title: "확인", style: .default)
-        locationRestrictedAlert.addAction(ok)
-    }
-}
-
 // MARK: - Configure Layout
 
 extension SearchResultViewController {
@@ -250,7 +175,6 @@ extension SearchResultViewController {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.settings.myLocationButton = true
         mapView.isMyLocationEnabled = true
-        mapView.delegate = self
         
         setMarker(location)
         view.addSubview(mapView)
