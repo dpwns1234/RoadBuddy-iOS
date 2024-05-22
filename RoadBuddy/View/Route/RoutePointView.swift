@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleMaps
 
 final class RoutePointView: UIView {
     private var pointImageView: UIImageView = {
@@ -53,58 +54,9 @@ final class RoutePointView: UIView {
             
             addressLabel.centerYAnchor.constraint(equalTo: pointImageView.centerYAnchor),
             addressLabel.leadingAnchor.constraint(equalTo: pointImageView.trailingAnchor, constant: 16),
-            addressLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: 8),
+            addressLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             addressLabel.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -16),
             
         ])
-    }
-}
-
-
-class MapMarkerView: UIView {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .clear
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.backgroundColor = .clear
-    }
-    
-    override func draw(_ rect: CGRect) {
-        // Drawing the marker
-        guard let context = UIGraphicsGetCurrentContext() else { return }
-        
-        // Define the marker shape
-        let circleRadius = rect.width / 2
-        let triangleHeight: CGFloat = 20.0
-        
-        // Draw the circle
-        context.setFillColor(UIColor.red.cgColor)
-        context.addEllipse(in: CGRect(x: 0, y: 0, width: rect.width, height: rect.height - triangleHeight))
-        context.fillPath()
-        
-        // Draw the triangle
-        context.beginPath()
-        context.move(to: CGPoint(x: rect.width / 2, y: rect.height))
-        context.addLine(to: CGPoint(x: rect.width, y: rect.height - triangleHeight))
-        context.addLine(to: CGPoint(x: 0, y: rect.height - triangleHeight))
-        context.closePath()
-        context.fillPath()
-        
-        // Draw the text
-        let text = "arrival"
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14),
-            .foregroundColor: UIColor.white
-        ]
-        let textSize = text.size(withAttributes: attributes)
-        let textRect = CGRect(x: (rect.width - textSize.width) / 2,
-                              y: (rect.height - triangleHeight - textSize.height) / 2,
-                              width: textSize.width,
-                              height: textSize.height)
-        text.draw(in: textRect, withAttributes: attributes)
     }
 }
