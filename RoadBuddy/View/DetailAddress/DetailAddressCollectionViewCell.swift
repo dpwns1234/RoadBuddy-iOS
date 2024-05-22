@@ -15,7 +15,11 @@ final class DetailAddressCollectionViewCell: UICollectionViewListCell {
         config.title = item.title
         config.address = item.address
         config.category = item.category
-        config.distance = Double(item.geocoding.addresses[0].distance)
+        if item.geocoding.addresses.isEmpty == false {
+            config.distance = Double(item.geocoding.addresses[0].distance)
+        } else {
+            config.distance = 0
+        }
         self.contentConfiguration = config
     }
 }
