@@ -25,7 +25,6 @@ class TabBarViewController: UIViewController {
         return stackView
     }()
     
-    // TODO: 텍스트 필드일 필요가 없을 수 있겠다.
     private var departureTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +63,6 @@ class TabBarViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFit
         button.widthAnchor.constraint(equalToConstant: 12).isActive = true
         button.heightAnchor.constraint(equalToConstant: 12).isActive = true
-        
         
         return button
     }()
@@ -142,12 +140,13 @@ class TabBarViewController: UIViewController {
     }
     
     private func setupTabBar() {
-        // Add tab buttons
-        let tabs = ["대중교통", "택시"]
+        let tabs = [UIImage(named: "BUS"), UIImage(named: "taxi")]
         for (index, tab) in tabs.enumerated() {
-            let button = UIButton(type: .system)
-            button.setTitle(tab, for: .normal)
+            let button = UIButton()
+            button.setImage(tab, for: .normal)
+            button.imageView?.contentMode = .scaleAspectFit
             button.tag = index
+            button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
             button.addTarget(self, action: #selector(tabButtonTapped), for: .touchUpInside)
             tabBarStackView.addArrangedSubview(button)
         }
@@ -175,7 +174,6 @@ class TabBarViewController: UIViewController {
         }
         
         addChild(selectedViewController)
-
         containerView.addSubview(selectedViewController.view)
         selectedViewController.view.frame = containerView.bounds
         selectedViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -185,18 +183,20 @@ class TabBarViewController: UIViewController {
     }
     
     private func updateTabButtonAppearance(selectedIndex: Int) {
-        for (index, view) in tabBarStackView.arrangedSubviews.enumerated() {
-            if let button = view as? UIButton {
-                if index == selectedIndex {
-                    button.backgroundColor = .lightGray
-                    button.setTitleColor(.white, for: .normal)
-                } else {
-                    button.backgroundColor = .white
-                    button.setTitleColor(.blue, for: .normal)
+        UIView.animate(withDuration: 0.3, animations: {
+            for (index, view) in self.tabBarStackView.arrangedSubviews.enumerated() {
+                if let button = view as? UIButton {
+                    if index == selectedIndex {
+                        button.backgroundColor = Hansung.skyBlue.color
+                        button.transform = CGAffineTransform(translationX: 0, y: 0)
+                    } else {
+                        button.backgroundColor = .clear
+                        // 나머지 버튼들은 원래 위치로
+                        button.transform = CGAffineTransform.identity
+                    }
                 }
             }
-        }
-        selectedTabIndex = selectedIndex
+        })
     }
 }
 
