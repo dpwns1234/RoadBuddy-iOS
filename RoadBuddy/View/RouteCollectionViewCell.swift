@@ -116,8 +116,6 @@ final class RouteCollectionViewCell: UICollectionViewCell {
         return stepLabel
     }
     
-    // TODO: 1호선은 1만 나옴.. 다른 호선들도 확인할 수 있음 확인 하기.
-    // TODO: 갑자기 leg가 nil, color가 nil나와서 안 됐던 적 있음
     private func createWalkingStep(_ duration: Int, perioty: Int) {
         let walkingImageView = UIImageView()
         walkingImageView.translatesAutoresizingMaskIntoConstraints = false

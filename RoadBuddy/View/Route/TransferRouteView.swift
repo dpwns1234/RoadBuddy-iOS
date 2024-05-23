@@ -36,24 +36,10 @@ final class TransferRouteView: UIView {
         return stackView
     }()
     
-    private let transferPathButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("경로 이미지", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = Hansung.blue.color
-        button.layer.cornerRadius = 16
-        button.configuration?.titlePadding = 10
-        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 4, bottom: 10, right: 4)
-        
-        return button
-    }()
-    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.isHidden = true
         
         return imageView
     }()
@@ -73,22 +59,11 @@ final class TransferRouteView: UIView {
         self.addSubview(verticalStepLineView)
         self.addSubview(titleLabel)
         self.addSubview(transferStackView)
-        self.addSubview(transferPathButton)
-        self.addSubview(imageView) // Add imageView here
+        self.addSubview(imageView)
         self.addSubview(lineView)
         
         bind(data: transferPath)
-        transferPathButton.addTarget(self, action: #selector(showTransferPathImageView), for: .touchUpInside)
         setConstraints()
-    }
-    
-    @objc
-    private func showTransferPathImageView() {
-        if imageView.isHidden {
-            imageView.isHidden = false
-        } else {
-            imageView.isHidden = true
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -130,10 +105,7 @@ final class TransferRouteView: UIView {
             transferStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             transferStackView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             
-            transferPathButton.topAnchor.constraint(equalTo: transferStackView.bottomAnchor, constant: 16),
-            transferPathButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            
-            imageView.topAnchor.constraint(equalTo: transferPathButton.bottomAnchor, constant: 16), // Add constraints for imageView
+            imageView.topAnchor.constraint(equalTo: transferStackView.bottomAnchor, constant: 8),
             imageView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
             imageView.heightAnchor.constraint(equalToConstant: 200),
