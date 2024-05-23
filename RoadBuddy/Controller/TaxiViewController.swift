@@ -156,7 +156,7 @@ extension TaxiViewController {
     }
     
     func showSecondAlert() {
-        let secondAlert = UIAlertController(title: "호출 완료", message: "차량이 출발지 주변에 도착하면 연락이 갑니다.", preferredStyle: .alert)
+        let secondAlert = UIAlertController(title: "호출 완료", message: "차량이 출발지 주변에 도착하면 연락 드립니다.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         secondAlert.addAction(okAction)
         present(secondAlert, animated: true, completion: nil)
