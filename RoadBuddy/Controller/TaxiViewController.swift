@@ -8,10 +8,8 @@
 import UIKit
 
 final class TaxiViewController: UIViewController {
-    
     private let taxiImageView: UIImageView = {
-        let imageView = UIImageView(image: .taxi)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let imageView = UIImageView(image: .callTaxi)
         
         return imageView
     }()
@@ -28,21 +26,11 @@ final class TaxiViewController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 30, bottom: 20, trailing: 30)
         
+        stackView.addArrangedSubview(taxiImageView)
         stackView.addArrangedSubview(mainStackView)
-        stackView.addArrangedSubview(middleLine)
-        stackView.addArrangedSubview(subStackView)
+        stackView.addArrangedSubview(callButton)
         
         return stackView
-    }()
-    
-    private let middleLine: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.lightGray
-        view.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        
-        return view
     }()
     
     private lazy var mainStackView: UIStackView = {
@@ -50,27 +38,16 @@ final class TaxiViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.spacing = 32
         
-        let main1 = createVerticalStackView(title: "전체 대기", value: "8", unit: "명")
-        let main2 = createVerticalStackView(title: "주변 대기", value: "3", unit: "명")
-        let main3 = createVerticalStackView(title: "평균배차대기", value: "8", unit: "분")
-        
-        stackView.addArrangedSubview(main1)
-        stackView.addArrangedSubview(main2)
-        stackView.addArrangedSubview(main3)
-        
         return stackView
     }()
     
     private lazy var subStackView: UIStackView = {
         let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.spacing = 32
         stackView.alignment = .center
         
-        let sub1 = createVerticalStackView(title: "소요 시간", value: "17", unit: "분")
-        let sub2 = createVerticalStackView(title: "요금", value: "2,500", unit: "원")
-        stackView.addArrangedSubview(sub1)
-        stackView.addArrangedSubview(sub2)
         
         return stackView
     }()
@@ -86,7 +63,85 @@ final class TaxiViewController: UIViewController {
         return button
     }()
     
-    func createVerticalStackView(title: String, value: String, unit: String) -> UIStackView {
+    private let addressRepository = UserDefaultRepository<Address>()
+    private let driveDataService = DriveDataService()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view.backgroundColor = .white
+        self.view.addSubview(taxiImageView)
+        self.view.addSubview(subStackView)
+        self.view.addSubview(totalStackView)
+        driveDataService.delegate = self
+        
+        setConstraints()
+        apiCall()
+    }
+    
+    func apiCall() {
+        guard
+            let departure = addressRepository.fetch(type: "departure")?.geocoding.addresses[0],
+            let arrival = addressRepository.fetch(type: "arrival")?.geocoding.addresses[0]
+        else {
+            print("departure or arrival is nil!")
+            return
+        }
+        
+        do {
+            try driveDataService.convertData(type: .drive(departureLocation: departure.locatoin, arrivalLocation: arrival.locatoin))
+        } catch {
+            print(error)
+        }
+    }
+}
+
+// MARK: - DriveDataServiceDelegate
+extension TaxiViewController: DriveDataServiceDelegate {
+    
+    func driveDataService(_ service: DriveDataService, didDownlad drive: Drive) {
+        DispatchQueue.main.async {
+            self.bind(drive.data.features[0].properties)
+        }
+    }
+    private func bind(_ drive: Properties) {
+        let (totalPeople, nearbyPeople, watingTime) = generateRandomValues(randomNumber: drive.totalTime!/30)
+        let main1 = createVerticalStackView(title: "전체 대기", value: totalPeople, unit: "명")
+        let main2 = createVerticalStackView(title: "주변 대기", value: nearbyPeople, unit: "명")
+        let main3 = createVerticalStackView(title: "평균배차대기", value: watingTime, unit: "분")
+        mainStackView.addArrangedSubview(main1)
+        mainStackView.addArrangedSubview(main2)
+        mainStackView.addArrangedSubview(main3)
+        
+        let min = String(drive.totalTime! / 60)
+        let fare = formatCurrency(amount: drive.taxiFare!)
+        let sub1 = createVerticalStackView(title: "이동 시간", value: min, unit: "분")
+        let sub2 = createVerticalStackView(title: "일반택시요금", value: fare, unit: "원")
+        subStackView.addArrangedSubview(sub1)
+        subStackView.addArrangedSubview(sub2)
+    }
+    
+    private func formatCurrency(amount: Int) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        let formattedAmount = numberFormatter.string(from: NSNumber(value: amount)) ?? ""
+        return formattedAmount
+    }
+    
+    private func generateRandomValues(randomNumber: Int) -> (totalPeopleWaiting: String, nearbyPeopleWaiting: String, taxiDispatchWaitingTime: String) {
+        let totalPeopleWaiting = randomNumber
+        let nearbyPeopleWaiting = Int.random(in: 0...totalPeopleWaiting)
+        let taxiDispatchWaitingTime = nearbyPeopleWaiting/2
+
+        return (String(totalPeopleWaiting), String(nearbyPeopleWaiting), String(taxiDispatchWaitingTime))
+    }
+}
+
+// MARK: - Configure Layout
+
+extension TaxiViewController {
+    
+    private func createVerticalStackView(title: String, value: String, unit: String) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .center
@@ -110,30 +165,17 @@ final class TaxiViewController: UIViewController {
         return stackView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.view.backgroundColor = .white
-        self.view.addSubview(taxiImageView)
-        self.view.addSubview(totalStackView)
-        self.view.addSubview(callButton)
-        
-        setConstraints()
-    }
-    
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            taxiImageView.bottomAnchor.constraint(equalTo: mainStackView.topAnchor),
-            taxiImageView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            subStackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 48),
+            subStackView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
+            
             taxiImageView.widthAnchor.constraint(equalToConstant: 180),
             taxiImageView.heightAnchor.constraint(equalToConstant: 180),
             
-            totalStackView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+            totalStackView.topAnchor.constraint(equalTo: subStackView.bottomAnchor, constant: 48),
             totalStackView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            
-            callButton.topAnchor.constraint(equalTo: totalStackView.bottomAnchor, constant: 48),
-            callButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             
         ])
     }
