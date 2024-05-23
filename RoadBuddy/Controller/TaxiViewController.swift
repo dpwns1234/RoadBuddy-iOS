@@ -59,6 +59,7 @@ final class TaxiViewController: UIViewController {
         button.tintColor = .white
         button.backgroundColor = Hansung.darkBlue.color
         button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        button.addTarget(self, action: #selector(callTaxiButtonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -134,6 +135,31 @@ extension TaxiViewController: DriveDataServiceDelegate {
         let taxiDispatchWaitingTime = nearbyPeopleWaiting/2
 
         return (String(totalPeopleWaiting), String(nearbyPeopleWaiting), String(taxiDispatchWaitingTime))
+    }
+}
+
+// MARK: - Alert
+extension TaxiViewController {
+    
+    @objc
+    func callTaxiButtonTapped(_ sender: UIButton) {
+        let alert = UIAlertController(title: "장애인 콜택시", message: "호출하시겠습니까?", preferredStyle: .alert)
+        let noAction = UIAlertAction(title: "아니오", style: .destructive)
+        let yesAction = UIAlertAction(title: "호출", style: .default) { (_) in
+            self.showSecondAlert()
+        }
+        
+        alert.addAction(noAction)
+        alert.addAction(yesAction)
+    
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showSecondAlert() {
+        let secondAlert = UIAlertController(title: "호출 완료", message: "차량이 출발지 주변에 도착하면 연락이 갑니다.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        secondAlert.addAction(okAction)
+        present(secondAlert, animated: true, completion: nil)
     }
 }
 
