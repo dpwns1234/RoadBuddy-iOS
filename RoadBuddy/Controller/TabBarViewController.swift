@@ -95,14 +95,8 @@ final class TabBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        bind()
         setupTabBar()
-    }
-    
-    private func bind() {
-        let departure = addressRepository.fetch(type: "departure")
-        let arrival = addressRepository.fetch(type: "arrival")
-        departureTextField.text = departure?.title
-        arrivalTextField.text = arrival?.title
     }
 }
 
@@ -226,6 +220,13 @@ extension TabBarViewController {
         UserDefaults.standard.removeObject(forKey: "departure")
         UserDefaults.standard.removeObject(forKey: "arrival")
         self.navigationController?.popToRootViewController(animated: false)
+    }
+    
+    private func bind() {
+        let departure = addressRepository.fetch(type: "departure")
+        let arrival = addressRepository.fetch(type: "arrival")
+        departureTextField.text = departure?.title
+        arrivalTextField.text = arrival?.title
     }
     
     private func setConstraints() {
