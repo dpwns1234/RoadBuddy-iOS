@@ -23,7 +23,7 @@ final class DirectionDataManager {
     init() {
         directionDataService.delegate = self
     }
-
+    
     func fetchDirection(departure departureLocation: Location, arrival arrivalLocation: Location) {
         directionDataService.convertData(type: .direction(departureLat: departureLocation.lat, departureLon: departureLocation.lng, arrivalLat: arrivalLocation.lat, arrivalLon: arrivalLocation.lng))
     }

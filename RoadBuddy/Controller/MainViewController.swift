@@ -49,11 +49,11 @@ final class MainViewController: UIViewController {
 }
 
 extension MainViewController: GMSMapViewDelegate {
-//    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-//        // TODO: 권한 분기처리
-////        showRequestLocationServiceAlert()
-//        return true
-//    }
+    //    func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+    //        // TODO: 권한 분기처리
+    ////        showRequestLocationServiceAlert()
+    //        return true
+    //    }
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -167,7 +167,7 @@ extension MainViewController {
             searchBarTextField.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 8),
             searchBarTextField.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
             searchBarTextField.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
-
+            
         ])
     }
 }

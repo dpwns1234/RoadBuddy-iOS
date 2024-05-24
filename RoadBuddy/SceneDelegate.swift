@@ -26,7 +26,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigationController = UINavigationController(rootViewController: mainViewController)
         navigationController.isNavigationBarHidden = true
         window?.rootViewController = navigationController
-//        window?.rootViewController = BottomSheetViewController()
         window?.makeKeyAndVisible()
     }
 
@@ -57,7 +56,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
-

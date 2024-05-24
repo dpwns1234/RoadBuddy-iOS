@@ -37,7 +37,6 @@ final class MySearchFieldView: UIView {
         setConstraints()
     }
     
-    // TODO: stackView로 묶을까?
     private func setConstraints() {
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: self.topAnchor),

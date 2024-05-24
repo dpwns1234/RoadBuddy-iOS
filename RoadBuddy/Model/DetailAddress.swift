@@ -11,5 +11,5 @@ struct DetailAddress: Hashable, Codable {
     let title: String
     let address: String
     let category: String
-    let distance: Int // String? nope Int!
+    let distance: Int
 }

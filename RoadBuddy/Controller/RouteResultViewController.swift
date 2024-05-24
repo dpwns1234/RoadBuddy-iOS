@@ -58,23 +58,14 @@ final class RouteResultViewController: UIViewController {
         initializeLocationManager()
         configureUI()
         drawPolyline(steps: leg?.steps)
-        
-        backButton.addTarget(self, action: #selector(moveTabBarViewController), for: .touchUpInside)
         displayBottomSheet()
-    }
-    
-    @objc
-    private func moveTabBarViewController() {
-        dismiss(animated: false)
-        navigationController?.popViewController(animated: false)
     }
     
     private func initializeLocationManager() {
         locationManager = CLLocationManager()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest // 이거 실제 기기에서 테스트, 느리지 않는지
-        
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.distanceFilter = 50 // 50m 이동해야지만 업데이트 제공
+        locationManager.distanceFilter = 50
         locationManager.startUpdatingLocation()
         
         placesClient = GMSPlacesClient.shared()
@@ -105,7 +96,14 @@ extension RouteResultViewController {
     private func configureUI() {
         configureMapView()
         self.view.addSubview(backButton)
+        backButton.addTarget(self, action: #selector(moveTabBarViewController), for: .touchUpInside)
         setConstraints()
+    }
+    
+    @objc
+    private func moveTabBarViewController() {
+        dismiss(animated: false)
+        navigationController?.popViewController(animated: false)
     }
     
     private func configureMapView() {

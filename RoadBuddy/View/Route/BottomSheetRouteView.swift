@@ -75,14 +75,7 @@ final class BottomSheetRouteView: UIView {
     init(leg: Leg) {
         super.init(frame: .zero)
         
-        self.backgroundColor = .white
-        self.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubview(durationTimeLabel)
-        contentView.addSubview(arrivalTimeLabel)
-        contentView.addSubview(routeLineStackView)
-        contentView.addSubview(routeDetailStackView)
-        self.layer.cornerRadius = 30
+        configureUI()
         bind(leg: leg)
         configureRouteLineStackView(leg: leg)
         addRouteDetailView(leg)
@@ -91,45 +84,6 @@ final class BottomSheetRouteView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func bind(leg: Leg) {
-        durationTimeLabel.text = leg.duration.text
-        arrivalTimeLabel.text = "\(leg.arrivalTime.text) 도착"
-    }
-    
-    private func setConstraints() {
-        let safeArea = self.safeAreaLayoutGuide
-        
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
-            
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
-            durationTimeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
-            durationTimeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            
-            arrivalTimeLabel.centerYAnchor.constraint(equalTo: durationTimeLabel.centerYAnchor),
-            arrivalTimeLabel.leadingAnchor.constraint(equalTo: durationTimeLabel.trailingAnchor, constant: 12),
-            
-            routeLineStackView.topAnchor.constraint(equalTo: durationTimeLabel.bottomAnchor, constant: 16),
-            routeLineStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            routeLineStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            routeLineStackView.heightAnchor.constraint(equalToConstant: 30),
-            
-            routeDetailStackView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 16),
-            routeDetailStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            routeDetailStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            routeDetailStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
-            
-        ])
     }
 }
 
@@ -174,7 +128,7 @@ extension BottomSheetRouteView {
         
         ratioArray = ratioArray.map { max($0, 0.1) }
         let sum = ratioArray.reduce(0, +)
-        var difference = sum - 1
+        let difference = sum - 1
         ratioArray[maxRatioIndex] -= difference
         
         return ratioArray
@@ -237,17 +191,17 @@ extension BottomSheetRouteView {
     
     private func createWalkingRouteView(step: Step) -> UIStackView {
         let stackView = UIStackView()
-        let distanceLabel = UILabel()
-        let durationLabel = UILabel()
         stackView.axis = .horizontal
         stackView.spacing = 8
-        
         let font = UIFont.preferredFont(forTextStyle: .body)
+        
+        let distanceLabel = UILabel()
         distanceLabel.textColor = .gray
         distanceLabel.font = font
-        durationLabel.font = .boldSystemFont(ofSize: font.pointSize)
-        
         distanceLabel.text = "도보 \(step.distance.text)"
+        
+        let durationLabel = UILabel()
+        durationLabel.font = .boldSystemFont(ofSize: font.pointSize)
         durationLabel.text = step.duration.text
         
         stackView.addArrangedSubview(distanceLabel)
@@ -280,3 +234,56 @@ extension BottomSheetRouteView {
     }
 }
 
+// MARK: - Configure Layout
+
+extension BottomSheetRouteView {
+    
+    private func configureUI() {
+        self.backgroundColor = .white
+        self.layer.cornerRadius = 30
+        self.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(durationTimeLabel)
+        contentView.addSubview(arrivalTimeLabel)
+        contentView.addSubview(routeLineStackView)
+        contentView.addSubview(routeDetailStackView)
+    }
+    
+    private func bind(leg: Leg) {
+        durationTimeLabel.text = leg.duration.text
+        arrivalTimeLabel.text = "\(leg.arrivalTime.text) 도착"
+    }
+    
+    private func setConstraints() {
+        let safeArea = self.safeAreaLayoutGuide
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            durationTimeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            durationTimeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            
+            arrivalTimeLabel.centerYAnchor.constraint(equalTo: durationTimeLabel.centerYAnchor),
+            arrivalTimeLabel.leadingAnchor.constraint(equalTo: durationTimeLabel.trailingAnchor, constant: 12),
+            
+            routeLineStackView.topAnchor.constraint(equalTo: durationTimeLabel.bottomAnchor, constant: 16),
+            routeLineStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            routeLineStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            routeLineStackView.heightAnchor.constraint(equalToConstant: 30),
+            
+            routeDetailStackView.topAnchor.constraint(equalTo: routeLineStackView.bottomAnchor, constant: 16),
+            routeDetailStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            routeDetailStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            routeDetailStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            
+        ])
+    }
+}

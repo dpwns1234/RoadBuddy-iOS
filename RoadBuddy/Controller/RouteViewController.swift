@@ -42,16 +42,7 @@ final class RouteViewController: UIViewController {
         configureSearchDataSource()
         setConstraints()
         directionDataManager.delegate = self
-        
-        let departure = addressRepository.fetch(type: "departure")
-        let arrival = addressRepository.fetch(type: "arrival")
-        if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
-            loadingIndicator.startAnimating()
-            directionDataManager.fetchDirection(
-                departure: departure!.geocoding.addresses[0].location,
-                arrival: arrival!.geocoding.addresses[0].location
-            )
-        }
+        findDirection()
     }
 }
 
@@ -86,6 +77,23 @@ extension RouteViewController: UICollectionViewDelegate {
         
         let routeResultViewController = RouteResultViewController(leg: selectRoute.legs[0])
         self.navigationController?.pushViewController(routeResultViewController, animated: true)
+    }
+}
+
+// MARK: - Network for Direction data
+
+extension RouteViewController {
+    
+    private func findDirection() {
+        let departure = addressRepository.fetch(type: "departure")
+        let arrival = addressRepository.fetch(type: "arrival")
+        if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
+            loadingIndicator.startAnimating()
+            directionDataManager.fetchDirection(
+                departure: departure!.geocoding.addresses[0].location,
+                arrival: arrival!.geocoding.addresses[0].location
+            )
+        }
     }
 }
 

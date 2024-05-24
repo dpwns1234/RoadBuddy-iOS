@@ -164,10 +164,6 @@ extension SearchViewController: UITextFieldDelegate {
         return true
     }
     
-    /* string: 새로 들어온 글자 (지웠을 때는 empty)
-     * currentText: 이전 글자
-     * newText: 새로 변화되는 글자 (완성된 글자)
-     */
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // 채팅창이 비었을 때 -> 검색기록 표시
         let currentText = (textField.text ?? "") as NSString

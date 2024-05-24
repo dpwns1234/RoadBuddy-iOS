@@ -27,7 +27,6 @@ final class BottomSheetViewController: UIViewController {
     private var modalView: UIView?
     
     private let addressRepository = UserDefaultRepository<Address>()
-    private let transferDataService = TransferDataService()
     private var place: Address?
     
     init(addressData: Address) {
@@ -50,15 +49,29 @@ final class BottomSheetViewController: UIViewController {
             loadingIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
         ])
         
+        let transferDataService = TransferDataService()
         transferDataService.delegate = self
-        
         DispatchQueue.main.async {
             self.loadingIndicator.startAnimating()
         }
         transferDataService.convertData(type: .transfer, leg: leg)
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view = modalView
+    }
+}
 
-    // TODO: type enum으로 바꾸기 + UserDefualts enum 수정 및 save, fetch 리팩터
+// MARK: - For SearchResultViewController
+
+extension BottomSheetViewController {
+    
     @objc
     private func tappedDirectButton(_ sender: UIButton) {
         dismiss(animated: false)
@@ -77,23 +90,13 @@ final class BottomSheetViewController: UIViewController {
             delegate?.moveTabBarViewController()
         }
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.view = modalView
-    }
 }
+
+// MARK: - TransferDataServiceDelegate (For RouteResultViewController)
 
 extension BottomSheetViewController: TransferDataServiceDelegate {
     
     func legDataService(_ service: TransferDataService, didDownlad leg: Leg) {
-        
-        // 여기서 RouteResultVC에 급경사로 리스트 보내주기가 아닌 Leg 데이터 보내주기
         routeResultDelegate?.setSteepSlope(didLoad: leg)
         DispatchQueue.main.async {
             self.loadingIndicator.stopAnimating()

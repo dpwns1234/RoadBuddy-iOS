@@ -70,6 +70,19 @@ final class TransitRouteView: UIView {
     init(step: Step) {
         super.init(frame: .zero)
         
+        configureUI()
+        bind(data: step)
+        setConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension TransitRouteView {
+    
+    private func configureUI() {
         backgroundColor = .white
         self.addSubview(shortNameLabel)
         self.addSubview(departureStopLabel)
@@ -78,9 +91,6 @@ final class TransitRouteView: UIView {
         self.addSubview(durationLabel)
         self.addSubview(lineView)
         self.addSubview(verticalStepLineView)
-        
-        bind(data: step)
-        setConstraints()
     }
     
     private func bind(data step: Step) {
@@ -129,9 +139,5 @@ final class TransitRouteView: UIView {
             lineView.heightAnchor.constraint(equalToConstant: 1),
             
         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

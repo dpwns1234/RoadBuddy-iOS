@@ -24,7 +24,7 @@ final class AddressDataManager {
     init() {
         searchDataService.delegate = self
     }
-
+    
     func fetchData(input: String) {
         do {
             let location = locationRepository.fetch(type: "currentLocation")

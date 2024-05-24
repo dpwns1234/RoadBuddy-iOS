@@ -88,34 +88,16 @@ final class SearchResultViewController: UIViewController {
         self.view.backgroundColor = .white
         initializeLocationManager()
         configureUI()
-        searchTextField.addTarget(self, action: #selector(moveSearchViewController), for: .touchDown)
-        backButton.addTarget(self, action: #selector(moveSearchViewController), for: .touchUpInside)
-        xButton.addTarget(self, action: #selector(moveMainViewController), for: .touchUpInside)
+        setAction()
         searchTextField.text = addressData!.title
         displayBottomSheet()
     }
     
-    @objc
-    private func moveSearchViewController() {
-        dismiss(animated: false)
-        navigationController?.popViewController(animated: false)
-    }
-    
-    @objc
-    private func moveMainViewController() {
-        UserDefaults.standard.removeObject(forKey: "departure")
-        UserDefaults.standard.removeObject(forKey: "arrival")
-        guard let mainViewController = navigationController?.viewControllers[0] else { return }
-        dismiss(animated: false)
-        navigationController?.popToViewController(mainViewController, animated: false)
-    }
-    
     private func initializeLocationManager() {
         locationManager = CLLocationManager()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest // 이거 실제 기기에서 테스트, 느리지 않는지
-        
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.distanceFilter = 50 // 50m 이동해야지만 업데이트 제공
+        locationManager.distanceFilter = 50
         locationManager.startUpdatingLocation()
         
         placesClient = GMSPlacesClient.shared()
@@ -135,6 +117,32 @@ final class SearchResultViewController: UIViewController {
         
         bottomVC.delegate = self
         present(bottomVC, animated: true)
+    }
+}
+
+// MARK: - Configure Button Actoin
+
+extension SearchResultViewController {
+    
+    private func setAction() {
+        searchTextField.addTarget(self, action: #selector(moveSearchViewController), for: .touchDown)
+        backButton.addTarget(self, action: #selector(moveSearchViewController), for: .touchUpInside)
+        xButton.addTarget(self, action: #selector(moveMainViewController), for: .touchUpInside)
+    }
+    
+    @objc
+    private func moveSearchViewController() {
+        dismiss(animated: false)
+        navigationController?.popViewController(animated: false)
+    }
+    
+    @objc
+    private func moveMainViewController() {
+        UserDefaults.standard.removeObject(forKey: "departure")
+        UserDefaults.standard.removeObject(forKey: "arrival")
+        guard let mainViewController = navigationController?.viewControllers[0] else { return }
+        dismiss(animated: false)
+        navigationController?.popToViewController(mainViewController, animated: false)
     }
 }
 
@@ -164,7 +172,7 @@ extension SearchResultViewController {
     }
     
     private func configureMapView() {
-        let location = addressData?.geocoding.addresses[0].locatoin ?? Location(lat: 37.588458, lng: 127.006221)
+        let location = addressData?.geocoding.addresses[0].location ?? Location(lat: 37.588458, lng: 127.006221)
         let defaultLocation = CLLocation(latitude: location.lat, longitude: location.lng)
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(withLatitude: defaultLocation.coordinate.latitude,

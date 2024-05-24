@@ -91,15 +91,15 @@ final class RouteCollectionViewCell: UICollectionViewCell {
             }
         }
         let myDateFormatter = DateFormatter()
-        myDateFormatter.dateFormat = "a h:mm" // 2020.08.13 오후 4시 30분
-        myDateFormatter.locale = Locale(identifier:"ko_KR") // PM, AM을 언어에 맞게 setting (ex: PM -> 오후)
+        myDateFormatter.dateFormat = "a h:mm"
+        myDateFormatter.locale = Locale(identifier:"ko_KR")
         
         let departureTimestamp: TimeInterval = TimeInterval(route.legs[0].departureTime.value)
         let arrivalTimestamp: TimeInterval = TimeInterval(route.legs[0].arrivalTime.value)
         
         let departureDate = Date(timeIntervalSince1970: (departureTimestamp))
         let arrivalDate = Date(timeIntervalSince1970: (arrivalTimestamp))
-
+        
         let departureStr = myDateFormatter.string(from: departureDate)
         let arrivalStr = myDateFormatter.string(from: arrivalDate)
         

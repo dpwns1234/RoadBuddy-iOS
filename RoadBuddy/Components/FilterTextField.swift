@@ -18,7 +18,6 @@ final class FilterTextField: UITextField {
     init(content: String, backgroundColor: UIColor) {
         super.init(frame: .zero)
         
-        // set placeholder status
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
              .font: UIFont.preferredFont(forTextStyle: .body),
              .foregroundColor: UIColor.lightGray
@@ -42,7 +41,6 @@ final class FilterTextField: UITextField {
         return bounds.inset(by: padding)
     }
     
-    // Override editingRect to add padding for entered text -> TODO: 이건 입력값에 대한 패딩인가? 확인
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let padding = UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 0)
         return bounds.inset(by: padding)

@@ -34,10 +34,10 @@ struct Geocoding: Codable, Hashable {
 }
 
 struct GeocodingAddress: Codable, Hashable {
-    let lat: String // lng
-    let lng: String // lat
+    let lat: String
+    let lng: String
     let distance: Double
-    var locatoin: Location {
+    var location: Location {
         Location(lat: Double(lat)!, lng: Double(lng)!)
     }
     

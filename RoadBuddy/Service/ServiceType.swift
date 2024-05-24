@@ -63,7 +63,7 @@ enum ServiceType {
             return []
         }
     }
-
+    
     func makeURL() -> URL? {
         var components = self.components
         components?.queryItems = self.queryItems

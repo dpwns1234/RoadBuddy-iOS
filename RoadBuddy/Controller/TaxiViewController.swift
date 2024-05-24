@@ -79,8 +79,13 @@ final class TaxiViewController: UIViewController {
         setConstraints()
         apiCall()
     }
+}
+
+// MARK: - Network for Drive data
+
+extension TaxiViewController {
     
-    func apiCall() {
+    private func apiCall() {
         guard
             let departure = addressRepository.fetch(type: "departure")?.geocoding.addresses[0],
             let arrival = addressRepository.fetch(type: "arrival")?.geocoding.addresses[0]
@@ -90,14 +95,16 @@ final class TaxiViewController: UIViewController {
         }
         
         do {
-            try driveDataService.convertData(type: .drive(departureLocation: departure.locatoin, arrivalLocation: arrival.locatoin))
+            try driveDataService.convertData(type: .drive(departureLocation: departure.location, arrivalLocation: arrival.location))
         } catch {
             print(error)
         }
     }
+    
 }
 
 // MARK: - DriveDataServiceDelegate
+
 extension TaxiViewController: DriveDataServiceDelegate {
     
     func driveDataService(_ service: DriveDataService, didDownlad drive: Drive) {
@@ -133,16 +140,17 @@ extension TaxiViewController: DriveDataServiceDelegate {
         let totalPeopleWaiting = randomNumber
         let nearbyPeopleWaiting = Int.random(in: 0...totalPeopleWaiting)
         let taxiDispatchWaitingTime = nearbyPeopleWaiting/2
-
+        
         return (String(totalPeopleWaiting), String(nearbyPeopleWaiting), String(taxiDispatchWaitingTime))
     }
 }
 
 // MARK: - Alert
+
 extension TaxiViewController {
     
     @objc
-    func callTaxiButtonTapped(_ sender: UIButton) {
+    private func callTaxiButtonTapped(_ sender: UIButton) {
         let alert = UIAlertController(title: "장애인 콜택시", message: "호출하시겠습니까?", preferredStyle: .alert)
         let noAction = UIAlertAction(title: "아니오", style: .destructive)
         let yesAction = UIAlertAction(title: "호출", style: .default) { (_) in
@@ -151,11 +159,11 @@ extension TaxiViewController {
         
         alert.addAction(noAction)
         alert.addAction(yesAction)
-    
+        
         present(alert, animated: true, completion: nil)
     }
     
-    func showSecondAlert() {
+    private func showSecondAlert() {
         let secondAlert = UIAlertController(title: "호출 완료", message: "차량이 출발지 주변에 도착하면 연락 드립니다.", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         secondAlert.addAction(okAction)

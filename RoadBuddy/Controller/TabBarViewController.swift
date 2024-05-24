@@ -7,11 +7,9 @@
 
 import UIKit
 
-class TabBarViewController: UIViewController {
+final class TabBarViewController: UIViewController {
     
     // MARK: - UI Properties
-    
-    var selectedTabIndex: Int = 0
     
     private lazy var textFieldStackView: UIStackView = {
         let stackView = UIStackView()
@@ -93,65 +91,24 @@ class TabBarViewController: UIViewController {
     }()
     
     private let addressRepository = UserDefaultRepository<Address>()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setMain()
+        configureUI()
         setupTabBar()
-        selectTab(at: 0)
-        
+    }
+    
+    private func bind() {
         let departure = addressRepository.fetch(type: "departure")
         let arrival = addressRepository.fetch(type: "arrival")
         departureTextField.text = departure?.title
         arrivalTextField.text = arrival?.title
     }
-    
-    func setButtonAction() {
-        tradeButton.addTarget(self, action: #selector(touchedTradeButton), for: .touchUpInside)
-        xButton.addTarget(self, action: #selector(touchedXButton), for: .touchUpInside)
-        departureTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
-        arrivalTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
-    }
-    private func setMain() {
-        self.view.backgroundColor = .white
-        self.view.addSubview(tradeButton)
-        self.view.addSubview(xButton)
-        self.view.addSubview(textFieldStackView)
-        self.view.addSubview(tabBarStackView)
-        self.view.addSubview(stackViewUnderLineView)
-        self.view.addSubview(containerView)
-        
-        setButtonAction()
-        setConstraints()
-    }
-    
-    @objc
-    private func touchedDirectionTextField() {
-        let searchViewController = SearchViewController()
-        self.navigationController?.pushViewController(searchViewController, animated: true)
-    }
-    
-    @objc
-    private func touchedTradeButton() {
-        if
-            var departure = addressRepository.fetch(type: "departure"),
-            var arrival = addressRepository.fetch(type: "arrival") {
-            departure.type = "arrival"
-            arrival.type = "departure"
-            addressRepository.save(data: departure)
-            addressRepository.save(data: arrival)
-            selectTab(at: 0)
-            departureTextField.text = arrival.title
-            arrivalTextField.text = departure.title
-        }
-    }
-    
-    @objc
-    private func touchedXButton() {
-        UserDefaults.standard.removeObject(forKey: "departure")
-        UserDefaults.standard.removeObject(forKey: "arrival")
-        self.navigationController?.popToRootViewController(animated: false)
-    }
+}
+
+// MARK: - Configure TabBar
+
+extension TabBarViewController {
     
     private func setupTabBar() {
         let tabs = [UIImage(named: "BUS"), UIImage(named: "taxi")]
@@ -164,9 +121,11 @@ class TabBarViewController: UIViewController {
             button.addTarget(self, action: #selector(tabButtonTapped), for: .touchUpInside)
             tabBarStackView.addArrangedSubview(button)
         }
+        
+        selectTab(at: 0)
     }
     
-    @objc 
+    @objc
     private func tabButtonTapped(_ sender: UIButton) {
         selectTab(at: sender.tag)
     }
@@ -199,24 +158,75 @@ class TabBarViewController: UIViewController {
     private func updateTabButtonAppearance(selectedIndex: Int) {
         UIView.animate(withDuration: 0.3, animations: {
             for (index, view) in self.tabBarStackView.arrangedSubviews.enumerated() {
-                if let button = view as? UIButton {
-                    if index == selectedIndex {
-                        button.backgroundColor = Hansung.skyBlue.color
-                        button.transform = CGAffineTransform(translationX: 0, y: 0)
-                    } else {
-                        button.backgroundColor = .clear
-                        // 나머지 버튼들은 원래 위치로
-                        button.transform = CGAffineTransform.identity
-                    }
-                }
+                self.changeAppearance(selectedIndex, index, view)
             }
         })
     }
+    
+    private func changeAppearance(_ selectedIndex: Int, _ index: Int, _ view: UIView) {
+        if let button = view as? UIButton {
+            if index == selectedIndex {
+                button.backgroundColor = Hansung.skyBlue.color
+                button.transform = CGAffineTransform(translationX: 0, y: 0)
+            } else {
+                button.backgroundColor = .clear
+                button.transform = CGAffineTransform.identity
+            }
+        }
+    }
 }
 
-// MARK: - Set Layout
+// MARK: - Configure Layout
 
 extension TabBarViewController {
+    
+    private func configureUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(tradeButton)
+        self.view.addSubview(xButton)
+        self.view.addSubview(textFieldStackView)
+        self.view.addSubview(tabBarStackView)
+        self.view.addSubview(stackViewUnderLineView)
+        self.view.addSubview(containerView)
+        
+        setButtonAction()
+        setConstraints()
+    }
+    
+    private func setButtonAction() {
+        tradeButton.addTarget(self, action: #selector(touchedTradeButton), for: .touchUpInside)
+        xButton.addTarget(self, action: #selector(touchedXButton), for: .touchUpInside)
+        departureTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
+        arrivalTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
+    }
+    
+    @objc
+    private func touchedDirectionTextField() {
+        let searchViewController = SearchViewController()
+        self.navigationController?.pushViewController(searchViewController, animated: true)
+    }
+    
+    @objc
+    private func touchedTradeButton() {
+        if
+            var departure = addressRepository.fetch(type: "departure"),
+            var arrival = addressRepository.fetch(type: "arrival") {
+            departure.type = "arrival"
+            arrival.type = "departure"
+            addressRepository.save(data: departure)
+            addressRepository.save(data: arrival)
+            selectTab(at: 0)
+            departureTextField.text = arrival.title
+            arrivalTextField.text = departure.title
+        }
+    }
+    
+    @objc
+    private func touchedXButton() {
+        UserDefaults.standard.removeObject(forKey: "departure")
+        UserDefaults.standard.removeObject(forKey: "arrival")
+        self.navigationController?.popToRootViewController(animated: false)
+    }
     
     private func setConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
@@ -225,7 +235,7 @@ extension TabBarViewController {
             tradeButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 8),
             tradeButton.widthAnchor.constraint(equalToConstant: 12),
             tradeButton.heightAnchor.constraint(equalToConstant: 12),
-
+            
             xButton.centerYAnchor.constraint(equalTo: departureTextField.centerYAnchor),
             xButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             

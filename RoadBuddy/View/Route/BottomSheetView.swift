@@ -92,23 +92,8 @@ final class BottomSheetView: UIView {
     init(model: Address) {
         super.init(frame: .zero)
         
-        self.backgroundColor = .white
-        titleLabel.text = model.title
-        addressLabel.text = model.address
-        categoryLabel.text = model.category
-        
-        let distance = model.geocoding.addresses[0].distance/1000
-        let formattedDistance = String(format: "%.1f", distance)
-        distanceLabel.text = "\(formattedDistance)km"
-        
-        self.addSubview(titleLabel)
-        self.addSubview(categoryLabel)
-        self.addSubview(distanceLabel)
-        self.addSubview(addressLabel)
-        self.addSubview(lineView)
-        self.addSubview(buttonStackView)
-        self.layer.cornerRadius = 30
-        
+        configureUI()
+        bind(data: model)
         setConstraints()
     }
     
@@ -118,6 +103,22 @@ final class BottomSheetView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: - Configure Layout
+
+extension BottomSheetView {
+    
+    private func configureUI() {
+        self.backgroundColor = .white
+        self.layer.cornerRadius = 30
+        self.addSubview(titleLabel)
+        self.addSubview(categoryLabel)
+        self.addSubview(distanceLabel)
+        self.addSubview(addressLabel)
+        self.addSubview(lineView)
+        self.addSubview(buttonStackView)
     }
     
     private func setConstraints() {
@@ -147,5 +148,15 @@ final class BottomSheetView: UIView {
             buttonStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
             
         ])
+    }
+    
+    private func bind(data model: Address) {
+        titleLabel.text = model.title
+        addressLabel.text = model.address
+        categoryLabel.text = model.category
+        
+        let distance = model.geocoding.addresses[0].distance/1000
+        let formattedDistance = String(format: "%.1f", distance)
+        distanceLabel.text = "\(formattedDistance)km"
     }
 }

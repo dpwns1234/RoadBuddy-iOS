@@ -25,10 +25,10 @@ struct LegData:Hashable, Codable {
 }
 
 struct Leg: Hashable, Codable {
-    let arrivalTime: TextValue
-    let departureTime: TextValue
-    let distance: TextValue
-    let duration: TextValue
+    let arrivalTime: InfoValue
+    let departureTime: InfoValue
+    let distance: InfoValue
+    let duration: InfoValue
     let endAddress: String
     let endLocation: Location
     let startAddress: String
@@ -49,13 +49,13 @@ struct Leg: Hashable, Codable {
 }
 
 struct Step: Hashable, Codable {
-    let distance: TextValue
-    let duration: TextValue
+    let distance: InfoValue
+    let duration: InfoValue
     let endLocation: Location
     let startLocation: Location
     let polyline: Polyline
     let transitDetails: Transit?
-    let travelMode: String // "TRANSIT"
+    let travelMode: String
     let steps: [Step]?
     let transferPath: Array<Transfer>?
     let steepSlopes: [SteepSlope]?
@@ -87,11 +87,11 @@ struct Transfer: Hashable, Codable {
 
 struct Transit: Hashable, Codable {
     let arrivalStop: LocationName
-    let arrivalTime: TextValue
+    let arrivalTime: InfoValue
     let departureStop: LocationName
-    let departureTime: TextValue
+    let departureTime: InfoValue
     let line: Line
-    let numStops: String // 7 (7개 정류장 간다는 뜻인 듯)
+    let numStops: String
     
     enum CodingKeys: String, CodingKey {
         case arrivalStop = "arrival_stop"
@@ -104,10 +104,10 @@ struct Transit: Hashable, Codable {
 }
 
 struct Line: Hashable, Codable {
-    let color: String       // #9a4f11    ?
-    let name: String        // 서울 지하철
-    let shortName: String  // 6호선       ?
-    let textColor: String  // #000000    ?
+    let color: String
+    let name: String
+    let shortName: String
+    let textColor: String
     let vehicle: Vehicle
     
     enum CodingKeys: String, CodingKey {
@@ -121,9 +121,8 @@ struct Line: Hashable, Codable {
 }
 
 struct Vehicle: Hashable, Codable {
-    let icon: String // "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png" 지하철 이모티콘
-    // 앞에 http:// 붙여줘야 함.
-    let type: String // type
+    let icon: String
+    let type: String
 }
 
 struct LocationName: Hashable, Codable {
@@ -140,10 +139,10 @@ struct Bound: Hashable, Codable {
     let southwest: Location
 }
 
-struct TextValue: Hashable, Codable {
-    let text: String        // "25분" or "6.5 km" or "7:41 PM"
-    let value: Int          // 6534   or   1713091260
-    let timeZone: String?  // "Asia/Seoul"
+struct InfoValue: Hashable, Codable {
+    let text: String
+    let value: Int
+    let timeZone: String?
     
     enum CodingKeys: String, CodingKey {
         case text
