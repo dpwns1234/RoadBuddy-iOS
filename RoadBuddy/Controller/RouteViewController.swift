@@ -24,14 +24,14 @@ final class RouteViewController: UIViewController {
         return collectionView
     }()
     
-    // MARK: - SearchDataSource
+    // MARK: - DataSource, Repository
     
     typealias RouteDataSource = UICollectionViewDiffableDataSource<Int, Route>
     private var routeDataSource: RouteDataSource!
     
     private let directionDataManager = DirectionDataManager()
-    
     private let addressRepository = UserDefaultRepository<Address>()
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
@@ -48,8 +48,8 @@ final class RouteViewController: UIViewController {
         if (departure?.title.isEmpty == false) && (arrival?.title.isEmpty == false) {
             loadingIndicator.startAnimating()
             directionDataManager.fetchDirection(
-                departure: departure!.geocoding.addresses[0].locatoin,
-                arrival: arrival!.geocoding.addresses[0].locatoin
+                departure: departure!.geocoding.addresses[0].location,
+                arrival: arrival!.geocoding.addresses[0].location
             )
         }
     }
@@ -92,13 +92,24 @@ extension RouteViewController: UICollectionViewDelegate {
 // MARK: - DirectionDataManagerDelegate
 
 extension RouteViewController: DirectionDataManagerDelegate {
+    
     func directionData(_ dataManager: DirectionDataManager, didLoad direction: Direction) {
         var snapshot = routeDataSource.snapshot()
         snapshot.appendItems(direction.data.routes)
         routeDataSource.apply(snapshot)
         DispatchQueue.main.async {
             self.loadingIndicator.stopAnimating()
+            if direction.data.routes.isEmpty {
+                self.showAlert()
+            }
         }
+    }
+    
+    private func showAlert() {
+        let secondAlert = UIAlertController(title: "경로가 없습니다.", message: "가까운 거리는 경로를 찾을 수 없습니다.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        secondAlert.addAction(okAction)
+        present(secondAlert, animated: true, completion: nil)
     }
 }
 
