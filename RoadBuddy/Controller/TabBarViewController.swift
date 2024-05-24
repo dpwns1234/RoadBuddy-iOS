@@ -104,11 +104,10 @@ class TabBarViewController: UIViewController {
         let arrival = addressRepository.fetch(type: "arrival")
         departureTextField.text = departure?.title
         arrivalTextField.text = arrival?.title
-
     }
     
     func setButtonAction() {
-        // tradeButton.addTarget(self, action: #selector(touchedBackButton), for: .touchUpInside)
+        tradeButton.addTarget(self, action: #selector(touchedTradeButton), for: .touchUpInside)
         xButton.addTarget(self, action: #selector(touchedXButton), for: .touchUpInside)
         departureTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
         arrivalTextField.addTarget(self, action: #selector(touchedDirectionTextField), for: .touchDown)
@@ -130,6 +129,21 @@ class TabBarViewController: UIViewController {
     private func touchedDirectionTextField() {
         let searchViewController = SearchViewController()
         self.navigationController?.pushViewController(searchViewController, animated: true)
+    }
+    
+    @objc
+    private func touchedTradeButton() {
+        if
+            var departure = addressRepository.fetch(type: "departure"),
+            var arrival = addressRepository.fetch(type: "arrival") {
+            departure.type = "arrival"
+            arrival.type = "departure"
+            addressRepository.save(data: departure)
+            addressRepository.save(data: arrival)
+            selectTab(at: 0)
+            departureTextField.text = arrival.title
+            arrivalTextField.text = departure.title
+        }
     }
     
     @objc
