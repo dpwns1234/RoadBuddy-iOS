@@ -76,6 +76,8 @@ final class TransferRouteView: UIView {
             let pathLabel = UILabel()
             pathLabel.text = path
             pathLabel.textColor = .black
+            pathLabel.numberOfLines = 0
+            pathLabel.lineBreakMode = .byWordWrapping
             transferStackView.addArrangedSubview(pathLabel)
         }
         
@@ -106,6 +108,7 @@ final class TransferRouteView: UIView {
             
             transferStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             transferStackView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            transferStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -8),
             
             imageView.topAnchor.constraint(equalTo: transferStackView.bottomAnchor, constant: 8),
             imageView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
