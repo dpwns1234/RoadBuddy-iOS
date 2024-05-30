@@ -22,11 +22,8 @@ final class RouteResultViewController: UIViewController {
         ])
         
         button.backgroundColor = .white
-        
-        // Make the button circular
         button.layer.cornerRadius = 20
         button.layer.masksToBounds = true
-        
         button.setImage(.backButton, for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
         let imageInset: CGFloat = 10

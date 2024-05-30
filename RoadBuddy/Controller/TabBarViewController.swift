@@ -26,7 +26,8 @@ final class TabBarViewController: UIViewController {
     private var departureTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "출발지"
+        textField.changePlaceholderText(content: "출발지 입력", color: Hansung.grey.color)
+        textField.textColor = .black
         textField.clearButtonMode = .whileEditing
         textField.backgroundColor = Hansung.lightGrey.color
         textField.addLeftPadding()
@@ -37,7 +38,9 @@ final class TabBarViewController: UIViewController {
     private var arrivalTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "도착지"
+        
+        textField.changePlaceholderText(content: "도착지 입력", color: Hansung.grey.color)
+        textField.textColor = .black
         textField.clearButtonMode = .whileEditing
         textField.backgroundColor = Hansung.lightGrey.color
         textField.addLeftPadding()

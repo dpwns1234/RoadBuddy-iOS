@@ -23,6 +23,7 @@ final class WalkingRouteView: UIView {
         let font = UIFont.preferredFont(forTextStyle: .body)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: font.pointSize)
+        label.textColor = .black
         
         return label
     }()

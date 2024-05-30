@@ -126,6 +126,7 @@ final class RouteCollectionViewCell: UICollectionViewCell {
         
         let durationLabel = UILabel()
         durationLabel.translatesAutoresizingMaskIntoConstraints = false
+        durationLabel.textColor = .black
         durationLabel.text = String((duration/60))
         durationLabel.font = .preferredFont(forTextStyle: .footnote)
         durationLabel.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 450 - Float(perioty)), for: .horizontal)

@@ -21,6 +21,7 @@ final class RoutePointView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: UIFont.preferredFont(forTextStyle: .title3).pointSize)
+        label.textColor = .black
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         
@@ -30,7 +31,7 @@ final class RoutePointView: UIView {
     init(address: String, color: UIColor) {
         super.init(frame: .zero)
         
-        backgroundColor = .white
+        self.backgroundColor = .white
         self.addSubview(addressLabel)
         self.addSubview(pointImageView)
         

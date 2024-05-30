@@ -52,6 +52,7 @@ final class SearchResultViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.clearButtonMode = .whileEditing
         textField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        textField.textColor = .black
         
         return textField
     }()

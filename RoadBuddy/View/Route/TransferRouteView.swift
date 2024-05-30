@@ -24,6 +24,7 @@ final class TransferRouteView: UIView {
         let font = UIFont.preferredFont(forTextStyle: .title3)
         label.font = .boldSystemFont(ofSize: font.pointSize)
         label.text = "환승 이동"
+        label.textColor = .black
         
         return label
     }()
@@ -74,6 +75,7 @@ final class TransferRouteView: UIView {
         for path in transferPath.mvContDtl {
             let pathLabel = UILabel()
             pathLabel.text = path
+            pathLabel.textColor = .black
             transferStackView.addArrangedSubview(pathLabel)
         }
         

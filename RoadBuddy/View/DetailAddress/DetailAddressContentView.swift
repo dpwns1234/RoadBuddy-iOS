@@ -23,6 +23,7 @@ final class DetailAddressContentView: UIView, UIContentView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .body)
+        label.textColor = .black
         
         return label
     }()
@@ -51,6 +52,7 @@ final class DetailAddressContentView: UIView, UIContentView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .caption1)
+        label.textColor = .black
         
         return label
     }()
@@ -59,6 +61,7 @@ final class DetailAddressContentView: UIView, UIContentView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .caption1)
+        label.textColor = .black
         
         return label
     }()
@@ -73,6 +76,7 @@ final class DetailAddressContentView: UIView, UIContentView {
         self.configuration = configuration
         super.init(frame: .zero)
         
+        self.backgroundColor = .white
         self.addSubview(leftStackView)
         self.addSubview(rightStackView)
         

@@ -17,6 +17,7 @@ final class BottomSheetRouteView: UIView {
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.backgroundColor = .white
         scrollView.showsVerticalScrollIndicator = false
         scrollView.layer.cornerRadius = 30
         
@@ -201,6 +202,7 @@ extension BottomSheetRouteView {
         distanceLabel.text = "도보 \(step.distance.text)"
         
         let durationLabel = UILabel()
+        durationLabel.textColor = .black
         durationLabel.font = .boldSystemFont(ofSize: font.pointSize)
         durationLabel.text = step.duration.text
         

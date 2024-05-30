@@ -185,6 +185,7 @@ extension TaxiViewController {
         
         let titleLabel = UILabel()
         titleLabel.text = title
+        titleLabel.textColor = .black
         titleLabel.font = .preferredFont(forTextStyle: .body)
         
         let valueLabel = UILabel()
@@ -192,6 +193,7 @@ extension TaxiViewController {
         attributedString.addAttribute(.font, value: titleFont, range: NSRange(0..<value.count))
         attributedString.addAttribute(.font, value: bodyFont, range: NSRange(value.count..<value.count+unit.count))
         valueLabel.attributedText = attributedString
+        valueLabel.textColor = .black
         
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(valueLabel)

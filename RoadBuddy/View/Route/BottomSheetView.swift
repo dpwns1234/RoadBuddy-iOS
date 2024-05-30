@@ -36,7 +36,7 @@ final class BottomSheetView: UIView {
         let boldFont = UIFont.boldSystemFont(ofSize: font.pointSize)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = boldFont
-        // bold처리
+        label.textColor = .black
         label.numberOfLines = 0
         
         return label
@@ -46,6 +46,7 @@ final class BottomSheetView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .preferredFont(forTextStyle: .caption1)
+        label.textColor = .black
         label.numberOfLines = 0
         
         return label

@@ -13,6 +13,7 @@ final class TransitRouteView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         let font = UIFont.preferredFont(forTextStyle: .title3)
         label.font = .boldSystemFont(ofSize: font.pointSize)
+        label.textColor = .black
         
         return label
     }()
@@ -21,6 +22,7 @@ final class TransitRouteView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.textColor = .black
         
         return label
     }()
@@ -29,6 +31,7 @@ final class TransitRouteView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.textColor = .black
         
         return label
     }()
@@ -47,6 +50,7 @@ final class TransitRouteView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         let font = UIFont.preferredFont(forTextStyle: .body)
         label.font = .boldSystemFont(ofSize: font.pointSize)
+        label.textColor = .black
         
         return label
     }()

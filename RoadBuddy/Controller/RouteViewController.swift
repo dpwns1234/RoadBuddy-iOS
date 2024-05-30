@@ -18,6 +18,7 @@ final class RouteViewController: UIViewController {
     private lazy var routeCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.register(RouteCollectionViewCell.self, forCellWithReuseIdentifier: RouteCollectionViewCell.identifier)
         
@@ -37,6 +38,7 @@ final class RouteViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = .white
         self.view.addSubview(routeCollectionView)
         self.view.addSubview(loadingIndicator)
         configureSearchDataSource()

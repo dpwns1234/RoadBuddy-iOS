@@ -14,4 +14,12 @@ extension UITextField {
         self.leftView = paddingView
         self.leftViewMode = ViewMode.always
     }
+    
+    func changePlaceholderText(content: String, color: UIColor) {
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [
+             .font: UIFont.preferredFont(forTextStyle: .body),
+             .foregroundColor: color
+         ]
+        self.attributedPlaceholder = NSAttributedString(string: content, attributes: placeholderAttributes)
+    }
 }

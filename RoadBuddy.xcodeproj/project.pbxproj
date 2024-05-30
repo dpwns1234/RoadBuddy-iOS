@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		660462212BB3C50C000CF53D /* MySearchFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660462202BB3C50C000CF53D /* MySearchFieldView.swift */; };
 		661386962BB5003000AE04F5 /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661386952BB5003000AE04F5 /* SearchResultViewController.swift */; };
 		661386982BB53A4A00AE04F5 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661386972BB53A4A00AE04F5 /* BottomSheetView.swift */; };
 		6613869A2BB53A7700AE04F5 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661386992BB53A7700AE04F5 /* BottomSheetViewController.swift */; };
@@ -75,7 +74,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		660462202BB3C50C000CF53D /* MySearchFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySearchFieldView.swift; sourceTree = "<group>"; };
 		661386952BB5003000AE04F5 /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		661386972BB53A4A00AE04F5 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		661386992BB53A7700AE04F5 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 			isa = PBXGroup;
 			children = (
 				6640A6472BA153EB0058A537 /* FilterTextField.swift */,
-				660462202BB3C50C000CF53D /* MySearchFieldView.swift */,
 				6613869B2BB53D9A00AE04F5 /* MainButton.swift */,
 				6613869D2BB53E2E00AE04F5 /* HansungColor.swift */,
 				663425932BDB7CDB00F8626F /* UIPaddingLabel.swift */,
@@ -497,7 +494,6 @@
 				663AABCF2BC3881600F0D079 /* AddressDataManager.swift in Sources */,
 				6627ED6A2BB6D9CC00E49E14 /* DetailAddress.swift in Sources */,
 				6627ED5F2BB6D49D00E49E14 /* NetworkError.swift in Sources */,
-				660462212BB3C50C000CF53D /* MySearchFieldView.swift in Sources */,
 				667C347A2BFD80CF00C942CF /* RoutePointView.swift in Sources */,
 				66399D432BF6E975008B5A2F /* RouteResultViewController.swift in Sources */,
 				663425922BDB3F6C00F8626F /* RouteCollectionViewCell.swift in Sources */,

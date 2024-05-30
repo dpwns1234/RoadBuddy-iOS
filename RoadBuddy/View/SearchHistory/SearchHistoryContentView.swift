@@ -54,10 +54,11 @@ final class SearchHistoryContentView: UIView, UIContentView {
     init(configuration: UIContentConfiguration) {
         self.configuration = configuration
         super.init(frame: .zero)
+        
+        self.backgroundColor = .white
         addSubview(titleLabel)
         addSubview(createdLabel)
         addSubview(removeButton)
-        
         setConstraints()
         apply(configuration: configuration)
         removeButton.addTarget(self, action: #selector(removeHistory), for: .touchUpInside)

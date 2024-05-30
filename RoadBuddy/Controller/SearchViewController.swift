@@ -33,7 +33,8 @@ final class SearchViewController: UIViewController {
     
     private var searchTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "장소, 버스, 지하철, 주소 검색"
+        textField.changePlaceholderText(content: "장소, 버스, 지하철, 주소 검색", color: Hansung.grey.color)
+        textField.textColor = .black
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.clearButtonMode = .whileEditing
         textField.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -52,6 +53,7 @@ final class SearchViewController: UIViewController {
     private lazy var searchCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
         
         return collectionView
     }()
@@ -266,7 +268,8 @@ extension SearchViewController: AddressDataManagerDelegate {
 extension SearchViewController {
     
     private func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .plain)
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.backgroundColor = .white
         return UICollectionViewCompositionalLayout.list(using: config)
     }
     
