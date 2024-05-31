@@ -169,16 +169,44 @@ extension SearchViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // 채팅창이 비었을 때 -> 검색기록 표시
         let currentText = (textField.text ?? "") as NSString
-        let newText = currentText.replacingCharacters(in: range, with: string)
+        var newText = currentText.replacingCharacters(in: range, with: string)
         if newText.isEmpty {
             loadSearchHistory()
             return true
         }
+        newText = combineHangul(jamo: newText)
         // 하나라도 입력되었을 때 -> 자동완성 셀 표시
         addressDataManager.fetchData(input: newText)
         
         return true
     }
+    
+    
+    private func combineHangul(jamo: String) -> String {
+        let initialConsonants: [Character] = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"]
+        let vowels: [Character] = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"]
+        let finalConsonants: [Character] = [" ", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"]
+        
+        var result = ""
+        var tempJamo = Array(jamo)
+        
+        while tempJamo.count >= 2 {
+            if let initialIndex = initialConsonants.firstIndex(of: tempJamo[0]),
+               let vowelIndex = vowels.firstIndex(of: tempJamo[1]) {
+                let finalIndex = tempJamo.count > 2 ? finalConsonants.firstIndex(of: tempJamo[2]) ?? 0 : 0
+                let unicode = 0xAC00 + (initialIndex * 21 * 28) + (vowelIndex * 28) + finalIndex
+                result.append(Character(UnicodeScalar(unicode)!))
+                tempJamo.removeFirst(2 + (finalIndex != 0 ? 1 : 0))
+            } else {
+                result.append(tempJamo.removeFirst())
+            }
+        }
+        
+        result.append(contentsOf: tempJamo)
+        
+        return result
+    }
+    
 }
 
 // MARK: - 검색기록 저장, 삭제, 업데이트
